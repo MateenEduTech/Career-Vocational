@@ -1,0 +1,1173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Career Guidance & Skill Mapping Intelligence Studio - NEP 2020 Aligned">
+<meta name="theme-color" content="#061220">
+<title>Career Guidance & Skill Mapping Intelligence Studio</title>
+<link rel="manifest" href="manifest.json">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
+
+:root {
+  --bg:#050e1a;--bg2:#091525;--bg3:#0d1e35;--bg4:#102440;
+  --teal:#1ec8b0;--teal2:#17a894;--gold:#e0a830;--gold2:#c08920;
+  --indigo:#6c7ff8;--rose:#f06080;--green:#2dd4a0;--amber:#f59e0b;
+  --txt:#d8eaf8;--txt2:#7090b0;--txt3:#304860;
+  --border:#173050;--border2:#1e3d60;--r:11px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;overflow-x:hidden}
+
+/* ── SPLASH ── */
+#splash{position:fixed;inset:0;z-index:9999;background:linear-gradient(155deg,#040c18 0%,#091525 55%,#040d1c 100%);display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:2rem}
+.s-grid{position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(30,200,176,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(30,200,176,0.04) 1px,transparent 1px);background-size:50px 50px}
+.s-orb{position:absolute;width:600px;height:600px;background:radial-gradient(circle,rgba(108,127,248,0.07) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none}
+.s-inner{position:relative;z-index:1;max-width:600px;width:100%}
+.s-chip{display:inline-block;background:rgba(224,168,48,0.11);border:1px solid rgba(224,168,48,0.32);border-radius:50px;padding:5px 18px;font-size:0.68rem;letter-spacing:2px;text-transform:uppercase;color:var(--gold);font-family:'Space Mono',monospace;margin-bottom:1.75rem}
+.s-title{font-family:'Libre Baskerville',serif;font-size:clamp(1.75rem,5.5vw,3.1rem);font-weight:700;line-height:1.18;margin-bottom:0.4rem}
+.s-title em{color:var(--teal);font-style:normal}
+.s-sub{font-size:0.8rem;color:var(--txt2);letter-spacing:1.2px;margin-bottom:2rem;font-family:'Space Mono',monospace}
+.s-author{display:flex;align-items:center;gap:1rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:var(--r);padding:0.9rem 1.4rem;margin-bottom:1.9rem;text-align:left}
+.s-author img{width:58px;height:58px;border-radius:50%;object-fit:cover;object-position:top;border:2px solid var(--gold)}
+.an{font-weight:700;font-size:0.95rem;color:var(--gold)}
+.at{font-size:0.74rem;color:var(--txt2);margin-top:2px}
+.s-badges{display:flex;gap:0.4rem;flex-wrap:wrap;justify-content:center;margin-bottom:1.9rem}
+.sb{font-size:0.68rem;padding:3px 11px;border-radius:50px;font-family:'Space Mono',monospace}
+.sb-t{background:rgba(30,200,176,0.12);border:1px solid rgba(30,200,176,0.32);color:var(--teal)}
+.sb-g{background:rgba(224,168,48,0.12);border:1px solid rgba(224,168,48,0.32);color:var(--gold)}
+.sb-i{background:rgba(108,127,248,0.12);border:1px solid rgba(108,127,248,0.32);color:var(--indigo)}
+.s-btns{display:grid;grid-template-columns:1fr 1fr;gap:0.7rem}
+.s-btn{padding:0.82rem 0.8rem;border-radius:var(--r);border:none;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-size:0.8rem;font-weight:600;display:flex;align-items:center;justify-content:center;gap:0.45rem;transition:all 0.2s}
+.s-btn.p1{background:linear-gradient(135deg,var(--teal),var(--teal2));color:#fff}
+.s-btn.p2{background:rgba(255,255,255,0.055);border:1px solid var(--border);color:var(--txt)}
+.s-btn:hover{transform:translateY(-2px);filter:brightness(1.1)}
+.s-foot{margin-top:1.5rem;font-size:0.67rem;color:var(--txt3);font-family:'Space Mono',monospace}
+
+/* ── APP ── */
+#app{display:none}
+nav{background:rgba(9,21,37,0.96);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);height:56px;display:flex;align-items:center;padding:0 1.25rem;gap:1rem;position:sticky;top:0;z-index:100}
+.nl{font-family:'Libre Baskerville',serif;font-size:0.95rem;font-weight:700;color:var(--teal);white-space:nowrap}
+.ntabs{display:flex;gap:0.2rem;overflow-x:auto;flex:1;scrollbar-width:none}
+.ntabs::-webkit-scrollbar{display:none}
+.ntab{padding:0.33rem 0.72rem;border-radius:7px;border:none;background:transparent;color:var(--txt2);font-size:0.74rem;font-family:'Plus Jakarta Sans',sans-serif;font-weight:500;white-space:nowrap;cursor:pointer;transition:all 0.2s}
+.ntab:hover{color:var(--txt);background:rgba(255,255,255,0.05)}
+.ntab.active{background:rgba(30,200,176,0.13);color:var(--teal)}
+.nhome{padding:0.33rem 0.8rem;background:var(--teal);color:#fff;border:none;border-radius:7px;font-size:0.72rem;font-weight:600;cursor:pointer;white-space:nowrap;font-family:'Plus Jakarta Sans',sans-serif}
+
+.page{display:none;padding:1.5rem;max-width:1200px;margin:0 auto}
+.page.active{display:block}
+
+.sh{margin-bottom:1.75rem;padding-bottom:1rem;border-bottom:1px solid var(--border)}
+.sh h2{font-family:'Libre Baskerville',serif;font-size:1.75rem;margin-bottom:0.3rem}
+.sh p{color:var(--txt2);font-size:0.85rem}
+
+.card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:1.4rem;margin-bottom:1rem}
+.card h3{font-family:'Libre Baskerville',serif;font-size:1.12rem;color:var(--gold);margin-bottom:0.7rem}
+.card p{color:var(--txt2);font-size:0.875rem;line-height:1.75}
+.card p+p{margin-top:0.5rem}
+
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
+@media(max-width:768px){.g2,.g3,.g4{grid-template-columns:1fr}.s-btns{grid-template-columns:1fr}}
+
+.sc{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:1.2rem;text-align:center}
+.sc .si{font-size:1.9rem;margin-bottom:0.35rem}
+.sc .sv{font-family:'Libre Baskerville',serif;font-size:1.85rem;font-weight:700;color:var(--teal)}
+.sc .sl{font-size:0.73rem;color:var(--txt2);margin-top:0.2rem}
+.sc.g .sv{color:var(--green)}.sc.gold .sv{color:var(--gold)}.sc.r .sv{color:var(--rose)}.sc.i .sv{color:var(--indigo)}
+
+.fg{margin-bottom:0.9rem}
+.fg label{display:block;font-size:0.73rem;font-weight:600;color:var(--txt2);margin-bottom:0.33rem;text-transform:uppercase;letter-spacing:0.5px}
+.fg input,.fg select,.fg textarea{width:100%;padding:0.52rem 0.8rem;background:var(--bg);border:1px solid var(--border);border-radius:7px;color:var(--txt);font-family:'Plus Jakarta Sans',sans-serif;font-size:0.875rem;outline:none;transition:border-color 0.2s}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--teal)}
+.fg select option{background:var(--bg3)}
+
+.btn{padding:0.52rem 1.1rem;border-radius:7px;border:none;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-size:0.8rem;font-weight:600;display:inline-flex;align-items:center;gap:0.35rem;transition:all 0.2s}
+.btn-t{background:var(--teal);color:#fff}
+.btn-g{background:rgba(45,212,160,0.12);border:1px solid rgba(45,212,160,0.32);color:var(--green)}
+.btn-gold{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#fff}
+.btn-s{background:rgba(255,255,255,0.06);border:1px solid var(--border);color:var(--txt)}
+.btn-d{background:rgba(240,96,128,0.12);border:1px solid rgba(240,96,128,0.32);color:var(--rose)}
+.btn-i{background:rgba(108,127,248,0.12);border:1px solid rgba(108,127,248,0.32);color:var(--indigo)}
+.btn:hover{transform:translateY(-1px);filter:brightness(1.1)}
+
+.tw{overflow-x:auto;border-radius:var(--r);border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse}
+th{background:var(--bg4);padding:0.62rem 0.9rem;font-size:0.7rem;font-weight:600;color:var(--txt2);text-align:left;text-transform:uppercase;letter-spacing:0.5px}
+td{padding:0.62rem 0.9rem;font-size:0.83rem;border-top:1px solid var(--border)}
+tr:hover td{background:rgba(255,255,255,0.02)}
+
+.pill{display:inline-block;padding:2px 9px;border-radius:50px;font-size:0.68rem;font-weight:600;font-family:'Space Mono',monospace}
+.pill-t{background:rgba(30,200,176,0.15);color:var(--teal)}
+.pill-g{background:rgba(45,212,160,0.15);color:var(--green)}
+.pill-gold{background:rgba(224,168,48,0.15);color:var(--gold)}
+.pill-i{background:rgba(108,127,248,0.15);color:var(--indigo)}
+.pill-r{background:rgba(240,96,128,0.15);color:var(--rose)}
+
+/* Skill Assessment */
+.qcard{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:1rem 1.2rem;margin-bottom:0.7rem}
+.qtext{font-size:0.88rem;font-weight:500;margin-bottom:0.65rem}
+.qopts{display:flex;gap:0.5rem;flex-wrap:wrap}
+.qopt{padding:0.35rem 0.75rem;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--txt2);font-size:0.76rem;cursor:pointer;transition:all 0.2s;font-family:'Plus Jakarta Sans',sans-serif}
+.qopt:hover{border-color:var(--teal);color:var(--teal)}
+.qopt.selected{background:rgba(30,200,176,0.15);border-color:var(--teal);color:var(--teal)}
+
+/* Career Cards */
+.career-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:1.1rem;cursor:pointer;transition:all 0.2s;margin-bottom:0.6rem}
+.career-card:hover{border-color:var(--teal);transform:translateY(-1px)}
+.cc-name{font-weight:600;font-size:0.92rem;margin-bottom:0.3rem}
+.cc-cat{font-size:0.72rem;color:var(--txt2)}
+.cc-tags{display:flex;gap:0.35rem;flex-wrap:wrap;margin-top:0.5rem}
+
+/* Pathway Visual */
+.node{border-radius:var(--r);padding:0.8rem 1rem;text-align:center;font-size:0.82rem;font-weight:600;cursor:pointer;transition:all 0.2s;border:1px solid}
+.node:hover{transform:scale(1.03)}
+.node-sci{background:rgba(30,200,176,0.12);border-color:rgba(30,200,176,0.35);color:var(--teal)}
+.node-arts{background:rgba(224,168,48,0.12);border-color:rgba(224,168,48,0.35);color:var(--gold)}
+.node-com{background:rgba(108,127,248,0.12);border-color:rgba(108,127,248,0.35);color:var(--indigo)}
+.node-voc{background:rgba(45,212,160,0.12);border-color:rgba(45,212,160,0.35);color:var(--green)}
+.node-multi{background:rgba(240,96,128,0.12);border-color:rgba(240,96,128,0.35);color:var(--rose)}
+
+/* Pbar */
+.pb-wrap{margin-bottom:0.65rem}
+.pb-lbl{display:flex;justify-content:space-between;font-size:0.74rem;margin-bottom:0.25rem;color:var(--txt2)}
+.pb-track{height:9px;background:rgba(255,255,255,0.06);border-radius:9px;overflow:hidden}
+.pb-fill{height:100%;border-radius:9px;transition:width 0.8s ease}
+
+/* Policy */
+.ptabs{display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:1.4rem}
+.ptab{padding:0.28rem 0.62rem;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--txt3);cursor:pointer;font-size:0.68rem;font-family:'Space Mono',monospace;transition:all 0.2s}
+.ptab.active{background:rgba(224,168,48,0.12);border-color:var(--gold);color:var(--gold)}
+.pcont{display:none}.pcont.active{display:block}
+.pcont h3{font-family:'Libre Baskerville',serif;font-size:1.38rem;color:var(--gold);margin-bottom:1rem}
+.pcont h4{font-size:0.88rem;font-weight:600;color:var(--teal);margin:1.1rem 0 0.42rem}
+.pcont p{color:var(--txt2);font-size:0.875rem;line-height:1.8;margin-bottom:0.62rem}
+.pcont ul{list-style:none;padding:0}
+.pcont ul li{color:var(--txt2);font-size:0.875rem;padding:0.27rem 0;padding-left:1.1rem;position:relative}
+.pcont ul li::before{content:'▸';position:absolute;left:0;color:var(--teal);font-size:0.68rem;top:0.38rem}
+.rbox{background:rgba(224,168,48,0.07);border:1px solid rgba(224,168,48,0.22);border-radius:var(--r);padding:0.9rem 1.1rem;margin-top:1.1rem}
+.rbox .rt{font-size:0.67rem;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:0.4rem;font-family:'Space Mono',monospace}
+.rbox p,.abox p{color:var(--txt2);font-size:0.82rem;margin:0}
+.abox{background:rgba(30,200,176,0.07);border:1px solid rgba(30,200,176,0.22);border-radius:var(--r);padding:0.9rem 1.1rem;margin-top:0.6rem}
+.abox .at2{font-size:0.67rem;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:1px;margin-bottom:0.4rem;font-family:'Space Mono',monospace}
+
+/* Reflection */
+.rj-entry{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:1rem 1.2rem;margin-bottom:0.6rem}
+.rj-date{font-size:0.68rem;color:var(--txt3);font-family:'Space Mono',monospace;margin-bottom:0.35rem}
+
+/* Export */
+.eopt{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:1.1rem 1.25rem;display:flex;align-items:center;gap:1rem;cursor:pointer;transition:border-color 0.2s;margin-bottom:0.7rem}
+.eopt:hover{border-color:var(--teal)}
+.eicon{font-size:1.8rem}
+.etitle{font-weight:600;font-size:0.88rem;margin-bottom:0.15rem}
+.edesc{font-size:0.74rem;color:var(--txt2)}
+
+/* Canvas chart */
+.chartbox{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:1.25rem;margin-bottom:1rem}
+.chartbox h4{font-size:0.76rem;font-weight:600;color:var(--txt2);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.85rem}
+canvas{max-width:100%;display:block}
+
+#toast{position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;background:var(--bg4);border:1px solid var(--border);border-radius:var(--r);padding:0.7rem 1.1rem;font-size:0.83rem;opacity:0;transition:opacity 0.3s;pointer-events:none}
+#toast.show{opacity:1}
+::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+@media print{nav,#splash,.btn{display:none!important}.page{display:block!important}body{background:#fff;color:#000}}
+</style>
+</head>
+<body>
+
+<!-- ══════════ SPLASH ══════════ -->
+<div id="splash">
+  <div class="s-grid"></div><div class="s-orb"></div>
+  <div class="s-inner">
+    <div class="s-chip">🧭 Offline Edition — Career Intelligence Studio</div>
+    <h1 class="s-title">Career Guidance &amp;<br><em>Skill Mapping</em><br>Intelligence Studio</h1>
+    <p class="s-sub">Multidisciplinary Pathways for Grades 8–12 · Kashmir Schools</p>
+    <div class="s-author">
+      <img src="author.jpg" alt="Mateen Yousuf" onerror="this.style.display='none'">
+      <div>
+        <div class="an">Mateen Yousuf</div>
+        <div class="at">Teacher — School Education Department, Kashmir</div>
+        <div class="at" style="color:var(--txt3);margin-top:2px">NEP 2020 Multidisciplinary Education Specialist</div>
+      </div>
+    </div>
+    <div class="s-badges">
+      <span class="sb sb-t">✦ NEP 2020 Aligned</span>
+      <span class="sb sb-g">✦ NCF 2023 Framework</span>
+      <span class="sb sb-i">✦ Multidisciplinary Education</span>
+    </div>
+    <div class="s-btns">
+      <button class="s-btn p1" onclick="openApp('careers')">🧭 Explore Career Pathways</button>
+      <button class="s-btn p2" onclick="openApp('skill-assessment')">🎯 Skill Mapping Assessment</button>
+      <button class="s-btn p2" onclick="openApp('career-plan')">📋 Create Personal Career Plan</button>
+      <button class="s-btn p2" onclick="openApp('policy')">📚 Policy &amp; Framework</button>
+    </div>
+    <div class="s-foot">🔒 Fully Offline · No Login · No Server · Student data stored locally</div>
+  </div>
+</div>
+
+<!-- ══════════ MAIN APP ══════════ -->
+<div id="app">
+  <nav>
+    <div class="nl">🧭 CGSMIS</div>
+    <div class="ntabs">
+      <button class="ntab" onclick="showPage('careers')">Careers</button>
+      <button class="ntab" onclick="showPage('skill-assessment')">Skill Assessment</button>
+      <button class="ntab" onclick="showPage('alignment')">Pathway Alignment</button>
+      <button class="ntab" onclick="showPage('career-plan')">Career Plan</button>
+      <button class="ntab" onclick="showPage('multidisciplinary')">Multidisciplinary</button>
+      <button class="ntab" onclick="showPage('reflection')">Reflection Journal</button>
+      <button class="ntab" onclick="showPage('dashboard')">School Dashboard</button>
+      <button class="ntab" onclick="showPage('policy')">Policy Pages</button>
+      <button class="ntab" onclick="showPage('export')">Export</button>
+    </div>
+    <button class="nhome" onclick="showSplash()">🏠</button>
+  </nav>
+
+  <!-- ══ CAREER EXPLORER ══ -->
+  <div class="page active" id="pg-careers">
+    <div class="sh"><h2>🧭 Career Exploration Database</h2><p>Browse 40+ career pathways — subjects, competencies, skills, higher education routes, and future scope</p></div>
+    <div class="g2">
+      <div>
+        <div class="card" style="margin-bottom:1rem">
+          <h3>Filter Careers</h3>
+          <div class="fg"><label>Category</label>
+            <select id="career-filter" onchange="filterCareers()">
+              <option value="">All Categories</option>
+              <option>Science & Technology</option><option>Arts & Humanities</option>
+              <option>Commerce & Business</option><option>Vocational & Skill-Based</option>
+              <option>Multidisciplinary</option><option>Emerging Fields</option>
+            </select>
+          </div>
+          <div class="fg"><label>Search</label><input type="text" id="career-search" placeholder="Type career name..." oninput="filterCareers()"></div>
+        </div>
+        <div id="career-list" style="max-height:500px;overflow-y:auto;padding-right:4px"></div>
+      </div>
+      <div id="career-detail">
+        <div class="card"><h3>Select a Career</h3><p style="color:var(--txt3)">Click any career card on the left to view its full roadmap — subjects, competencies, skills, higher education pathways, and future scope.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ SKILL ASSESSMENT ══ -->
+  <div class="page" id="pg-skill-assessment">
+    <div class="sh"><h2>🎯 Skill Mapping Assessment</h2><p>Self-assessment across 8 domains — generates your personal skill strength profile and radar chart</p></div>
+    <div class="g2">
+      <div>
+        <div class="card">
+          <h3>Your Details</h3>
+          <div class="fg"><label>Your Name</label><input type="text" id="sk-name" placeholder="Your name"></div>
+          <div class="fg"><label>Class / Grade</label>
+            <select id="sk-class">
+              <option>Class 8</option><option>Class 9</option><option>Class 10</option>
+              <option>Class 11</option><option>Class 12</option>
+            </select>
+          </div>
+        </div>
+        <div id="skill-questions"></div>
+        <button class="btn btn-t" style="width:100%;margin-top:0.5rem" onclick="calculateSkills()">⚡ Calculate My Skill Profile</button>
+      </div>
+      <div>
+        <div class="chartbox"><h4>🕸 Your Skill Radar Chart</h4><canvas id="skillRadar" width="340" height="300"></canvas></div>
+        <div id="skill-results">
+          <div class="card"><h3>Skill Profile</h3><p style="color:var(--txt3);font-size:0.84rem">Complete the assessment to see your skill profile.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ ALIGNMENT ══ -->
+  <div class="page" id="pg-alignment">
+    <div class="sh"><h2>📐 Subject &amp; Pathway Alignment Tool</h2><p>Check how your current subjects align with your desired career — find gaps and suggestions</p></div>
+    <div class="g2">
+      <div class="card">
+        <h3>Your Academic Profile</h3>
+        <div class="fg"><label>Current Class</label>
+          <select id="al-class">
+            <option>Class 8</option><option>Class 9</option><option>Class 10</option>
+            <option>Class 11</option><option>Class 12</option>
+          </select>
+        </div>
+        <div class="fg"><label>Subjects You Study (select all that apply)</label>
+          <div id="subject-checkboxes" style="display:flex;flex-wrap:wrap;gap:0.4rem;margin-top:0.4rem"></div>
+        </div>
+        <div class="fg" style="margin-top:0.75rem"><label>Desired Career</label>
+          <select id="al-career">
+            <option value="">Select a career...</option>
+          </select>
+        </div>
+        <button class="btn btn-t" style="width:100%;margin-top:0.5rem" onclick="runAlignment()">🔍 Check Alignment</button>
+      </div>
+      <div id="alignment-result">
+        <div class="card"><h3>Alignment Summary</h3><p style="color:var(--txt3);font-size:0.84rem">Select your subjects and career, then click Check Alignment.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ CAREER PLAN ══ -->
+  <div class="page" id="pg-career-plan">
+    <div class="sh"><h2>📋 Personal Career Plan Builder</h2><p>Generates a personalised 2-year academic focus plan, skill roadmap, and activity suggestions</p></div>
+    <div class="g2">
+      <div class="card">
+        <h3>Build Your Plan</h3>
+        <div class="fg"><label>Your Name</label><input type="text" id="cp-name" placeholder="Your name"></div>
+        <div class="fg"><label>Career Goal</label><input type="text" id="cp-goal" placeholder="e.g. Software Engineer, Doctor, Designer..."></div>
+        <div class="fg"><label>Your Strongest Skill</label>
+          <select id="cp-strength">
+            <option>Analytical Thinking</option><option>Communication</option><option>Creativity</option>
+            <option>Leadership</option><option>Technical Aptitude</option><option>Numerical Ability</option>
+            <option>Social Awareness</option><option>Problem-Solving</option>
+          </select>
+        </div>
+        <div class="fg"><label>Skill You Most Need to Improve</label>
+          <select id="cp-improve">
+            <option>Analytical Thinking</option><option>Communication</option><option>Creativity</option>
+            <option>Leadership</option><option>Technical Aptitude</option><option>Numerical Ability</option>
+            <option>Social Awareness</option><option>Problem-Solving</option>
+          </select>
+        </div>
+        <div class="fg"><label>Preferred Learning Style</label>
+          <select id="cp-style">
+            <option>Visual (diagrams, charts)</option><option>Reading & Writing</option>
+            <option>Practical & Hands-on</option><option>Discussion & Collaboration</option>
+          </select>
+        </div>
+        <div class="fg"><label>Class / Grade</label>
+          <select id="cp-class">
+            <option>Class 8</option><option>Class 9</option><option>Class 10</option>
+            <option>Class 11</option><option>Class 12</option>
+          </select>
+        </div>
+        <button class="btn btn-gold" style="width:100%" onclick="generateCareerPlan()">⚡ Generate My Career Plan</button>
+      </div>
+      <div id="career-plan-output">
+        <div class="card"><h3>Your Plan</h3><p style="color:var(--txt3);font-size:0.84rem">Fill in your details and click Generate to build your personalised 2-year career plan.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ MULTIDISCIPLINARY VISUALIZER ══ -->
+  <div class="page" id="pg-multidisciplinary">
+    <div class="sh"><h2>🌐 Multidisciplinary Pathway Visualizer</h2><p>Interactive map showing how subjects and disciplines connect to create powerful career combinations</p></div>
+    <div class="g2">
+      <div class="chartbox" style="margin:0"><h4>🔗 Subject Connection Map</h4><canvas id="multiCanvas" height="380"></canvas></div>
+      <div>
+        <div class="card"><h3>Click a Stream to Explore Connections</h3>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;margin-top:0.5rem">
+            <div class="node node-sci" onclick="showMultiDetail('science')">🔬 Science + Technology</div>
+            <div class="node node-arts" onclick="showMultiDetail('arts')">🎨 Arts + Humanities</div>
+            <div class="node node-com" onclick="showMultiDetail('commerce')">📊 Commerce + Data</div>
+            <div class="node node-voc" onclick="showMultiDetail('vocational')">🔧 Vocational + Enterprise</div>
+            <div class="node node-multi" onclick="showMultiDetail('multi')" style="grid-column:span 2">✨ Full Multidisciplinary Map</div>
+          </div>
+        </div>
+        <div id="multi-detail" class="card">
+          <h3>Multidisciplinary Connections</h3>
+          <p style="color:var(--txt3);font-size:0.84rem">Click a stream above to see how it connects with other disciplines and the career pathways this creates.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ REFLECTION JOURNAL ══ -->
+  <div class="page" id="pg-reflection">
+    <div class="sh"><h2>🪞 Reflection Journal</h2><p>Record your career thinking — motivations, challenges, skills to build — and generate a printable summary</p></div>
+    <div class="g2">
+      <div class="card">
+        <h3>New Journal Entry</h3>
+        <div class="fg"><label>Your Name</label><input type="text" id="rj-name" placeholder="Your name"></div>
+        <div class="fg"><label>Date</label><input type="date" id="rj-date"></div>
+        <div class="fg"><label>Why I chose this career direction</label><textarea id="rj-why" rows="2" placeholder="What draws you to this career?"></textarea></div>
+        <div class="fg"><label>What motivates me most</label><textarea id="rj-motivate" rows="2" placeholder="What excites you about your future?"></textarea></div>
+        <div class="fg"><label>Challenges I foresee</label><textarea id="rj-challenges" rows="2" placeholder="What obstacles might you face?"></textarea></div>
+        <div class="fg"><label>Skills I must build</label><textarea id="rj-skills" rows="2" placeholder="What skills do you need to develop?"></textarea></div>
+        <div class="fg"><label>People or experiences that inspire me</label><textarea id="rj-inspire" rows="2" placeholder="Mentors, stories, experiences..."></textarea></div>
+        <button class="btn btn-t" style="width:100%" onclick="saveReflection()">💾 Save Journal Entry</button>
+      </div>
+      <div>
+        <div id="rj-summary" class="card">
+          <h3>📋 Reflection Summary</h3>
+          <p style="color:var(--txt3);font-size:0.84rem">Save an entry to generate your reflection summary here.</p>
+        </div>
+        <div class="card"><h3>Previous Entries</h3><div id="rj-list"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ SCHOOL DASHBOARD ══ -->
+  <div class="page" id="pg-dashboard">
+    <div class="sh"><h2>🏫 School Career Overview Dashboard</h2><p>Anonymous aggregate data — career category trends, skill distribution, and counseling priorities</p></div>
+    <div class="g4" style="margin-bottom:1rem">
+      <div class="sc"><div class="si">👩‍🎓</div><div class="sv" id="sd-students">0</div><div class="sl">Students Assessed</div></div>
+      <div class="sc gold"><div class="si">🧭</div><div class="sv" id="sd-careers">0</div><div class="sl">Career Selections</div></div>
+      <div class="sc g"><div class="si">🎯</div><div class="sv" id="sd-skill">—</div><div class="sl">Top Skill Domain</div></div>
+      <div class="sc i"><div class="si">📋</div><div class="sv" id="sd-plans">0</div><div class="sl">Plans Generated</div></div>
+    </div>
+    <div class="g2">
+      <div class="chartbox"><h4>📊 Career Category Distribution</h4><canvas id="catChart" height="220"></canvas></div>
+      <div class="chartbox"><h4>🎯 School Skill Profile</h4><canvas id="skillSchoolChart" height="220"></canvas></div>
+    </div>
+    <div class="card" id="sd-priorities"><h3>Counseling Focus Areas</h3><p style="color:var(--txt3);font-size:0.84rem">More student data needed for counseling insights.</p></div>
+  </div>
+
+  <!-- ══ POLICY ══ -->
+  <div class="page" id="pg-policy">
+    <div class="sh"><h2>📚 Policy Foundation &amp; Framework</h2><p>13 structured pages — NEP 2020, multidisciplinary education, skill-based learning, and career counseling</p></div>
+    <div class="ptabs" id="ptabs-nav"></div>
+    <div id="ptabs-content"></div>
+  </div>
+
+  <!-- ══ EXPORT ══ -->
+  <div class="page" id="pg-export">
+    <div class="sh"><h2>📤 Export &amp; Backup</h2></div>
+    <div class="eopt" onclick="exportJSON()"><div class="eicon">💾</div><div><div class="etitle">Download JSON Backup</div><div class="edesc">Save all skill profiles, career plans and journal entries</div></div></div>
+    <div class="eopt" onclick="document.getElementById('imp-file').click()"><div class="eicon">📂</div><div><div class="etitle">Import JSON File</div><div class="edesc">Restore data from backup</div></div></div>
+    <input type="file" id="imp-file" accept=".json" style="display:none" onchange="handleImport(event)">
+    <div class="eopt" onclick="window.print()"><div class="eicon">🖨️</div><div><div class="etitle">Print / Save as PDF</div><div class="edesc">Print current page or save as PDF</div></div></div>
+    <div class="eopt" onclick="resetData()"><div class="eicon">🗑️</div><div><div class="etitle">Reset All Data</div><div class="edesc">Clear all saved student data permanently</div></div></div>
+    <div class="card" style="margin-top:1.5rem">
+      <h3>📱 APK Conversion Guide</h3>
+      <h4>Option A — PWA Install (Fastest)</h4>
+      <p>Open in Chrome on Android → tap ⋮ → "Add to Home Screen". Installs as a native-like app with offline support.</p>
+      <h4>Option B — Android Studio WebView</h4>
+      <p>New Project → Empty Activity → Replace layout with WebView → Load file:///android_asset/index.html → Enable JavaScript + DOM Storage → Copy all files to assets/ → Build Signed APK</p>
+      <h4>Option C — PWABuilder.com</h4>
+      <p>Host on GitHub Pages/Netlify → Visit PWABuilder.com → Enter URL → Download Android package.</p>
+    </div>
+  </div>
+</div>
+<div id="toast"></div>
+
+<script>
+// ═══════════════ STORAGE ═══════════════
+const SK = 'cgsmis_skills';
+const PL = 'cgsmis_plans';
+const RJ = 'cgsmis_reflections';
+const CA = 'cgsmis_selections';
+
+const getSkills = () => { try{return JSON.parse(localStorage.getItem(SK)||'[]')}catch(e){return[]} }
+const getPlans = () => { try{return JSON.parse(localStorage.getItem(PL)||'[]')}catch(e){return[]} }
+const getRJs = () => { try{return JSON.parse(localStorage.getItem(RJ)||'[]')}catch(e){return[]} }
+const getCAs = () => { try{return JSON.parse(localStorage.getItem(CA)||'[]')}catch(e){return[]} }
+const saveSkills = d => localStorage.setItem(SK,JSON.stringify(d));
+const savePlans = d => localStorage.setItem(PL,JSON.stringify(d));
+const saveRJs = d => localStorage.setItem(RJ,JSON.stringify(d));
+const saveCAs = d => localStorage.setItem(CA,JSON.stringify(d));
+
+// ═══════════════ CAREER DATABASE ═══════════════
+const CAREERS = [
+  {name:'Doctor / Physician',cat:'Science & Technology',subjects:['Biology','Chemistry','Physics','Mathematics'],skills:['Analytical Thinking','Problem-Solving','Social Awareness'],competencies:'Scientific reasoning, empathy, communication',edu:'MBBS → MD/MS → Specialisation',scope:'Healthcare sector, government hospitals, private practice, research',projects:['Health awareness campaign','Biology experiment journal','First aid awareness drive']},
+  {name:'Software Engineer',cat:'Science & Technology',subjects:['Mathematics','Computer Science','Physics'],skills:['Analytical Thinking','Technical Aptitude','Problem-Solving'],competencies:'Logical reasoning, coding, systems thinking',edu:'B.Tech/BCA → M.Tech/MCA → Industry certifications',scope:'IT companies, startups, freelancing, global remote work',projects:['Build a simple website','Create a calculator app','Data organiser project']},
+  {name:'Data Scientist',cat:'Emerging Fields',subjects:['Mathematics','Statistics','Computer Science'],skills:['Analytical Thinking','Numerical Ability','Technical Aptitude'],competencies:'Statistical analysis, programming, data interpretation',edu:'B.Tech/B.Sc Statistics → M.Sc Data Science → Industry certs',scope:'Fintech, healthcare analytics, e-commerce, research',projects:['Analyse school attendance data','Survey data visualisation','Sports statistics project']},
+  {name:'Architect',cat:'Science & Technology',subjects:['Mathematics','Physics','Art'],skills:['Creativity','Analytical Thinking','Technical Aptitude'],competencies:'Spatial reasoning, design thinking, technical drawing',edu:'B.Arch (5 years) → M.Arch → Council of Architecture registration',scope:'Construction industry, urban planning, government projects',projects:['Design your ideal school','Sketch community spaces','Model a sustainable building']},
+  {name:'Journalist / Media Professional',cat:'Arts & Humanities',subjects:['English','Urdu','Social Science','History'],skills:['Communication','Creativity','Social Awareness'],competencies:'Writing, research, critical thinking, ethics',edu:'BA Journalism → MA/PG Diploma in Mass Communication',scope:'Print, digital, television, podcasting, documentary',projects:['School newsletter','Interview a community leader','Short documentary film']},
+  {name:'Graphic Designer',cat:'Arts & Humanities',subjects:['Art','Computer Science','English'],skills:['Creativity','Technical Aptitude','Communication'],competencies:'Visual thinking, digital tools, storytelling',edu:'BFA/B.Des → Design certification courses',scope:'Advertising agencies, startups, freelancing, publishing',projects:['Design a school poster','Create a social media graphic','Brand identity project']},
+  {name:'Chartered Accountant',cat:'Commerce & Business',subjects:['Mathematics','Accountancy','Economics','Business Studies'],skills:['Numerical Ability','Analytical Thinking','Problem-Solving'],competencies:'Financial analysis, auditing, taxation, compliance',edu:'B.Com → CA Foundation → Intermediate → Final (ICAI)',scope:'Banking, corporations, consulting, government audits',projects:['Home budget analysis','School canteen accounts','Mock tax return project']},
+  {name:'Entrepreneur',cat:'Commerce & Business',subjects:['Business Studies','Economics','Mathematics','Computer Science'],skills:['Leadership','Problem-Solving','Communication','Creativity'],competencies:'Business planning, risk assessment, marketing, finance',edu:'BBA/MBA or self-directed learning + industry experience',scope:'Unlimited — any sector where you identify a problem to solve',projects:['Design a micro-business plan','Market survey project','Social enterprise pitch']},
+  {name:'Civil Engineer',cat:'Science & Technology',subjects:['Mathematics','Physics','Chemistry'],skills:['Analytical Thinking','Technical Aptitude','Problem-Solving'],competencies:'Structural analysis, project management, environmental awareness',edu:'B.Tech Civil Engineering → M.Tech → PE license',scope:'Infrastructure, smart cities, government construction, consulting',projects:['Bridge design challenge','Local infrastructure audit','Water conservation model']},
+  {name:'Teacher / Educator',cat:'Arts & Humanities',subjects:['Any stream + Education optional'],skills:['Communication','Social Awareness','Leadership'],competencies:'Pedagogy, curriculum design, assessment, mentoring',edu:'B.Ed → M.Ed → NET/SET for higher education',scope:'Government schools, private institutions, EdTech, international schools',projects:['Teach a topic to classmates','Design a lesson plan','Create an educational game']},
+  {name:'Psychologist / Counselor',cat:'Arts & Humanities',subjects:['Psychology','Biology','Social Science','English'],skills:['Social Awareness','Communication','Problem-Solving'],competencies:'Active listening, empathy, research, therapeutic techniques',edu:'BA/BSc Psychology → MA Psychology → RCI certification',scope:'Hospitals, schools, corporate wellness, private practice',projects:['Mental health awareness event','Survey on student stress','Peer support programme']},
+  {name:'Fashion Designer',cat:'Vocational & Skill-Based',subjects:['Art','English','Home Science'],skills:['Creativity','Technical Aptitude','Communication'],competencies:'Garment construction, trend analysis, business sense',edu:'B.Des/Diploma in Fashion Design → NID/NIFT programmes',scope:'Boutiques, export houses, Bollywood/entertainment, international fashion',projects:['Design a traditional outfit','Textile pattern creation','Fashion show organisation']},
+  {name:'Agricultural Scientist',cat:'Science & Technology',subjects:['Biology','Chemistry','Environmental Science'],skills:['Analytical Thinking','Problem-Solving','Technical Aptitude'],competencies:'Crop science, soil analysis, sustainable farming, research',edu:'B.Sc Agriculture → M.Sc → Ph.D./ICAR research',scope:'Government agriculture dept, research institutes, agritech startups',projects:['School garden project','Soil testing experiment','Water-efficient farming model']},
+  {name:'Film Director / Content Creator',cat:'Multidisciplinary',subjects:['English','History','Art','Computer Science'],skills:['Creativity','Communication','Leadership'],competencies:'Storytelling, visual composition, team management, digital production',edu:'BA Film Studies / Mass Communication → Film institute diploma',scope:'OTT platforms, advertising, YouTube, government media, documentary',projects:['Short film project','School documentary','Social media campaign']},
+  {name:'Environmental Scientist',cat:'Emerging Fields',subjects:['Biology','Chemistry','Geography','Mathematics'],skills:['Analytical Thinking','Social Awareness','Problem-Solving'],competencies:'Environmental analysis, policy understanding, field research',edu:'B.Sc Environmental Science → M.Sc → Research / Government roles',scope:'NGOs, government environment dept, consulting, UN organisations',projects:['Local pollution survey','Biodiversity audit','Clean energy awareness drive']},
+  {name:'Banker / Financial Analyst',cat:'Commerce & Business',subjects:['Mathematics','Economics','Accountancy'],skills:['Numerical Ability','Analytical Thinking','Communication'],competencies:'Financial modelling, risk analysis, investment evaluation',edu:'B.Com/BBA → MBA Finance → CFA/PGDM',scope:'Banks, NBFCs, investment firms, insurance, corporate finance',projects:['Personal savings tracker','Investment research report','Stock market simulation']},
+  {name:'Lawyer / Advocate',cat:'Arts & Humanities',subjects:['English','Political Science','History','Social Science'],skills:['Communication','Analytical Thinking','Social Awareness'],competencies:'Legal reasoning, argumentation, research, ethics',edu:'BA LLB (5 years) or LLB after graduation → Bar Council enrollment',scope:'Courts, corporate legal, government, NGOs, international law',projects:['Mock court debate','Research a landmark case','Rights awareness campaign']},
+  {name:'Electrician / Electronics Technician',cat:'Vocational & Skill-Based',subjects:['Physics','Mathematics','Electronics'],skills:['Technical Aptitude','Problem-Solving','Analytical Thinking'],competencies:'Circuit analysis, installation, safety protocols, troubleshooting',edu:'ITI Electrician / Diploma Electronics → Advanced certifications → B.Tech',scope:'Manufacturing, construction, home services, energy sector, government',projects:['Build a simple circuit','Home energy audit','Solar panel model']},
+  {name:'Nurse / Healthcare Worker',cat:'Science & Technology',subjects:['Biology','Chemistry','Psychology'],skills:['Social Awareness','Communication','Problem-Solving'],competencies:'Patient care, medical procedures, empathy, crisis response',edu:'GNM / B.Sc Nursing → M.Sc Nursing → Specialisation',scope:'Hospitals, community health, international healthcare, telemedicine',projects:['First aid workshop','Community health survey','Nutrition awareness programme']},
+  {name:'Digital Marketing Specialist',cat:'Emerging Fields',subjects:['Computer Science','English','Business Studies','Mathematics'],skills:['Creativity','Communication','Analytical Thinking'],competencies:'SEO, content strategy, data analytics, social media management',edu:'BBA/BA → Google/HubSpot certifications → MBA Marketing',scope:'Startups, agencies, e-commerce, NGOs, political campaigns',projects:['School social media campaign','Brand awareness project','Blog or vlog creation']},
+  {name:'Urban Planner',cat:'Multidisciplinary',subjects:['Geography','Mathematics','Social Science','Economics'],skills:['Analytical Thinking','Social Awareness','Creativity'],competencies:'Spatial planning, policy analysis, community engagement, GIS',edu:'B.Planning → M.Planning → IITP/Government urban development roles',scope:'Smart city projects, state planning boards, international consultancies',projects:['Map your neighbourhood','Infrastructure improvement proposal','Sustainable city design']},
+  {name:'AI / Machine Learning Engineer',cat:'Emerging Fields',subjects:['Mathematics','Computer Science','Physics'],skills:['Analytical Thinking','Technical Aptitude','Numerical Ability'],competencies:'Python programming, linear algebra, neural networks, data pipelines',edu:'B.Tech CS → M.Tech AI/ML → Research/industry specialisation',scope:'Tech giants, autonomous systems, healthcare AI, fintech, defence',projects:['Spam filter logic project','Image classification demo','Chatbot prototype']},
+  {name:'Chef / Culinary Artist',cat:'Vocational & Skill-Based',subjects:['Home Science','Biology','Business Studies'],skills:['Creativity','Technical Aptitude','Leadership'],competencies:'Culinary techniques, menu planning, food safety, business management',edu:'Culinary diploma/degree → Hotel Management → Industry experience',scope:'Hotels, restaurants, catering, food product companies, own restaurant',projects:['Cook a regional dish','Recipe book project','Nutrition-focused meal plan']},
+  {name:'Economist / Policy Analyst',cat:'Commerce & Business',subjects:['Economics','Mathematics','Statistics','Political Science'],skills:['Analytical Thinking','Numerical Ability','Communication'],competencies:'Econometric modelling, policy research, data interpretation',edu:'BA/B.Sc Economics → MA Economics → IES/RBI/think-tank roles',scope:'Government policy, central bank, NGOs, international organisations',projects:['Local market survey','Price trend analysis','Policy brief on a local issue']},
+  {name:'Social Worker / NGO Professional',cat:'Arts & Humanities',subjects:['Social Science','Psychology','Political Science'],skills:['Social Awareness','Communication','Leadership'],competencies:'Community development, advocacy, programme design, fundraising',edu:'BSW/BA Social Work → MSW → NGO/government development sector',scope:'NGOs, UN agencies, state welfare departments, community organisations',projects:['Community needs survey','Awareness campaign design','Volunteer programme plan']},
+];
+
+// ═══════════════ SKILL DOMAINS ═══════════════
+const SKILL_DOMAINS = ['Analytical Thinking','Communication','Creativity','Leadership','Technical Aptitude','Numerical Ability','Social Awareness','Problem-Solving'];
+const SKILL_QUESTIONS = {
+  'Analytical Thinking':['I enjoy solving puzzles and logical problems','I like to find patterns and connections between ideas','I analyse situations before making decisions'],
+  'Communication':['I express my ideas clearly when speaking','I write well and others understand my messages','I listen carefully and ask good questions'],
+  'Creativity':['I enjoy coming up with new ideas and solutions','I like art, design, music, or creative writing','I approach problems in original ways'],
+  'Leadership':['I am comfortable leading a group project','I motivate others and take responsibility','I make decisions confidently'],
+  'Technical Aptitude':['I am comfortable with technology and computers','I enjoy building, fixing, or understanding how things work','I learn new technical skills quickly'],
+  'Numerical Ability':['I am comfortable with numbers and calculations','I enjoy Mathematics or Statistics','I can interpret data and graphs easily'],
+  'Social Awareness':['I care about social issues and community problems','I understand different people\'s perspectives','I want my work to help others'],
+  'Problem-Solving':['I stay calm and think clearly when faced with challenges','I try multiple approaches to solve a problem','I learn from failures and keep trying'],
+};
+
+// ═══════════════ NAVIGATION ═══════════════
+function openApp(page) {
+  document.getElementById('splash').style.display='none';
+  document.getElementById('app').style.display='block';
+  showPage(page);
+}
+function showSplash() {
+  document.getElementById('splash').style.display='flex';
+  document.getElementById('app').style.display='none';
+}
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.ntab').forEach(t=>t.classList.remove('active'));
+  const pg=document.getElementById('pg-'+id);
+  if(pg) pg.classList.add('active');
+  document.querySelectorAll('.ntab').forEach(t=>{if(t.textContent.toLowerCase().includes(id.replace('-',' ').split(' ')[0])) t.classList.add('active')});
+  if(id==='careers') { renderCareers(); populateCareerSelect(); }
+  if(id==='multidisciplinary') drawMultiMap();
+  if(id==='reflection') loadJournal();
+  if(id==='dashboard') refreshDashboard();
+}
+
+// ═══════════════ CAREERS ═══════════════
+function renderCareers(filter='', search='') {
+  const el = document.getElementById('career-list');
+  if(!el) return;
+  const filtered = CAREERS.filter(c =>
+    (!filter || c.cat===filter) &&
+    (!search || c.name.toLowerCase().includes(search.toLowerCase()))
+  );
+  el.innerHTML = filtered.map(c => `
+    <div class="career-card" onclick="showCareerDetail('${c.name.replace(/'/g,"\\'")}')">
+      <div class="cc-name">${c.name}</div>
+      <div class="cc-cat">${c.cat}</div>
+      <div class="cc-tags">${c.skills.slice(0,3).map(s=>`<span class="pill pill-t">${s}</span>`).join('')}</div>
+    </div>`).join('') || '<p style="color:var(--txt3);font-size:0.84rem;padding:1rem">No careers match filter.</p>';
+}
+
+function filterCareers() {
+  const f = document.getElementById('career-filter').value;
+  const s = document.getElementById('career-search').value;
+  renderCareers(f, s);
+}
+
+function showCareerDetail(name) {
+  const c = CAREERS.find(x=>x.name===name);
+  if(!c) return;
+  const el = document.getElementById('career-detail');
+  // Save selection
+  const sels = getCAs();
+  if (!sels.includes(name)) { sels.push(name); saveCAs(sels); }
+
+  el.innerHTML = `
+    <div class="card">
+      <h3>🧭 ${c.name}</h3>
+      <span class="pill pill-i">${c.cat}</span>
+      <div style="margin-top:1rem">
+        <div style="font-size:0.72rem;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.4rem;font-family:'Space Mono',monospace">📚 Required Subjects</div>
+        <div style="display:flex;flex-wrap:wrap;gap:0.35rem">${c.subjects.map(s=>`<span class="pill pill-gold">${s}</span>`).join('')}</div>
+      </div>
+      <div style="margin-top:0.9rem">
+        <div style="font-size:0.72rem;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.4rem;font-family:'Space Mono',monospace">🎯 Key Skills</div>
+        <div style="display:flex;flex-wrap:wrap;gap:0.35rem">${c.skills.map(s=>`<span class="pill pill-t">${s}</span>`).join('')}</div>
+      </div>
+      <div style="margin-top:0.9rem">
+        <div style="font-size:0.72rem;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.3rem;font-family:'Space Mono',monospace">💡 Competencies</div>
+        <p style="font-size:0.84rem;color:var(--txt2)">${c.competencies}</p>
+      </div>
+      <div style="margin-top:0.9rem">
+        <div style="font-size:0.72rem;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.3rem;font-family:'Space Mono',monospace">🎓 Higher Education Pathway</div>
+        <p style="font-size:0.84rem;color:var(--txt2)">${c.edu}</p>
+      </div>
+      <div style="margin-top:0.9rem">
+        <div style="font-size:0.72rem;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.3rem;font-family:'Space Mono',monospace">🚀 Future Scope</div>
+        <p style="font-size:0.84rem;color:var(--txt2)">${c.scope}</p>
+      </div>
+      <div style="margin-top:0.9rem">
+        <div style="font-size:0.72rem;font-weight:700;color:var(--indigo);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.3rem;font-family:'Space Mono',monospace">📝 Suggested Projects</div>
+        ${c.projects.map(p=>`<div style="font-size:0.83rem;color:var(--txt2);padding:0.25rem 0;border-bottom:1px solid rgba(255,255,255,0.04)">→ ${p}</div>`).join('')}
+      </div>
+      <button class="btn btn-t" style="margin-top:1rem;width:100%" onclick="document.getElementById('cp-goal').value='${c.name}';showPage('career-plan')">📋 Build Career Plan for This</button>
+    </div>`;
+}
+
+function populateCareerSelect() {
+  const sel = document.getElementById('al-career');
+  if (!sel) return;
+  sel.innerHTML = '<option value="">Select a career...</option>' +
+    CAREERS.map(c=>`<option>${c.name}</option>`).join('');
+}
+
+// ═══════════════ SKILL ASSESSMENT ═══════════════
+function buildSkillQuestions() {
+  const el = document.getElementById('skill-questions');
+  if(!el) return;
+  el.innerHTML = Object.entries(SKILL_QUESTIONS).map(([domain, qs]) => `
+    <div class="card" style="margin-bottom:0.7rem">
+      <h3 style="font-size:0.95rem;margin-bottom:0.75rem">${domain}</h3>
+      ${qs.map((q,i) => `
+        <div class="qcard">
+          <div class="qtext">${q}</div>
+          <div class="qopts">
+            ${[['1','Rarely'],['2','Sometimes'],['3','Often'],['4','Always']].map(([v,l]) =>
+              `<button class="qopt" data-domain="${domain}" data-qi="${i}" data-val="${v}" onclick="selectQ(this)">${v} — ${l}</button>`
+            ).join('')}
+          </div>
+        </div>`).join('')}
+    </div>`).join('');
+}
+
+function selectQ(btn) {
+  const domain = btn.dataset.domain;
+  const qi = btn.dataset.qi;
+  document.querySelectorAll(`.qopt[data-domain="${domain}"][data-qi="${qi}"]`).forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+}
+
+function calculateSkills() {
+  const name = document.getElementById('sk-name').value.trim() || 'Student';
+  const cls = document.getElementById('sk-class').value;
+  const scores = {};
+  let complete = true;
+  SKILL_DOMAINS.forEach(d => {
+    const qs = SKILL_QUESTIONS[d];
+    const vals = qs.map((_,i) => {
+      const sel = document.querySelector(`.qopt[data-domain="${d}"][data-qi="${i}"].selected`);
+      return sel ? parseInt(sel.dataset.val) : null;
+    });
+    if (vals.includes(null)) { complete = false; return; }
+    scores[d] = Math.round((vals.reduce((a,b)=>a+b,0)/vals.length)*100)/100;
+  });
+  if (!complete) { showToast('⚠️ Please answer all questions'); return; }
+
+  // Save
+  const data = getSkills();
+  data.push({id:Date.now(), name, class:cls, scores, date:new Date().toISOString().split('T')[0]});
+  saveSkills(data);
+
+  drawSkillRadar(scores);
+  showSkillResults(scores, name);
+  showToast('✅ Skill profile saved!');
+}
+
+function showSkillResults(scores, name) {
+  const el = document.getElementById('skill-results');
+  const sorted = Object.entries(scores).sort((a,b)=>b[1]-a[1]);
+  el.innerHTML = `
+    <div class="card">
+      <h3>📊 ${name}'s Skill Profile</h3>
+      ${sorted.map(([d,v]) => {
+        const cat = v>=3.5?'High':v>=2.5?'Moderate':'Developing';
+        const col = v>=3.5?'var(--green)':v>=2.5?'var(--teal)':'var(--amber)';
+        const pilcls = v>=3.5?'pill-g':v>=2.5?'pill-t':'pill-gold';
+        return `<div class="pb-wrap">
+          <div class="pb-lbl"><span>${d}</span><span class="pill ${pilcls}">${cat} (${v})</span></div>
+          <div class="pb-track"><div class="pb-fill" style="width:${(v/4)*100}%;background:${col}"></div></div>
+        </div>`;
+      }).join('')}
+      <div style="margin-top:1rem;background:rgba(30,200,176,0.07);border:1px solid rgba(30,200,176,0.2);border-radius:8px;padding:0.85rem">
+        <div style="font-size:0.7rem;font-weight:700;color:var(--teal);text-transform:uppercase;font-family:'Space Mono',monospace;margin-bottom:0.35rem">TOP STRENGTH</div>
+        <div style="font-size:0.88rem;color:var(--txt)">${sorted[0][0]}</div>
+        <div style="font-size:0.7rem;font-weight:700;color:var(--amber);text-transform:uppercase;font-family:'Space Mono',monospace;margin:0.6rem 0 0.35rem">SUGGESTED GROWTH AREA</div>
+        <div style="font-size:0.88rem;color:var(--txt)">${sorted[sorted.length-1][0]}</div>
+      </div>
+    </div>`;
+}
+
+function drawSkillRadar(scores) {
+  const canvas = document.getElementById('skillRadar');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const w = canvas.width = canvas.parentElement.clientWidth - 32;
+  const h = 280; canvas.height = h;
+  ctx.clearRect(0,0,w,h);
+  const cx=w/2, cy=h/2, r=Math.min(w,h)/2-42;
+  const n=SKILL_DOMAINS.length, step=(Math.PI*2)/n;
+  [1,2,3,4].forEach(lv=>{
+    ctx.strokeStyle='rgba(255,255,255,0.06)'; ctx.lineWidth=1;
+    ctx.beginPath();
+    for(let i=0;i<n;i++){const a=i*step-Math.PI/2; const x=cx+Math.cos(a)*(r*lv/4); const y=cy+Math.sin(a)*(r*lv/4); i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);}
+    ctx.closePath(); ctx.stroke();
+  });
+  SKILL_DOMAINS.forEach((d,i)=>{
+    const a=i*step-Math.PI/2;
+    ctx.strokeStyle='rgba(255,255,255,0.1)'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(cx+Math.cos(a)*r,cy+Math.sin(a)*r); ctx.stroke();
+    ctx.fillStyle='#7090b0'; ctx.font='8.5px Plus Jakarta Sans'; ctx.textAlign='center';
+    const short = d.split(' ').map(w=>w[0]).join('');
+    ctx.fillText(short, cx+Math.cos(a)*(r+16), cy+Math.sin(a)*(r+16)+3);
+  });
+  ctx.fillStyle='rgba(30,200,176,0.18)'; ctx.strokeStyle='var(--teal)'; ctx.lineWidth=2.2;
+  ctx.beginPath();
+  SKILL_DOMAINS.forEach((d,i)=>{
+    const a=i*step-Math.PI/2; const v=(scores[d]||0)/4;
+    const x=cx+Math.cos(a)*r*v; const y=cy+Math.sin(a)*r*v;
+    i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+  });
+  ctx.closePath(); ctx.fill(); ctx.stroke();
+  SKILL_DOMAINS.forEach((d,i)=>{
+    const a=i*step-Math.PI/2; const v=(scores[d]||0)/4;
+    ctx.beginPath(); ctx.arc(cx+Math.cos(a)*r*v, cy+Math.sin(a)*r*v, 4,0,Math.PI*2);
+    ctx.fillStyle='var(--teal)'; ctx.fill();
+  });
+}
+
+// ═══════════════ ALIGNMENT ═══════════════
+const ALL_SUBJECTS = ['Mathematics','Physics','Chemistry','Biology','English','Urdu','Hindi','Social Science','History','Geography','Political Science','Economics','Computer Science','Accountancy','Business Studies','Art','Environmental Science','Psychology','Home Science'];
+
+function buildSubjectCheckboxes() {
+  const el = document.getElementById('subject-checkboxes');
+  if(!el) return;
+  el.innerHTML = ALL_SUBJECTS.map(s => `
+    <label style="display:flex;align-items:center;gap:0.3rem;font-size:0.78rem;cursor:pointer;padding:3px 8px;border-radius:5px;border:1px solid var(--border);background:var(--bg)">
+      <input type="checkbox" value="${s}" style="accent-color:var(--teal)"> ${s}
+    </label>`).join('');
+}
+
+function runAlignment() {
+  const careerName = document.getElementById('al-career').value;
+  if(!careerName) { showToast('⚠️ Select a career'); return; }
+  const career = CAREERS.find(c=>c.name===careerName);
+  if(!career) return;
+  const checked = [...document.querySelectorAll('#subject-checkboxes input:checked')].map(i=>i.value);
+  const required = career.subjects;
+  const have = required.filter(s=>checked.includes(s));
+  const missing = required.filter(s=>!checked.includes(s));
+  const alignPct = Math.round((have.length/required.length)*100);
+
+  const el = document.getElementById('alignment-result');
+  const col = alignPct>=75?'var(--green)':alignPct>=50?'var(--teal)':alignPct>=25?'var(--amber)':'var(--rose)';
+  el.innerHTML = `
+    <div class="card">
+      <h3>📐 Alignment: ${careerName}</h3>
+      <div style="text-align:center;margin:1rem 0;padding:1rem;background:var(--bg4);border-radius:var(--r)">
+        <div style="font-family:'Libre Baskerville',serif;font-size:2.5rem;font-weight:700;color:${col}">${alignPct}%</div>
+        <div style="font-size:0.78rem;color:var(--txt2)">Subject Alignment Score</div>
+      </div>
+      <div style="margin-bottom:0.85rem">
+        <div style="font-size:0.7rem;font-weight:700;color:var(--green);text-transform:uppercase;font-family:'Space Mono',monospace;margin-bottom:0.4rem">✅ Subjects You Have</div>
+        <div style="display:flex;flex-wrap:wrap;gap:0.35rem">${have.length?have.map(s=>`<span class="pill pill-g">${s}</span>`).join(''):'<span style="color:var(--txt3);font-size:0.82rem">None matched</span>'}</div>
+      </div>
+      <div style="margin-bottom:0.85rem">
+        <div style="font-size:0.7rem;font-weight:700;color:var(--rose);text-transform:uppercase;font-family:'Space Mono',monospace;margin-bottom:0.4rem">⚠️ Subjects to Add / Study</div>
+        <div style="display:flex;flex-wrap:wrap;gap:0.35rem">${missing.length?missing.map(s=>`<span class="pill pill-r">${s}</span>`).join(''):'<span class="pill pill-g">All key subjects covered!</span>'}</div>
+      </div>
+      <div style="font-size:0.7rem;font-weight:700;color:var(--teal);text-transform:uppercase;font-family:'Space Mono',monospace;margin-bottom:0.4rem">🎯 Required Skills</div>
+      <div style="display:flex;flex-wrap:wrap;gap:0.35rem">${career.skills.map(s=>`<span class="pill pill-t">${s}</span>`).join('')}</div>
+      <div style="margin-top:1rem;background:${alignPct>=75?'rgba(45,212,160,0.07)':'rgba(245,158,11,0.07)'};border:1px solid ${alignPct>=75?'rgba(45,212,160,0.22)':'rgba(245,158,11,0.22)'};border-radius:8px;padding:0.85rem;font-size:0.84rem;color:var(--txt2)">
+        💡 ${alignPct>=75?'Strong alignment! Focus on developing the required skills and relevant projects.':alignPct>=50?'Good foundation. Consider adding '+missing.slice(0,2).join(' and ')+' for stronger preparation.':'Consider discussing subject choices with your counselor. Adding '+missing[0]+' would most improve your alignment.'}
+      </div>
+    </div>`;
+}
+
+// ═══════════════ CAREER PLAN GENERATOR ═══════════════
+const SKILL_ACTIVITIES = {
+  'Analytical Thinking':['Join the school Science/Math club','Solve daily logic puzzles','Practice data interpretation exercises'],
+  'Communication':['Join debate or elocution team','Write for the school magazine','Practice public speaking weekly'],
+  'Creativity':['Start a creative project (art, music, writing)','Participate in hackathons or design challenges','Experiment with new hobbies regularly'],
+  'Leadership':['Take on a school committee role','Organise a school event or campaign','Mentor a younger student'],
+  'Technical Aptitude':['Learn basic coding (Python/Scratch)','Complete an online technical course','Build a simple project or prototype'],
+  'Numerical Ability':['Practice Olympiad-level Math problems','Use spreadsheets for real-world calculations','Study statistics through sports data'],
+  'Social Awareness':['Volunteer in a community project','Research a social issue and present findings','Interview community members on a local challenge'],
+  'Problem-Solving':['Participate in science fairs','Work on challenge-based projects','Keep a "solutions journal" for daily problems observed'],
+};
+
+function generateCareerPlan() {
+  const name = document.getElementById('cp-name').value.trim() || 'Student';
+  const goal = document.getElementById('cp-goal').value.trim();
+  if(!goal) { showToast('⚠️ Enter your career goal'); return; }
+  const strength = document.getElementById('cp-strength').value;
+  const improve = document.getElementById('cp-improve').value;
+  const style = document.getElementById('cp-style').value;
+  const cls = document.getElementById('cp-class').value;
+  const career = CAREERS.find(c=>c.name.toLowerCase().includes(goal.toLowerCase().split(' ')[0]));
+
+  const plan = {id:Date.now(), name, goal, strength, improve, class:cls, date:new Date().toISOString().split('T')[0]};
+  const plans = getPlans(); plans.push(plan); savePlans(plans);
+
+  const out = document.getElementById('career-plan-output');
+  out.innerHTML = `
+    <div style="background:rgba(224,168,48,0.07);border:1px solid rgba(224,168,48,0.22);border-radius:var(--r);padding:1rem 1.25rem;margin-bottom:1.25rem">
+      <div style="font-size:0.67rem;font-weight:700;color:var(--gold);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:0.3rem">PERSONAL CAREER PLAN — ${new Date().toLocaleDateString('en-IN')}</div>
+      <div style="font-size:0.84rem;color:var(--txt2)">Student: <strong style="color:var(--txt)">${name}</strong> · Class: <strong style="color:var(--txt)">${cls}</strong> · Goal: <strong style="color:var(--teal)">${goal}</strong></div>
+    </div>
+    <div class="card">
+      <h3>📅 2-Year Academic Focus Plan</h3>
+      <div style="margin-bottom:0.75rem">
+        <div style="font-size:0.72rem;font-weight:700;color:var(--teal);text-transform:uppercase;font-family:'Space Mono',monospace;margin-bottom:0.35rem">YEAR 1 — Foundation</div>
+        <div style="font-size:0.84rem;color:var(--txt2);line-height:1.8">
+          → Strengthen core subjects: ${career?career.subjects.slice(0,3).join(', '):'related core subjects'}<br>
+          → Focus on building <strong style="color:var(--txt)">${improve}</strong> through regular practice<br>
+          → Leverage your strength in <strong style="color:var(--txt)">${strength}</strong> for project work<br>
+          → Begin 1–2 beginner projects in your career area
+        </div>
+      </div>
+      <div>
+        <div style="font-size:0.72rem;font-weight:700;color:var(--gold);text-transform:uppercase;font-family:'Space Mono',monospace;margin-bottom:0.35rem">YEAR 2 — Development</div>
+        <div style="font-size:0.84rem;color:var(--txt2);line-height:1.8">
+          → Deepen subject knowledge${career?' — '+career.subjects.slice(0,2).join(' and '):'in key subjects'}<br>
+          → Complete one significant career-relevant project<br>
+          → Begin researching higher education options and entrance requirements<br>
+          → Build a portfolio or record of achievement for applications
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>🎯 Skill Development Roadmap</h3>
+      <div style="margin-bottom:0.75rem">
+        <div style="font-size:0.72rem;font-weight:700;color:var(--rose);text-transform:uppercase;font-family:'Space Mono',monospace;margin-bottom:0.35rem">PRIORITY SKILL: ${improve}</div>
+        ${(SKILL_ACTIVITIES[improve]||[]).map(a=>`<div style="font-size:0.83rem;color:var(--txt2);padding:0.3rem 0;border-bottom:1px solid rgba(255,255,255,0.04)">✓ ${a}</div>`).join('')}
+      </div>
+    </div>
+    <div class="card">
+      <h3>🏃 Suggested Activities & Projects</h3>
+      <div style="font-size:0.84rem;color:var(--txt2);line-height:1.9">
+        ${career ? career.projects.map(p=>`<p>📌 ${p}</p>`).join('') : '<p>→ Start a project related to your career field this month</p><p>→ Seek mentorship from a professional in your area of interest</p><p>→ Join or create a study group focused on your career path</p>'}
+      </div>
+    </div>
+    <div class="card">
+      <h3>🎓 Higher Education Pathway</h3>
+      <p>${career ? career.edu : 'Research entrance requirements for your target career. Speak with a counselor about subject combinations.'}</p>
+    </div>
+    <div style="margin-top:1rem;display:flex;gap:0.65rem;flex-wrap:wrap">
+      <button class="btn btn-gold" onclick="window.print()">🖨️ Print Plan</button>
+    </div>`;
+  showToast('✅ Career Plan Generated!');
+}
+
+// ═══════════════ MULTIDISCIPLINARY ═══════════════
+const MULTI_DATA = {
+  science:{ title:'Science + Technology Connections', color:'var(--teal)', items:[
+    {conn:'Science + Economics','career':'Health Economics, Environmental Policy, Agricultural Finance'},
+    {conn:'Science + Arts','career':'Medical Illustration, Science Communication, Documentary Film'},
+    {conn:'Science + Computer Science','career':'Bioinformatics, AI for Healthcare, Climate Modelling'},
+    {conn:'Science + Social Science','career':'Community Health, Education Research, Policy Analysis'},
+  ]},
+  arts:{ title:'Arts + Humanities Connections', color:'var(--gold)', items:[
+    {conn:'Arts + Digital Technology','career':'UI/UX Design, Digital Animation, Game Narrative'},
+    {conn:'Arts + Commerce','career':'Creative Entrepreneurship, Arts Management, Publishing'},
+    {conn:'Arts + Social Science','career':'Documentary, Advocacy Media, Cultural Studies'},
+    {conn:'Arts + Psychology','career':'Art Therapy, Counseling, Human-Centred Design'},
+  ]},
+  commerce:{ title:'Commerce + Data Connections', color:'var(--indigo)', items:[
+    {conn:'Commerce + Data Analytics','career':'Financial Analytics, Market Research, Business Intelligence'},
+    {conn:'Commerce + Technology','career':'FinTech, E-Commerce, Digital Banking'},
+    {conn:'Commerce + Social Science','career':'Development Economics, NGO Finance, Policy'},
+    {conn:'Commerce + Creativity','career':'Marketing, Brand Strategy, Advertising'},
+  ]},
+  vocational:{ title:'Vocational + Enterprise Connections', color:'var(--green)', items:[
+    {conn:'Vocational + Business','career':'Self-employed Contractor, Service Business, Cooperative'},
+    {conn:'Vocational + Technology','career':'Technical Consulting, Product Development, Quality Assurance'},
+    {conn:'Vocational + Arts','career':'Craft Enterprise, Heritage Craft Export, Cultural Tourism'},
+    {conn:'Vocational + Digital Skills','career':'Digital Repair Services, Online Tutorials, Certification Training'},
+  ]},
+  multi:{ title:'Full Multidisciplinary Map', color:'var(--rose)', items:[
+    {conn:'Science + Commerce + Data','career':'Data Scientist, Healthcare Analyst, Climate Finance'},
+    {conn:'Arts + Technology + Commerce','career':'EdTech Entrepreneur, Digital Creative, Content Strategist'},
+    {conn:'Vocational + Commerce + Digital','career':'Social Enterprise Founder, Online Business, Export Trade'},
+    {conn:'Social Science + Tech + Arts','career':'UX Researcher, Policy Communicator, Social Impact Designer'},
+    {conn:'Any Stream + Entrepreneurship','career':'Innovation in any domain — the future is multidisciplinary'},
+  ]}
+};
+
+function showMultiDetail(key) {
+  const d = MULTI_DATA[key];
+  const el = document.getElementById('multi-detail');
+  el.innerHTML = `<h3 style="color:${d.color}">${d.title}</h3>
+    ${d.items.map(i=>`
+      <div style="background:var(--bg4);border-radius:8px;padding:0.75rem 1rem;margin-bottom:0.5rem">
+        <div style="font-size:0.78rem;font-weight:600;color:${d.color};margin-bottom:0.3rem">${i.conn}</div>
+        <div style="font-size:0.82rem;color:var(--txt2)">${i.career}</div>
+      </div>`).join('')}`;
+}
+
+function drawMultiMap() {
+  const canvas = document.getElementById('multiCanvas');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const w = canvas.width = canvas.parentElement.clientWidth - 32;
+  const h = 360; canvas.height = h;
+  ctx.clearRect(0,0,w,h);
+  const cx=w/2, cy=h/2;
+  const nodes = [
+    {x:cx, y:cy-120, label:'Science', color:'#1ec8b0', r:38},
+    {x:cx+130, y:cy-40, label:'Commerce', color:'#6c7ff8', r:34},
+    {x:cx+95, y:cy+90, label:'Vocational', color:'#2dd4a0', r:30},
+    {x:cx-95, y:cy+90, label:'Arts', color:'#e0a830', r:34},
+    {x:cx-130, y:cy-40, label:'Social Sci', color:'#f06080', r:30},
+    {x:cx, y:cy, label:'Multi\nDisc', color:'rgba(255,255,255,0.15)', r:28},
+  ];
+  // Draw connections
+  for(let i=0;i<nodes.length-1;i++){
+    for(let j=i+1;j<nodes.length;j++){
+      ctx.strokeStyle='rgba(255,255,255,0.07)'; ctx.lineWidth=1.5;
+      ctx.beginPath(); ctx.moveTo(nodes[i].x,nodes[i].y); ctx.lineTo(nodes[j].x,nodes[j].y); ctx.stroke();
+    }
+  }
+  // Draw nodes
+  nodes.forEach(n=>{
+    ctx.beginPath(); ctx.arc(n.x,n.y,n.r,0,Math.PI*2);
+    ctx.fillStyle=n.color+'33'; ctx.fill();
+    ctx.strokeStyle=n.color; ctx.lineWidth=2; ctx.stroke();
+    ctx.fillStyle=n.color; ctx.font='bold 10px Plus Jakarta Sans'; ctx.textAlign='center';
+    n.label.split('\n').forEach((line,i) => ctx.fillText(line, n.x, n.y+4+(i-0.5)*12));
+  });
+}
+
+// ═══════════════ REFLECTION ═══════════════
+function saveReflection() {
+  const name = document.getElementById('rj-name').value.trim() || 'Student';
+  const entry = {
+    id:Date.now(), name,
+    date:document.getElementById('rj-date').value||new Date().toISOString().split('T')[0],
+    why:document.getElementById('rj-why').value,
+    motivate:document.getElementById('rj-motivate').value,
+    challenges:document.getElementById('rj-challenges').value,
+    skills:document.getElementById('rj-skills').value,
+    inspire:document.getElementById('rj-inspire').value,
+  };
+  const data = getRJs(); data.push(entry); saveRJs(data);
+  loadJournal();
+  generateRJSummary(entry);
+  showToast('✅ Journal entry saved!');
+}
+
+function generateRJSummary(e) {
+  const el = document.getElementById('rj-summary');
+  el.innerHTML = `
+    <h3>📋 Reflection Summary — ${e.name}</h3>
+    <div style="font-size:0.67rem;color:var(--txt3);font-family:'Space Mono',monospace;margin-bottom:0.85rem">${e.date}</div>
+    ${e.why?`<div style="margin-bottom:0.6rem"><div style="font-size:0.68rem;font-weight:700;color:var(--teal);text-transform:uppercase;font-family:'Space Mono',monospace;margin-bottom:0.2rem">CAREER MOTIVATION</div><div style="font-size:0.83rem;color:var(--txt2)">${e.why}</div></div>`:''}
+    ${e.challenges?`<div style="margin-bottom:0.6rem"><div style="font-size:0.68rem;font-weight:700;color:var(--amber);text-transform:uppercase;font-family:'Space Mono',monospace;margin-bottom:0.2rem">CHALLENGES FORESEEN</div><div style="font-size:0.83rem;color:var(--txt2)">${e.challenges}</div></div>`:''}
+    ${e.skills?`<div style="margin-bottom:0.6rem"><div style="font-size:0.68rem;font-weight:700;color:var(--indigo);text-transform:uppercase;font-family:'Space Mono',monospace;margin-bottom:0.2rem">SKILLS TO BUILD</div><div style="font-size:0.83rem;color:var(--txt2)">${e.skills}</div></div>`:''}
+    <button class="btn btn-s" style="margin-top:0.5rem" onclick="window.print()">🖨️ Print Summary</button>`;
+}
+
+function loadJournal() {
+  const el = document.getElementById('rj-list');
+  if(!el) return;
+  const data = getRJs().slice(-5).reverse();
+  el.innerHTML = data.length ? data.map(e=>`
+    <div class="rj-entry">
+      <div class="rj-date">${e.date} — ${e.name}</div>
+      ${e.why?`<div style="font-size:0.83rem;color:var(--txt2)">"${e.why.substring(0,100)}"</div>`:''}
+    </div>`).join('') : '<p style="color:var(--txt3);font-size:0.83rem">No entries yet.</p>';
+}
+
+// ═══════════════ SCHOOL DASHBOARD ═══════════════
+function refreshDashboard() {
+  const skills = getSkills();
+  const plans = getPlans();
+  const sels = getCAs();
+
+  document.getElementById('sd-students').textContent = skills.length;
+  document.getElementById('sd-careers').textContent = sels.length;
+  document.getElementById('sd-plans').textContent = plans.length;
+
+  if(skills.length) {
+    const domTotals = {};
+    SKILL_DOMAINS.forEach(d=>domTotals[d]=0);
+    skills.forEach(s=>Object.entries(s.scores).forEach(([d,v])=>domTotals[d]+=v));
+    const topDomain = Object.entries(domTotals).sort((a,b)=>b[1]-a[1])[0];
+    document.getElementById('sd-skill').textContent = topDomain[0].split(' ')[0];
+  }
+
+  drawCatChart(sels);
+  drawSkillSchoolChart(skills);
+
+  const prio = document.getElementById('sd-priorities');
+  if(skills.length>=2) {
+    const domAvg = {};
+    SKILL_DOMAINS.forEach(d=>domAvg[d]=skills.reduce((s,sk)=>s+(sk.scores[d]||0),0)/skills.length);
+    const weak = Object.entries(domAvg).sort((a,b)=>a[1]-b[1]).slice(0,3);
+    prio.innerHTML = `<h3>Counseling Focus Areas</h3><div style="font-size:0.84rem;line-height:2;color:var(--txt2)">
+      ${weak.map((w,i)=>`<p>${['🔴','🟡','🟠'][i]} <strong style="color:var(--txt)">${w[0]}</strong> — School avg: ${w[1].toFixed(1)}/4.0 — Recommend targeted activities and workshops</p>`).join('')}
+      <p style="margin-top:0.5rem;color:var(--txt3);font-size:0.78rem">No individual student data visible. Aggregate analysis only.</p>
+    </div>`;
+  }
+}
+
+function drawCatChart(sels) {
+  const canvas = document.getElementById('catChart');
+  if(!canvas) return;
+  const ctx=canvas.getContext('2d');
+  const w=canvas.width=canvas.parentElement.clientWidth-32; const h=200; canvas.height=h;
+  ctx.clearRect(0,0,w,h);
+  if(!sels.length){ctx.fillStyle='#304860';ctx.font='12px Plus Jakarta Sans';ctx.textAlign='center';ctx.fillText('No data',w/2,h/2);return}
+  const cats = {};
+  sels.forEach(name => { const c=CAREERS.find(x=>x.name===name); if(c) cats[c.cat]=(cats[c.cat]||0)+1; });
+  const entries = Object.entries(cats).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  const maxV = Math.max(...entries.map(e=>e[1]),1);
+  const cols = ['#1ec8b0','#e0a830','#6c7ff8','#2dd4a0','#f06080'];
+  const bw = (w-60)/entries.length - 8;
+  entries.forEach(([cat,count],i)=>{
+    const bh=(count/maxV)*(h-55); const x=35+i*((w-55)/entries.length)+4; const y=h-35-bh;
+    ctx.fillStyle=cols[i]+'22'; ctx.fillRect(x,y,bw,bh);
+    ctx.fillStyle=cols[i]; ctx.fillRect(x,y,bw,3);
+    ctx.font='10px Space Mono'; ctx.textAlign='center'; ctx.fillText(count,x+bw/2,y-5);
+    ctx.fillStyle='#7090b0'; ctx.font='8px Plus Jakarta Sans'; ctx.fillText(cat.substring(0,8),x+bw/2,h-18);
+  });
+}
+
+function drawSkillSchoolChart(skills) {
+  const canvas = document.getElementById('skillSchoolChart');
+  if(!canvas) return;
+  const ctx=canvas.getContext('2d');
+  const w=canvas.width=canvas.parentElement.clientWidth-32; const h=200; canvas.height=h;
+  ctx.clearRect(0,0,w,h);
+  if(!skills.length){ctx.fillStyle='#304860';ctx.font='12px Plus Jakarta Sans';ctx.textAlign='center';ctx.fillText('No data',w/2,h/2);return}
+  const domAvg = {};
+  SKILL_DOMAINS.forEach(d=>domAvg[d]=skills.reduce((s,sk)=>s+(sk.scores[d]||0),0)/skills.length);
+  const bw=(w-60)/SKILL_DOMAINS.length-6;
+  SKILL_DOMAINS.forEach((d,i)=>{
+    const v=domAvg[d]; const bh=(v/4)*(h-55);
+    const x=35+i*((w-55)/SKILL_DOMAINS.length)+3; const y=h-35-bh;
+    const col=v>=3?'#2dd4a0':v>=2?'#1ec8b0':'#f59e0b';
+    ctx.fillStyle=col+'22'; ctx.fillRect(x,y,bw,bh);
+    ctx.fillStyle=col; ctx.fillRect(x,y,bw,3);
+    ctx.font='9px Space Mono'; ctx.textAlign='center'; ctx.fillStyle=col; ctx.fillText(v.toFixed(1),x+bw/2,y-5);
+    ctx.fillStyle='#7090b0'; ctx.font='8px Plus Jakarta Sans';
+    ctx.fillText(d.split(' ')[0].substring(0,5),x+bw/2,h-18);
+  });
+}
+
+// ═══════════════ POLICY PAGES ═══════════════
+const POLICY = [
+  {n:1,t:'NEP 2020 and Multidisciplinary Education',b:`<p>The National Education Policy 2020 marks a historic turning point in how India conceptualises the relationship between education and the future of work. For the first time in independent India's education history, the policy makes multidisciplinary education — the integration of knowledge, skills, and perspectives from diverse fields — a foundational principle rather than an exception.</p>
+<h4>The Problem with Stream-Based Thinking</h4><p>For decades, Indian secondary education has been organised around three mutually exclusive streams: Science, Commerce, and Arts. Once a student chose a stream in Class 11, the boundaries became nearly impermeable — a Science student could not formally study History, an Arts student was effectively excluded from Mathematics, and Commerce students rarely encountered scientific reasoning. This structure produced graduates who were deep in one domain but narrow in perspective, ill-equipped for a world where the most interesting and valuable careers sit precisely at the intersection of disciplines.</p>
+<p>The consequences have been significant. Students made stream choices based on social prestige (Science first, then Commerce, then Arts) rather than personal aptitude or genuine interest. Many students discovered their true interests only after locking into a stream. The creative and analytical potential of combining disciplines — Economics and Data Science, Psychology and Design, Biology and Technology — was systematically foreclosed.</p>
+<h4>NEP 2020's Multidisciplinary Vision</h4><p>NEP 2020 dissolves these boundaries. Section 4.27 explicitly states that students will be able to choose their own combination of subjects from a flexible curriculum, including subjects from different traditional streams. A student who loves both Mathematics and History will now be able to study both formally. A student interested in Design can combine Art with Computer Science and Economics. A student passionate about environmental issues can weave Biology, Geography, Economics, and Social Science into a coherent academic programme.</p>
+<p>This flexibility is not merely about subject choice — it is about a fundamentally different understanding of what educated means. NEP 2020 envisions graduates who are intellectually versatile, capable of connecting ideas across domains, and prepared for careers that do not yet exist in their current form but will require precisely the integrative thinking that multidisciplinary education develops.</p>
+<div class="rbox"><div class="rt">🪞 Reflection Prompt</div><p>If you could design your own subject combination without stream restrictions, what would you choose? What career possibility would this combination open?</p></div>
+<div class="abox"><div class="at2">💡 Counseling Tip</div><p>When guiding students on subject choices, present combinations rather than streams. Ask "What problems do you want to solve?" and work backwards to the subjects that address those problems.</p></div>`},
+  {n:2,t:'Flexibility in Subject Combinations',b:`<p>The practical implementation of NEP 2020's flexibility vision at the secondary school level is one of the most significant transitions facing school leaders, counselors, and teachers in the current reform period. Understanding what flexible subject combinations look like, how they work, and what guidance students need is essential for effective career counseling.</p>
+<h4>What Flexibility Means in Practice</h4><p>Under NEP 2020's framework, secondary students will progressively gain the ability to choose subjects based on interest and aptitude rather than stream. This means a student can formally combine, for example, Mathematics, English, Economics, and Computer Science — a combination that serves careers in FinTech, data journalism, or digital entrepreneurship. Or Physics, History, and Design — serving careers in game development, digital heritage, or technical communication. The boundaries between what have traditionally been Science, Arts, and Commerce subjects become permeable.</p>
+<p>NCF 2023 supports this by describing a "bagless" or subject-cluster approach where learning areas rather than discrete subjects form the organising framework. Science and Technology is one cluster; Social Sciences another; Languages a third; Arts and Craft a fourth; Mathematics and Computational Thinking a fifth. Students engage with all clusters through their schooling, with opportunities for deeper specialisation as they progress.</p>
+<h4>Guidance for Subject Combination Decisions</h4><p>With flexibility comes the need for better guidance. In the rigid stream system, counseling was relatively simple — Science for engineering or medicine, Commerce for business, Arts for everything else. In the flexible system, counseling becomes genuinely complex and genuinely important. Students need support in understanding the subject requirements of different career pathways, the skills developed by different subject combinations, and the higher education implications of their choices.</p>
+<p>This is where the Subject and Pathway Alignment Tool in this application becomes valuable — allowing students to see concretely how their current subject choices align with their career interests, and what gaps exist in their current plan.</p>
+<div class="rbox"><div class="rt">🪞 Reflection Prompt</div><p>Are there subjects you currently study that you find genuinely interesting and want to pursue further? Are there subjects you wish you could add that your current stream doesn't include?</p></div>
+<div class="abox"><div class="at2">💡 Counseling Tip</div><p>Map each student's top three interests to subject clusters, then identify the career intersection. Present this as "your combination serves careers like..." rather than "you should take Science/Arts/Commerce."</p></div>`},
+  {n:3,t:'Vocational Integration in School',b:`<p>One of NEP 2020's most transformative commitments is the systematic integration of vocational education into mainstream schooling. Historically, vocational training in India has been treated as a separate, lower-prestige track — a path for students who were not academically successful rather than a valuable educational route in its own right. NEP 2020 rejects this hierarchy explicitly and emphatically.</p>
+<h4>The NEP 2020 Vocational Vision</h4><p>NEP 2020 mandates that at least 50% of learners will have exposure to vocational education by 2025, with vocational subjects integrated into the school curriculum from Class 6 onwards. This exposure is not limited to ITI-style skill training — it encompasses a broad range of practical, applied, and skill-based learning including agriculture, food processing, woodwork, metal crafts, electronics, IT, health and beauty, clothing, management, accounting, and media.</p>
+<p>Crucially, NEP 2020 calls for the recognition of vocational competencies at par with academic ones. A student who completes a vocational module should receive academic credit that is equivalent to other subjects. This parity of esteem is essential — it signals that skilled work is not inferior to academic work, and that the electrician, the chef, the farmer, and the craftsperson contribute as meaningfully to society as the lawyer or the engineer.</p>
+<h4>Vocational Education and Career Pathways</h4><p>Vocational education is not a closed pathway — it is a launching pad. A student who develops strong electrical skills in school can proceed through ITI certification, then a Diploma, then a B.Tech in Electrical Engineering, and ultimately into a highly technical or entrepreneurial career. A student who develops catering and hospitality skills can enter the hotel management sector, build their own catering business, or specialise internationally. The vocational pathway, when properly supported, is as rich with possibility as any academic track.</p>
+<div class="rbox"><div class="rt">🪞 Reflection Prompt</div><p>Think about a skilled craftsperson or vocational professional you admire — perhaps an electrician, a tailor, or a chef. What skills do they have that formal academic education rarely develops?</p></div>
+<div class="abox"><div class="at2">💡 Counseling Tip</div><p>When discussing vocational options with students, frame them as "specialised skill pathways" with clear higher education progression routes. Present specific examples of vocational professionals who have built successful, fulfilling careers.</p></div>`},
+  {n:4,t:'Skill-Based Education Framework',b:`<p>Skill-based education — the development of transferable, practical, and cognitive competencies alongside subject knowledge — sits at the heart of NEP 2020's educational vision. But what exactly are skills in an educational context, and how do we identify, develop, and assess them?</p>
+<h4>Types of Skills in NEP 2020's Framework</h4><p>NEP 2020 and NCF 2023 together identify several categories of skills that education should develop. Foundational skills include literacy, numeracy, and basic digital literacy — the building blocks without which other learning is difficult. Cognitive skills include critical thinking, analytical reasoning, creativity, and problem-solving — the thinking tools that allow students to use knowledge effectively. Social and emotional skills include communication, collaboration, empathy, and self-regulation — the interpersonal and intrapersonal capacities that determine how effectively people work with others and manage themselves.</p>
+<p>Vocational and practical skills include domain-specific technical abilities applicable to particular careers. Physical and well-being skills relate to health, movement, and mindful self-awareness. Values-based skills include ethical reasoning, civic responsibility, and environmental awareness. NEP 2020's vision is that a fully educated student develops across all these categories — not just the cognitive, not just the vocational, but the full spectrum of human capability.</p>
+<h4>The Eight Assessment Domains in This Application</h4><p>The eight skill domains assessed in this application's Skill Mapping tool represent a synthesis of these categories. Analytical Thinking and Numerical Ability represent cognitive skills. Communication and Social Awareness represent social skills. Creativity addresses aesthetic and innovative capacity. Leadership captures social-influencing and organisational skills. Technical Aptitude represents practical and vocational readiness. Problem-Solving integrates cognitive and practical skills. Together, these eight domains provide a meaningful profile of a student's skill strengths and development areas.</p>
+<div class="rbox"><div class="rt">🪞 Reflection Prompt</div><p>Which of the eight skill domains do you feel is your strongest? Is this the same skill that your school most focuses on developing, or is it something you've built outside of formal education?</p></div>
+<div class="abox"><div class="at2">💡 Counseling Tip</div><p>Use skill profiles as positive strengths maps, not as deficit documents. Begin every career counseling conversation with "Here is what you are already strong at" before discussing development areas.</p></div>`},
+  {n:5,t:'Career Awareness at Secondary Level',b:`<p>Career awareness — the knowledge of what career options exist, what they require, and how they relate to one's personal strengths and interests — is not something that develops naturally in adolescence. It requires deliberate, structured exposure to the world of work, guided reflection on personal strengths, and supported exploration of possibilities. At the secondary level, career awareness is one of the most important contributions a school can make to a student's long-term wellbeing and success.</p>
+<h4>Why Early Career Awareness Matters</h4><p>Students in Classes 8–12 are at a critical period of identity formation — developing their sense of who they are and who they want to become. Career awareness contributes to this process by providing concrete, real-world anchors for abstract aspirations. A student who knows what a data scientist actually does — the skills required, the daily work, the career progression — can connect their interest in Mathematics to a tangible future. This connection increases academic motivation, reduces the sense that school subjects are arbitrary, and provides direction for personal development.</p>
+<p>Without career awareness, subject choices and educational decisions are made in a vacuum. Students choose prestigious streams not because they understand the career implications but because of social pressure. They discover at university that they have no interest in the field their degree prepares them for. This mismatch is costly — in time, money, and personal wellbeing — and it is largely preventable with better career education at the secondary level.</p>
+<h4>What Good Career Education Looks Like</h4><p>Effective career education is not a one-day career fair or a counselor's lecture on available options. It is a sustained, integrated experience that includes: exposure to a wide range of career possibilities through stories, visits, and guest speakers; structured self-assessment to identify personal strengths and interests; guided exploration of how subjects, skills, and careers connect; reflection on values and what kind of work and life feels meaningful; and planning for the steps between the present and the future.</p>
+<div class="rbox"><div class="rt">🪞 Reflection Prompt</div><p>At what age did you first start thinking seriously about your career? What would have been helpful to know then that you know now? How can you provide that knowledge to students earlier?</p></div>
+<div class="abox"><div class="at2">💡 Counseling Tip</div><p>Bring guest speakers from diverse careers to the school — including local professionals, not just glamorous or prestigious careers. A successful farmer, a skilled electrician, and a social worker are as valuable as a doctor or engineer for broadening students' career horizons.</p></div>`},
+  {n:6,t:'Linking Competencies to Careers',b:`<p>One of the most practically valuable insights in modern career education is the recognition that competencies — not just qualifications — drive career success and satisfaction. Understanding which competencies different careers require, and how schools can develop them, bridges the gap between education and employment more effectively than any amount of subject-content coverage.</p>
+<h4>Competency Profiles for Careers</h4><p>Every career field has a characteristic competency profile — a combination of cognitive abilities, social skills, technical knowledge, and personal qualities that predicts success in that field. Research across many careers consistently finds that technical knowledge is necessary but not sufficient for career success; the differentiating factor is almost always a competency like communication, problem-solving, leadership, or adaptability.</p>
+<p>In medicine, clinical knowledge is essential — but empathy, communication, and the ability to make good decisions under pressure are the competencies that distinguish great doctors from merely competent ones. In engineering, technical knowledge matters — but problem-solving, teamwork, and the ability to communicate complex ideas to non-technical stakeholders are equally important. In entrepreneurship, business knowledge helps — but creativity, resilience, leadership, and social awareness are the competencies that most predict whether a venture succeeds.</p>
+<h4>Implications for Schools</h4><p>If competencies drive careers, then schools have a responsibility to develop competencies deliberately — not as incidental outcomes of subject teaching, but as explicit educational objectives. This means designing learning experiences that develop analytical thinking, creating classroom cultures that build communication confidence, providing leadership opportunities that go beyond the occasional group project. The eight-domain skill map in this application is designed precisely to support this — helping students identify which competencies they are developing strongly and which need more deliberate attention.</p>
+<div class="rbox"><div class="rt">🪞 Reflection Prompt</div><p>Choose one career you find interesting. What three competencies would be most essential for success in that career? How well does your current education develop those competencies?</p></div>
+<div class="abox"><div class="at2">💡 Counseling Tip</div><p>In career counseling conversations, always ask: "What do you want to be able to DO in your career, not just what title do you want?" Then trace back to the competencies that skill requires and the education that builds those competencies.</p></div>`},
+  {n:7,t:'Academic Bank of Credits — Conceptual Overview',b:`<p>The Academic Bank of Credits (ABC) is one of NEP 2020's most innovative structural proposals — a system that promises to fundamentally change how qualifications are earned, recognised, and accumulated over a lifetime of learning. For students at the secondary level, understanding the ABC concept provides motivation and perspective for the educational choices they are making now.</p>
+<h4>What the ABC Proposes</h4><p>The Academic Bank of Credits is a national digital infrastructure where students' academic and vocational credits are stored and recognised across institutions. Rather than treating each degree as a monolithic, institution-bound qualification, the ABC allows students to accumulate credits from multiple institutions, take breaks in their education and return, exit with a qualification at any point in their learning journey, and re-enter at the level at which they left.</p>
+<p>Under the ABC, a student who completes one year of a degree programme can exit with a Certificate. After two years, they receive a Diploma. After three years, a Bachelor's degree. After four years, a Bachelor's with Research or a Specialisation. This multiple exit/entry point structure removes the all-or-nothing stakes of the current system, where leaving a degree programme before completion means losing everything studied so far.</p>
+<h4>Implications for Career Planning</h4><p>For students planning their careers, the ABC has profound implications. It means that formal education is not a single high-stakes sprint but a flexible, lifelong process. It means that a student who discovers at 20 that their interests have changed can redirect without starting from zero. It means that vocational qualifications can contribute to degree programmes, reducing the false hierarchy between vocational and academic education. It means that work experience and practical learning can, in time, be formally recognised alongside classroom learning.</p>
+<div class="rbox"><div class="rt">🪞 Reflection Prompt</div><p>If you could accumulate learning credits from multiple sources — school, online courses, workshops, work experience — how would you design your own learning pathway? What would you include?</p></div>
+<div class="abox"><div class="at2">💡 Counseling Tip</div><p>Help students understand that educational decisions are not permanently binding. The ABC and NEP 2020's flexible framework mean that course corrections are possible. Reducing the fear of "making the wrong choice" supports better, more authentic decision-making.</p></div>`},
+  {n:8,t:'Higher Education Pathways',b:`<p>For students at the secondary level, understanding the higher education landscape is an essential component of effective career planning. The higher education system in India is complex, varied, and changing rapidly under NEP 2020 reforms. Good career counseling requires a clear, practical understanding of the main pathways available and how they connect to career destinations.</p>
+<h4>The Main Higher Education Routes</h4><p>Undergraduate degree programmes remain the primary post-secondary pathway for most students. The traditional three-year Bachelor's degree is being extended to four years under NEP 2020, with the fourth year providing deeper research or specialisation. The four-year Bachelor's with Research option is particularly significant for students interested in academic or research careers, as it provides a direct pathway to Master's-level entry.</p>
+<p>Diploma and Certificate programmes offer shorter, more focused alternatives — typically one to two years — that lead directly to specific occupations or provide pathways to further study. ITI (Industrial Training Institute) programmes provide vocational certification in specific trades and can lead to Apprenticeship and higher technical studies. Polytechnic Diploma programmes provide technical education in engineering and applied sciences and can lead to lateral entry into B.Tech programmes.</p>
+<h4>Entrance Examinations and Competitive Pathways</h4><p>Many of India's most competitive higher education institutions — IITs, NITs, AIIMS, NLUs, and others — require performance in national entrance examinations. Understanding the timeline and requirements for these examinations is important for students planning strategically. JEE for engineering, NEET for medicine, CLAT for law, CUET for central universities, NIFT and NID for design — each has specific academic prerequisites that connect back to subject choices at the secondary level.</p>
+<div class="rbox"><div class="rt">🪞 Reflection Prompt</div><p>Map out your preferred higher education pathway: which institution type, which programme, which entrance examination (if any)? What does your Class 11–12 plan need to include to prepare for this pathway?</p></div>
+<div class="abox"><div class="at2">💡 Counseling Tip</div><p>Create a "Higher Education Pathway Chart" for your school showing the top 15 careers, their required higher education, and the entrance examinations involved. Make it a visual reference in the counseling room that students can consult independently.</p></div>`},
+  {n:9,t:'Entrepreneurship as Career Option',b:`<p>NEP 2020 is the first national education policy to treat entrepreneurship explicitly as a mainstream educational goal and a legitimate career aspiration for all students, not just those with business backgrounds. This represents a significant cultural shift in how schools conceptualise the relationship between education and work.</p>
+<h4>Why Entrepreneurship Belongs in Career Education</h4><p>India's economy is characterised by a massive informal sector, growing startup culture, and an increasing number of self-employed professionals in fields ranging from farming to technology. For students in regions like Jammu & Kashmir, where formal employment opportunities may be limited in certain sectors, entrepreneurial thinking is not just inspiring — it is practically essential. The ability to identify unmet needs, design solutions, manage resources, and build sustainable enterprises is one of the most valuable skill sets any student can develop.</p>
+<p>NEP 2020 calls for entrepreneurship education to be integrated across the curriculum — not as a separate subject taught only to Commerce students, but as a cross-cutting competency developed through project-based learning, problem-solving challenges, and exposure to entrepreneurial stories across all fields. A Biology student who learns to think entrepreneurially might design solutions for local agricultural challenges. A social science student might build a community organisation. A technology student might develop an app addressing a local problem.</p>
+<h4>Entrepreneurship as Multidisciplinary Career</h4><p>Entrepreneurship is inherently multidisciplinary — it requires creativity (to identify and develop opportunities), analytical thinking (to assess viability and manage finances), communication (to convince customers, investors, and partners), leadership (to build and motivate teams), social awareness (to understand the communities being served), and technical aptitude (to develop the product or service). This is precisely why entrepreneurship appears in the multidisciplinary pathway visualiser in this application as a possible destination from virtually any subject combination.</p>
+<div class="rbox"><div class="rt">🪞 Reflection Prompt</div><p>Identify one problem in your school or community that is currently not being solved. What kind of enterprise — commercial, social, or cooperative — might address it? What skills would you need to build it?</p></div>
+<div class="abox"><div class="at2">💡 Counseling Tip</div><p>In every career counseling conversation, ask: "Could this career interest become an entrepreneurial venture? What would that look like?" This helps students see that entrepreneurship is not a single career type but a way of approaching any career field.</p></div>`},
+  {n:10,t:'Emerging Career Fields',b:`<p>One of the most important — and most challenging — aspects of career guidance in the 2020s is preparing students for careers that did not exist a decade ago and careers that do not yet exist at all. The rate of change in the world of work is accelerating, driven by technological innovation, climate change, demographic shifts, and global connectivity. Career education that focuses only on established professions is preparing students for a world that is already changing under their feet.</p>
+<h4>Emerging Fields Reshaping Careers</h4><p>Artificial Intelligence and Machine Learning are transforming virtually every industry — creating new specialisations (AI Ethics Officer, ML Engineer, Prompt Designer) while changing the skill requirements of traditional roles. Data Science and Analytics has emerged as one of the fastest-growing fields, with applications in healthcare, finance, agriculture, governance, and entertainment. Renewable Energy and Climate Tech is creating enormous demand for engineers, policy analysts, and entrepreneurs focused on solar, wind, electric vehicles, and sustainable systems.</p>
+<p>Digital Health and Telemedicine is reshaping the healthcare sector, creating roles that combine medical knowledge with technology, design, and data skills. Cybersecurity has become one of the most critical and undersupplied fields in global technology. The Creator Economy — content creation, podcasting, educational technology, online communities — is generating viable careers for people with communication skills, domain expertise, and digital literacy. Space Technology is expanding beyond government programmes to commercial enterprises, requiring skills in aerospace engineering, materials science, and systems design.</p>
+<h4>Preparing for an Uncertain Future</h4><p>The most important thing students can do to prepare for emerging careers is not to predict which specific fields will succeed, but to develop the foundational competencies that are valuable across multiple emerging fields: analytical thinking, technical literacy, communication, adaptability, and creativity. These competencies are the common denominators of success in emerging fields regardless of which specific careers gain prominence.</p>
+<div class="rbox"><div class="rt">🪞 Reflection Prompt</div><p>Name one problem in the world — climate change, healthcare access, education quality, food security — that interests you. What kind of career could you imagine that sits at the intersection of this problem and your skills?</p></div>
+<div class="abox"><div class="at2">💡 Counseling Tip</div><p>Regularly update your career database with emerging fields. Bring in young professionals (25–35 years old) working in emerging careers to speak with students — their paths are more immediately relevant than established professionals who entered careers in a very different landscape.</p></div>`},
+  {n:11,t:'Role of Career Counseling',b:`<p>Career counseling is one of the most significant yet most underdeveloped services in Indian school education. Research consistently shows that access to quality career guidance is one of the most powerful predictors of positive educational and career outcomes — yet most Indian schools provide either no systematic career counseling or counseling that is inadequate, outdated, or limited to stream selection advice in Class 10.</p>
+<h4>What Career Counseling Is — and Isn't</h4><p>Career counseling is not telling students what to do. It is a facilitated process of self-discovery, exploration, and planning that helps students develop the self-knowledge, career knowledge, and decision-making skills to make their own informed choices. The distinction matters: directive counseling that tells students "you should do Commerce" or "Medicine is best for you" disrespects student agency and often produces poor outcomes. Facilitative counseling that helps students understand their own strengths, explore diverse options, and develop a realistic plan produces students who own their choices and pursue them with motivation.</p>
+<h4>The School Counselor's Role</h4><p>An effective school career counselor performs several interconnected functions. They administer and interpret self-assessment tools that help students understand their strengths, interests, and values. They maintain and communicate current, accurate information about career options, higher education pathways, and labour market trends. They facilitate individual and group career planning conversations. They connect students with mentors, work experience opportunities, and career exposure events. They support students whose career aspirations are constrained by socioeconomic factors, family pressure, or gender expectations — advocating for students' right to pursue their genuine interests.</p>
+<div class="rbox"><div class="rt">🪞 Reflection Prompt</div><p>What career advice were you given at school? Was it helpful? What do you wish someone had told you then? How can you provide that guidance to the students you work with?</p></div>
+<div class="abox"><div class="at2">💡 Counseling Tip</div><p>Build a regular "Career Conversation" slot — even 15 minutes per student per term — into the school calendar. Brief, consistent individual conversations are more effective than occasional large-group career events.</p></div>`},
+  {n:12,t:'Student Self-Assessment & Reflection',b:`<p>Self-knowledge is the foundation of effective career planning. A student who knows their own strengths, interests, values, and learning preferences is infinitely better positioned to make good career decisions than a student who is guided only by external pressures, social expectations, or the career choices of peers and siblings. Developing the capacity for honest, accurate self-assessment is therefore one of the most important objectives of career education.</p>
+<h4>What Self-Assessment Covers</h4><p>Comprehensive self-assessment covers four domains. Strengths assessment identifies the activities and subjects in which the student performs most naturally and easily — these are the domains where career investment will likely produce the strongest returns. Interests assessment identifies the topics, problems, and activities that the student finds genuinely engaging — careers aligned with genuine interests produce more motivation and resilience than those chosen for prestige or pressure. Values assessment identifies what matters most to the student in a working life — income, social impact, creativity, autonomy, stability, recognition — because misalignment between career and values is one of the most common sources of career dissatisfaction. Learning style assessment identifies how the student learns most effectively — which has implications for the learning environments that will serve them best in higher education and professional development.</p>
+<h4>Reflection as an Ongoing Practice</h4><p>Self-assessment is not a one-time exercise conducted in Class 10. It is an ongoing reflective practice that deepens and evolves as students gain more experience, education, and self-understanding. The Reflection Journal in this application is designed to support this ongoing practice — providing structured prompts that help students articulate their motivations, identify their challenges, and track the development of their thinking over time.</p>
+<div class="rbox"><div class="rt">🪞 Reflection Prompt</div><p>Write three sentences completing each of these: "I am naturally good at..." / "I find genuinely interesting..." / "In my career, I most value..." Are these three areas pointing in the same direction?</p></div>
+<div class="abox"><div class="at2">💡 Counseling Tip</div><p>Use the Skill Mapping Assessment with all students in Class 9 or 10, before stream or subject choices become pressing. Revisit the profiles in Class 11 to see how self-perception has developed.</p></div>`},
+  {n:13,t:'Ethical & Informed Career Choices',b:`<p>Career choice is not only a personal matter — it is an ethical one. How we choose careers, and how we support students in making those choices, reflects and shapes our values as a society. Ethical career guidance means supporting students in making choices that are genuinely their own, informed by accurate information, and aligned with values that extend beyond personal advantage.</p>
+<h4>The Ethics of Career Guidance</h4><p>Ethical career guidance respects student autonomy. Students have the right to explore career options that differ from family expectations, social norms, or the counselor's own preferences. A girl whose family expects her to choose teaching or nursing should receive the same quality of guidance for engineering or entrepreneurship that her male peers receive. A student from a low-income background who aspires to medicine or law should not be steered away from these aspirations on the grounds that they are "unrealistic" — the counselor's role is to help the student develop a realistic plan for an ambitious goal, not to lower aspirations to match circumstances.</p>
+<p>Ethical career guidance is also honest about social and structural realities. Students benefit from understanding that certain careers are more accessible with certain socioeconomic backgrounds, that gender discrimination exists in some sectors, and that geographic location affects career opportunities. This honesty is not pessimistic — it is empowering. Students who understand the structural landscape can plan more strategically, seek the specific support they need, and build the social capital required to navigate barriers they may encounter.</p>
+<h4>Career Choices and Social Responsibility</h4><p>NEP 2020's emphasis on holistic development and civic values invites a broader framing of career choice — one that includes questions of social contribution alongside personal advancement. What does the world need? How can my skills and interests contribute to community wellbeing? What kind of impact do I want my work to have? These questions do not override personal interest and economic necessity, but they enrich the career planning conversation in ways that produce more purposeful, motivated, and ultimately successful professionals.</p>
+<div class="rbox"><div class="rt">🪞 Reflection Prompt</div><p>Beyond earning a good income, what do you want your career to contribute to the world? How does this answer shape the career options that feel most meaningful to you?</p></div>
+<div class="abox"><div class="at2">💡 Counseling Tip</div><p>Include a "values conversation" in every career counseling session: "What kind of work would make you feel proud? What kind of impact do you want your career to have?" These questions surface motivations that purely skills-based or earnings-based career discussions miss.</p></div>`},
+];
+
+function buildPolicyPages() {
+  const nav=document.getElementById('ptabs-nav');
+  const cont=document.getElementById('ptabs-content');
+  if(!nav||!cont) return;
+  nav.innerHTML = POLICY.map((p,i) => `<button class="ptab ${i===0?'active':''}" onclick="showPP(${i})" id="pp-tab-${i}">P${p.n}</button>`).join('');
+  cont.innerHTML = POLICY.map((p,i) => `<div class="pcont ${i===0?'active':''}" id="pp-${i}"><div class="card"><h3>Page ${p.n}: ${p.t}</h3>${p.b}</div></div>`).join('');
+}
+function showPP(i) {
+  document.querySelectorAll('.ptab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.pcont').forEach(c=>c.classList.remove('active'));
+  document.getElementById('pp-tab-'+i).classList.add('active');
+  document.getElementById('pp-'+i).classList.add('active');
+}
+
+// ═══════════════ EXPORT ═══════════════
+function exportJSON() {
+  const d={skills:getSkills(),plans:getPlans(),reflections:getRJs(),selections:getCAs(),exported:new Date().toISOString()};
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([JSON.stringify(d,null,2)],{type:'application/json'}));
+  a.download='cgsmis_backup_'+Date.now()+'.json'; a.click();
+  showToast('✅ Backup downloaded!');
+}
+function handleImport(e) {
+  const f=e.target.files[0]; if(!f) return;
+  const r=new FileReader();
+  r.onload=ev=>{
+    try{
+      const d=JSON.parse(ev.target.result);
+      if(d.skills) saveSkills([...getSkills(),...d.skills]);
+      if(d.plans) savePlans([...getPlans(),...d.plans]);
+      if(d.reflections) saveRJs([...getRJs(),...d.reflections]);
+      showToast('✅ Data imported!');
+    }catch(err){showToast('❌ Invalid file')}
+  };
+  r.readAsText(f);
+}
+function resetData() {
+  if(confirm('Delete ALL student data permanently?')) {
+    [SK,PL,RJ,CA].forEach(k=>localStorage.removeItem(k));
+    showToast('🗑️ All data cleared.');
+  }
+}
+
+// ═══════════════ TOAST ═══════════════
+function showToast(msg) {
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+// ═══════════════ INIT ═══════════════
+window.addEventListener('DOMContentLoaded', () => {
+  buildSkillQuestions();
+  buildPolicyPages();
+  buildSubjectCheckboxes();
+  renderCareers();
+  populateCareerSelect();
+  loadJournal();
+  // Set today's date
+  const d=document.getElementById('rj-date');
+  if(d&&!d.value) d.value=new Date().toISOString().split('T')[0];
+});
+
+if('serviceWorker' in navigator) navigator.serviceWorker.register('service-worker.js').catch(()=>{});
+</script>
+</body>
+</html>

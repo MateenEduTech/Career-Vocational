@@ -1,0 +1,20 @@
+{
+  "name": "Entrepreneurship Idea Lab – NEP 2020",
+  "short_name": "Idea Lab",
+  "description": "Entrepreneurship Idea Lab for school students. Aligned with NEP 2020 and NCF 2023. Developed by Mateen Yousuf, Teacher – SED J&K.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0d0d1a",
+  "theme_color": "#6c63ff",
+  "orientation": "portrait-primary",
+  "lang": "en",
+  "categories": ["education", "business"],
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='80' fill='%236c63ff'/><text x='256' y='330' font-size='240' text-anchor='middle'>💡</text></svg>",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

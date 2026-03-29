@@ -1,0 +1,1226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#070b14">
+<meta name="description" content="Career Roadmap Simulator — Step-by-step career path visualization">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.json">
+<title>Career Roadmap Simulator</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Lora:ital,wght@0,400;0,600;1,400&display=swap');
+
+:root {
+  --void: #070b14;
+  --deep: #0d1628;
+  --surface: #121c2e;
+  --panel: #172035;
+  --border: rgba(99,179,237,0.12);
+  --accent: #63b3ed;
+  --accent2: #f6ad55;
+  --accent3: #68d391;
+  --danger: #fc8181;
+  --text: #e8f0fe;
+  --muted: rgba(232,240,254,0.45);
+  --faint: rgba(232,240,254,0.12);
+  --gold: #f6ad55;
+  --r: 14px;
+  --r-sm: 8px;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;font-family:'Lora',serif;background:var(--void);color:var(--text);overflow:hidden}
+
+/* ─── SCREENS ─── */
+.screen{
+  position:fixed;inset:0;
+  display:flex;flex-direction:column;
+  opacity:0;pointer-events:none;
+  transition:opacity .45s ease,transform .45s ease;
+  transform:translateY(24px);
+  overflow-y:auto;overflow-x:hidden;
+}
+.screen.active{opacity:1;pointer-events:all;transform:translateY(0)}
+.screen.out{opacity:0;transform:translateY(-24px)}
+
+/* ─── SPLASH ─── */
+#s-splash{
+  background:var(--void);
+  align-items:center;justify-content:center;
+  padding:40px 28px;
+  position:relative;overflow:hidden;
+}
+.splash-stars{
+  position:absolute;inset:0;
+  background-image:
+    radial-gradient(1px 1px at 20% 15%,rgba(99,179,237,.6) 0%,transparent 100%),
+    radial-gradient(1px 1px at 75% 25%,rgba(246,173,85,.5) 0%,transparent 100%),
+    radial-gradient(1.5px 1.5px at 45% 60%,rgba(99,179,237,.4) 0%,transparent 100%),
+    radial-gradient(1px 1px at 85% 70%,rgba(104,211,145,.5) 0%,transparent 100%),
+    radial-gradient(1px 1px at 10% 80%,rgba(246,173,85,.4) 0%,transparent 100%),
+    radial-gradient(2px 2px at 60% 40%,rgba(99,179,237,.3) 0%,transparent 100%),
+    radial-gradient(1px 1px at 30% 50%,rgba(255,255,255,.25) 0%,transparent 100%),
+    radial-gradient(1px 1px at 90% 90%,rgba(246,173,85,.3) 0%,transparent 100%);
+  animation:twinkle 4s ease-in-out infinite alternate;
+}
+@keyframes twinkle{0%{opacity:.6}100%{opacity:1}}
+
+.splash-glow{
+  position:absolute;
+  width:500px;height:500px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(99,179,237,.06) 0%,transparent 70%);
+  top:50%;left:50%;transform:translate(-50%,-50%);
+  pointer-events:none;
+}
+.app-eyebrow{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10px;letter-spacing:3px;
+  color:var(--accent);
+  text-transform:uppercase;
+  margin-bottom:40px;
+  animation:fadeUp .8s ease .1s both;
+  position:relative;z-index:1;
+  display:flex;align-items:center;gap:8px;
+}
+.app-eyebrow::before,.app-eyebrow::after{
+  content:'';display:block;height:1px;width:30px;
+  background:linear-gradient(90deg,transparent,var(--accent));
+}
+.app-eyebrow::after{transform:scaleX(-1)}
+
+.author-frame{
+  position:relative;width:160px;height:160px;
+  margin-bottom:28px;
+  animation:fadeUp .8s ease .25s both;
+  z-index:1;
+}
+.author-frame::before{
+  content:'';position:absolute;inset:-3px;border-radius:50%;
+  background:conic-gradient(var(--accent),var(--accent2),var(--accent3),var(--accent));
+  animation:rotateBorder 5s linear infinite;
+}
+.author-frame::after{content:'';position:absolute;inset:-1px;border-radius:50%;background:var(--void)}
+@keyframes rotateBorder{to{transform:rotate(360deg)}}
+.author-img{
+  position:relative;z-index:2;
+  width:100%;height:100%;border-radius:50%;
+  object-fit:cover;object-position:top;
+}
+
+.splash-name{
+  font-family:'Syne',sans-serif;
+  font-size:26px;font-weight:800;
+  text-align:center;line-height:1.1;
+  margin-bottom:4px;
+  animation:fadeUp .8s ease .35s both;
+  position:relative;z-index:1;
+}
+.splash-name em{color:var(--accent);font-style:normal}
+.splash-role{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;letter-spacing:1.5px;
+  color:var(--muted);text-align:center;
+  margin-bottom:20px;
+  animation:fadeUp .8s ease .42s both;
+  position:relative;z-index:1;
+}
+.splash-tags{
+  display:flex;flex-wrap:wrap;gap:6px;justify-content:center;
+  margin-bottom:28px;
+  animation:fadeUp .8s ease .48s both;
+  position:relative;z-index:1;
+}
+.tag{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10px;padding:5px 11px;border-radius:20px;
+  border:1px solid var(--border);color:var(--accent);
+  background:rgba(99,179,237,.07);
+}
+.splash-rule{
+  width:48px;height:1px;
+  background:linear-gradient(90deg,transparent,var(--accent),transparent);
+  margin:0 auto 18px;
+  animation:fadeUp .8s ease .52s both;
+  position:relative;z-index:1;
+}
+.splash-bio{
+  font-size:13px;color:var(--muted);text-align:center;
+  line-height:1.8;max-width:300px;
+  margin-bottom:44px;
+  animation:fadeUp .8s ease .56s both;
+  position:relative;z-index:1;
+}
+.btn-launch{
+  background:linear-gradient(135deg,var(--accent),#4299e1);
+  color:var(--void);
+  border:none;cursor:pointer;
+  font-family:'Syne',sans-serif;
+  font-size:15px;font-weight:700;
+  padding:16px 56px;border-radius:50px;
+  letter-spacing:.5px;
+  box-shadow:0 8px 40px rgba(99,179,237,.3),0 0 0 1px rgba(99,179,237,.2);
+  transition:transform .2s,box-shadow .2s;
+  animation:fadeUp .8s ease .7s both;
+  position:relative;z-index:1;
+}
+.btn-launch:active{transform:scale(.96)}
+
+/* ─── TOP BAR ─── */
+.topbar{
+  position:sticky;top:0;z-index:200;
+  background:rgba(7,11,20,.95);
+  backdrop-filter:blur(20px);
+  padding:13px 18px;
+  display:flex;align-items:center;gap:12px;
+  border-bottom:1px solid var(--border);
+  flex-shrink:0;
+}
+.btn-back{
+  background:rgba(99,179,237,.08);
+  border:1px solid rgba(99,179,237,.2);
+  color:var(--accent);
+  width:34px;height:34px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:18px;line-height:1;
+  transition:background .2s;flex-shrink:0;
+}
+.btn-back:hover{background:rgba(99,179,237,.15)}
+.topbar-title{
+  font-family:'Syne',sans-serif;
+  font-size:15px;font-weight:700;color:var(--text);
+}
+.topbar-right{margin-left:auto}
+
+/* ─── CAREER SELECTOR ─── */
+#s-select{background:var(--void)}
+.select-body{padding:12px 18px 100px}
+.section-kicker{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10px;letter-spacing:2.5px;
+  color:var(--accent);text-transform:uppercase;
+  margin-bottom:4px;
+}
+.section-h{
+  font-family:'Syne',sans-serif;
+  font-size:22px;font-weight:800;
+  color:var(--text);margin-bottom:16px;line-height:1.2;
+}
+.category-tabs{
+  display:flex;gap:8px;overflow-x:auto;
+  padding-bottom:4px;margin-bottom:20px;
+  -webkit-overflow-scrolling:touch;scrollbar-width:none;
+}
+.category-tabs::-webkit-scrollbar{display:none}
+.cat-tab{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;padding:7px 14px;border-radius:20px;
+  border:1px solid var(--border);color:var(--muted);
+  cursor:pointer;white-space:nowrap;
+  transition:all .2s;background:transparent;
+}
+.cat-tab.active,.cat-tab:hover{
+  background:rgba(99,179,237,.12);
+  border-color:rgba(99,179,237,.4);color:var(--accent);
+}
+.careers-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.career-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--r);
+  padding:16px 14px;
+  cursor:pointer;
+  transition:all .25s;
+  position:relative;overflow:hidden;
+}
+.career-card::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(99,179,237,.05),transparent);
+  opacity:0;transition:opacity .2s;
+}
+.career-card:hover::before,.career-card:active::before{opacity:1}
+.career-card:active{transform:scale(.97)}
+.cc-icon{font-size:28px;margin-bottom:8px;display:block}
+.cc-title{
+  font-family:'Syne',sans-serif;
+  font-size:13px;font-weight:700;color:var(--text);
+  margin-bottom:3px;line-height:1.2;
+}
+.cc-sub{font-size:11px;color:var(--muted);line-height:1.4}
+.cc-badge{
+  position:absolute;top:10px;right:10px;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:9px;padding:3px 7px;border-radius:10px;
+  font-weight:600;
+}
+.badge-hot{background:rgba(252,129,74,.15);color:#fc814a;border:1px solid rgba(252,129,74,.3)}
+.badge-top{background:rgba(104,211,145,.12);color:#68d391;border:1px solid rgba(104,211,145,.3)}
+.badge-new{background:rgba(99,179,237,.12);color:var(--accent);border:1px solid rgba(99,179,237,.3)}
+
+/* ─── ROADMAP SCREEN ─── */
+#s-roadmap{background:var(--void)}
+.roadmap-hero{
+  padding:20px 18px 16px;
+  background:linear-gradient(180deg,var(--deep) 0%,var(--void) 100%);
+  border-bottom:1px solid var(--border);
+  position:relative;overflow:hidden;flex-shrink:0;
+}
+.rh-glow{
+  position:absolute;
+  width:200px;height:200px;right:-40px;top:-60px;
+  border-radius:50%;
+  pointer-events:none;
+}
+.rh-icon{font-size:36px;margin-bottom:8px;display:block;position:relative;z-index:1}
+.rh-career{
+  font-family:'Syne',sans-serif;
+  font-size:22px;font-weight:800;color:var(--text);
+  margin-bottom:4px;position:relative;z-index:1;
+}
+.rh-meta{
+  display:flex;gap:12px;
+  position:relative;z-index:1;
+}
+.rh-pill{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10px;padding:4px 10px;border-radius:20px;
+  border:1px solid var(--border);color:var(--muted);
+}
+.rh-pill.hi{border-color:rgba(104,211,145,.3);color:var(--accent3)}
+
+/* Timeline */
+.timeline-wrap{padding:20px 18px 120px;position:relative}
+.tl-line{
+  position:absolute;left:32px;top:20px;bottom:120px;
+  width:2px;
+  background:linear-gradient(180deg,var(--accent) 0%,var(--accent2) 50%,var(--accent3) 100%);
+  opacity:.25;
+}
+.tl-progress{
+  position:absolute;left:32px;top:20px;
+  width:2px;
+  background:linear-gradient(180deg,var(--accent) 0%,var(--accent2) 50%,var(--accent3) 100%);
+  height:0%;transition:height 1.2s cubic-bezier(.25,.46,.45,.94);
+}
+
+.milestone{
+  display:flex;gap:14px;
+  margin-bottom:16px;
+  position:relative;z-index:1;
+  animation:fadeRight .5s ease both;
+}
+.milestone:nth-child(1){animation-delay:.1s}
+.milestone:nth-child(2){animation-delay:.2s}
+.milestone:nth-child(3){animation-delay:.3s}
+.milestone:nth-child(4){animation-delay:.4s}
+.milestone:nth-child(5){animation-delay:.5s}
+.milestone:nth-child(6){animation-delay:.6s}
+.milestone:nth-child(7){animation-delay:.7s}
+.milestone:nth-child(8){animation-delay:.8s}
+@keyframes fadeRight{from{opacity:0;transform:translateX(-16px)}to{opacity:1;transform:translateX(0)}}
+
+.ms-node{
+  flex-shrink:0;width:28px;height:28px;
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;
+  border:2px solid;
+  transition:transform .2s,box-shadow .2s;
+  cursor:pointer;position:relative;
+  margin-top:2px;
+}
+.ms-node.active{transform:scale(1.15)}
+.ms-node.phase-0{background:rgba(99,179,237,.12);border-color:var(--accent);color:var(--accent)}
+.ms-node.phase-1{background:rgba(246,173,85,.1);border-color:var(--accent2);color:var(--accent2)}
+.ms-node.phase-2{background:rgba(104,211,145,.1);border-color:var(--accent3);color:var(--accent3)}
+.ms-node.phase-3{background:rgba(252,129,145,.1);border-color:var(--danger);color:var(--danger)}
+.ms-node.done::after{
+  content:'✓';position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:700;
+  background:rgba(104,211,145,.15);border-radius:50%;
+  color:var(--accent3);border:2px solid var(--accent3);
+}
+
+.ms-card{
+  flex:1;background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--r);
+  overflow:hidden;cursor:pointer;
+  transition:border-color .2s,transform .15s;
+}
+.ms-card:active{transform:scale(.99)}
+.ms-card-head{
+  padding:14px 14px 12px;
+  display:flex;align-items:flex-start;gap:10px;
+}
+.ms-year{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10px;color:var(--muted);
+  flex-shrink:0;padding-top:2px;
+  background:var(--faint);padding:3px 7px;border-radius:6px;
+  white-space:nowrap;
+}
+.ms-info{flex:1}
+.ms-title{
+  font-family:'Syne',sans-serif;
+  font-size:14px;font-weight:700;color:var(--text);
+  margin-bottom:3px;
+}
+.ms-desc{font-size:12px;color:var(--muted);line-height:1.5}
+.ms-expand-btn{
+  width:24px;height:24px;border-radius:50%;
+  background:var(--faint);border:none;
+  color:var(--muted);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;transition:transform .3s,background .2s;
+  flex-shrink:0;
+}
+.ms-card.expanded .ms-expand-btn{transform:rotate(180deg);background:rgba(99,179,237,.12);color:var(--accent)}
+.ms-details{
+  display:none;padding:0 14px 14px;
+  border-top:1px solid var(--border);
+  animation:expandIn .25s ease;
+}
+.ms-card.expanded .ms-details{display:block}
+.ms-card.expanded{border-color:rgba(99,179,237,.3)}
+@keyframes expandIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+
+.detail-section{margin-top:12px}
+.ds-label{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:9px;letter-spacing:2px;color:var(--muted);
+  text-transform:uppercase;margin-bottom:6px;
+}
+.exam-chips{display:flex;flex-wrap:wrap;gap:6px}
+.exam-chip{
+  font-size:11px;padding:5px 10px;border-radius:8px;
+  font-family:'IBM Plex Mono',monospace;
+  background:rgba(246,173,85,.08);
+  border:1px solid rgba(246,173,85,.2);
+  color:var(--accent2);
+}
+.skill-bars{display:flex;flex-direction:column;gap:6px}
+.skill-bar-row{display:flex;align-items:center;gap:8px}
+.sb-name{font-size:11px;color:var(--muted);width:90px;flex-shrink:0}
+.sb-track{flex:1;height:5px;border-radius:3px;background:var(--faint);overflow:hidden}
+.sb-fill{height:100%;border-radius:3px;transition:width .8s ease}
+.sb-fill.phase-0{background:linear-gradient(90deg,var(--accent),#4299e1)}
+.sb-fill.phase-1{background:linear-gradient(90deg,var(--accent2),#ed8936)}
+.sb-fill.phase-2{background:linear-gradient(90deg,var(--accent3),#38a169)}
+.sb-fill.phase-3{background:linear-gradient(90deg,var(--danger),#e53e3e)}
+
+.alt-paths{display:flex;flex-direction:column;gap:6px}
+.alt-path{
+  background:var(--faint);border:1px solid var(--border);
+  border-radius:var(--r-sm);padding:10px 12px;
+  cursor:pointer;transition:all .2s;
+}
+.alt-path:hover{border-color:rgba(99,179,237,.3);background:rgba(99,179,237,.06)}
+.ap-title{font-size:12px;font-weight:600;color:var(--text);margin-bottom:2px}
+.ap-sub{font-size:11px;color:var(--muted)}
+.ap-arrow{float:right;color:var(--accent);font-size:14px}
+
+/* ─── PROGRESS RIBBON ─── */
+.progress-ribbon{
+  position:fixed;bottom:70px;left:18px;right:18px;
+  background:rgba(13,22,40,.95);
+  backdrop-filter:blur(20px);
+  border:1px solid var(--border);
+  border-radius:var(--r);
+  padding:14px 16px;
+  display:none;z-index:100;
+  box-shadow:0 8px 32px rgba(0,0,0,.4);
+}
+.progress-ribbon.visible{display:block}
+.pr-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.pr-label{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10px;letter-spacing:1.5px;color:var(--muted);
+}
+.pr-pct{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12px;font-weight:600;color:var(--accent);
+}
+.pr-track{height:6px;background:var(--faint);border-radius:3px;overflow:hidden}
+.pr-fill{
+  height:100%;border-radius:3px;
+  background:linear-gradient(90deg,var(--accent),var(--accent2),var(--accent3));
+  transition:width .6s ease;
+}
+
+/* ─── SAVED ─── */
+#s-saved{background:var(--void)}
+.saved-body{padding:12px 18px 80px}
+.saved-empty{
+  text-align:center;padding:60px 20px;
+  color:var(--muted);
+}
+.saved-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--r);
+  padding:16px;margin-bottom:12px;
+  position:relative;overflow:hidden;
+}
+.saved-card::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;
+  width:3px;
+}
+.sc-icon{font-size:20px;margin-bottom:6px}
+.sc-career{
+  font-family:'Syne',sans-serif;
+  font-size:16px;font-weight:700;color:var(--text);margin-bottom:4px;
+}
+.sc-meta{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted)}
+.sc-progress{margin-top:10px}
+.sc-prog-bar{height:4px;background:var(--faint);border-radius:2px;overflow:hidden;margin-top:4px}
+.sc-prog-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+.btn-del{
+  position:absolute;top:12px;right:12px;
+  background:rgba(252,129,129,.1);
+  border:1px solid rgba(252,129,129,.2);
+  color:var(--danger);font-size:13px;
+  width:28px;height:28px;border-radius:50%;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+}
+.btn-resume{
+  margin-top:10px;width:100%;
+  background:rgba(99,179,237,.1);border:1px solid rgba(99,179,237,.25);
+  color:var(--accent);font-family:'Syne',sans-serif;
+  font-size:12px;font-weight:700;padding:9px;border-radius:8px;cursor:pointer;
+}
+
+/* ─── BOTTOM NAV ─── */
+.bottom-nav{
+  position:fixed;bottom:0;left:0;right:0;
+  background:rgba(7,11,20,.97);
+  backdrop-filter:blur(24px);
+  border-top:1px solid var(--border);
+  display:none;padding:8px 0 env(safe-area-inset-bottom,8px);
+  z-index:300;
+}
+.bottom-nav.on{display:flex}
+.nav-btn{
+  flex:1;display:flex;flex-direction:column;
+  align-items:center;gap:2px;padding:6px 4px;cursor:pointer;
+}
+.nav-btn .ni{font-size:20px;transition:transform .2s}
+.nav-btn .nl{font-size:10px;color:rgba(232,240,254,.35);font-family:'IBM Plex Mono',monospace;font-weight:500}
+.nav-btn.on .nl{color:var(--accent)}
+.nav-btn.on .ni{transform:translateY(-2px);filter:drop-shadow(0 0 6px rgba(99,179,237,.6))}
+
+/* ─── SAVE TOAST ─── */
+.toast{
+  position:fixed;bottom:78px;left:50%;transform:translateX(-50%) translateY(16px);
+  background:rgba(13,22,40,.98);border:1px solid var(--border);
+  color:var(--text);padding:10px 20px;border-radius:50px;
+  font-size:13px;white-space:nowrap;
+  opacity:0;pointer-events:none;transition:all .3s;z-index:400;
+  font-family:'IBM Plex Mono',monospace;
+}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ─── UTILS ─── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.btn-save{
+  background:linear-gradient(135deg,rgba(104,211,145,.15),rgba(104,211,145,.05));
+  border:1px solid rgba(104,211,145,.3);
+  color:var(--accent3);
+  font-family:'Syne',sans-serif;font-size:12px;font-weight:700;
+  padding:8px 16px;border-radius:8px;cursor:pointer;
+  transition:all .2s;
+}
+.btn-save:active{transform:scale(.96)}
+</style>
+</head>
+<body>
+
+<!-- ══════════════ SPLASH ══════════════ -->
+<div id="s-splash" class="screen active">
+  <div class="splash-stars"></div>
+  <div class="splash-glow"></div>
+
+  <div class="app-eyebrow">Career Roadmap Simulator</div>
+  <div class="author-frame">
+    <img src="author.jpg" alt="Dr Mateen Yousuf" class="author-img">
+  </div>
+  <div class="splash-name">Dr. <em>Mateen</em> Yousuf</div>
+  <div class="splash-role">CAREER COUNSELLOR · AUTHOR · EDUCATOR</div>
+  <div class="splash-tags">
+    <span class="tag">Career Guidance</span>
+    <span class="tag">Stream Expert</span>
+    <span class="tag">M.Ed</span>
+  </div>
+  <div class="splash-rule"></div>
+  <div class="splash-bio">Visualize your entire career journey — from Class 10 to your dream job — with step-by-step simulated roadmaps.</div>
+  <button class="btn-launch" onclick="show('select')">Launch Simulator →</button>
+</div>
+
+<!-- ══════════════ CAREER SELECT ══════════════ -->
+<div id="s-select" class="screen">
+  <div class="topbar">
+    <button class="btn-back" onclick="show('splash')">‹</button>
+    <div class="topbar-title">Choose Your Career</div>
+  </div>
+  <div class="select-body">
+    <div class="section-kicker">Simulation Engine</div>
+    <div class="section-h">Which career<br>path interests you?</div>
+
+    <div class="category-tabs" id="cat-tabs">
+      <div class="cat-tab active" onclick="filterCat('all',this)">All</div>
+      <div class="cat-tab" onclick="filterCat('science',this)">Science</div>
+      <div class="cat-tab" onclick="filterCat('commerce',this)">Commerce</div>
+      <div class="cat-tab" onclick="filterCat('arts',this)">Arts</div>
+      <div class="cat-tab" onclick="filterCat('tech',this)">Technology</div>
+      <div class="cat-tab" onclick="filterCat('govt',this)">Govt / Civil</div>
+    </div>
+
+    <div class="careers-grid" id="careers-grid"></div>
+  </div>
+</div>
+
+<!-- ══════════════ ROADMAP ══════════════ -->
+<div id="s-roadmap" class="screen">
+  <div class="topbar">
+    <button class="btn-back" onclick="show('select')">‹</button>
+    <div class="topbar-title" id="rm-topbar-title">Roadmap</div>
+    <div class="topbar-right">
+      <button class="btn-save" onclick="saveRoadmap()" id="btn-save-rm">💾 Save</button>
+    </div>
+  </div>
+
+  <div class="roadmap-hero">
+    <div class="rh-glow" id="rh-glow"></div>
+    <div class="rh-icon" id="rh-icon">🎯</div>
+    <div class="rh-career" id="rh-career">Career Name</div>
+    <div class="rh-meta">
+      <div class="rh-pill" id="rh-duration">⏱ Duration</div>
+      <div class="rh-pill hi" id="rh-salary">💰 Salary</div>
+      <div class="rh-pill" id="rh-demand">📈 Demand</div>
+    </div>
+  </div>
+
+  <div class="progress-ribbon visible" id="progress-ribbon">
+    <div class="pr-top">
+      <div class="pr-label">YOUR PROGRESS</div>
+      <div class="pr-pct" id="pr-pct">0%</div>
+    </div>
+    <div class="pr-track"><div class="pr-fill" id="pr-fill" style="width:0%"></div></div>
+  </div>
+
+  <div style="position:relative">
+    <div class="tl-line"></div>
+    <div class="tl-progress" id="tl-progress"></div>
+    <div class="timeline-wrap" id="timeline-wrap"></div>
+  </div>
+</div>
+
+<!-- ══════════════ SAVED ══════════════ -->
+<div id="s-saved" class="screen">
+  <div class="topbar" style="background:rgba(7,11,20,.95);border-color:var(--border)">
+    <button class="btn-back" style="color:var(--accent)" onclick="show('select')">‹</button>
+    <div class="topbar-title">Saved Roadmaps</div>
+  </div>
+  <div class="saved-body" id="saved-body"></div>
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav" id="bnav">
+  <div class="nav-btn on" id="nb-explore" onclick="navTo('select')">
+    <div class="ni">🗺️</div><div class="nl">Explore</div>
+  </div>
+  <div class="nav-btn" id="nb-roadmap" onclick="navTo('roadmap')">
+    <div class="ni">🚀</div><div class="nl">Roadmap</div>
+  </div>
+  <div class="nav-btn" id="nb-saved" onclick="navTo('saved');renderSaved()">
+    <div class="ni">📂</div><div class="nl">Saved</div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ════════════════════════════════════════════
+// CAREER DATABASE
+// ════════════════════════════════════════════
+const CAREERS = [
+  {
+    id:'doctor', cat:'science', icon:'🩺', title:'Doctor (MBBS)',
+    sub:'Medical Sciences', badge:'hot', badgeLabel:'HOT',
+    color:'#63b3ed', duration:'10–12 yrs', salary:'₹8–50L/yr', demand:'Very High',
+    milestones:[
+      { year:'Class 10', phase:0, title:'Foundation Phase', icon:'📚',
+        desc:'Build strong base in Science & Math',
+        exams:['Board Exams','Science Olympiad'],
+        skills:[{n:'Biology',v:40},{n:'Chemistry',v:35},{n:'Physics',v:35}],
+        alts:[{t:'Class 11 PCB Stream',s:'Best track for medical'},{t:'Class 11 PCM',s:'Engineering alternate'}] },
+      { year:'Class 11–12', phase:0, title:'PCB Stream (11th & 12th)',icon:'🔬',
+        desc:'Physics, Chemistry, Biology — the core trio for medical aspirants',
+        exams:['Class 12 Boards (75%+ required)','NEET Mock Tests'],
+        skills:[{n:'Biology',v:70},{n:'Chemistry',v:65},{n:'Physics',v:55}],
+        alts:[{t:'PCM + Biology',s:'Keeps engineering options open'},{t:'Crash Course',s:'Intensive 1-year prep'}] },
+      { year:'Age 17–18', phase:1, title:'NEET UG Preparation', icon:'🎯',
+        desc:'National Eligibility cum Entrance Test — the gateway to MBBS in India',
+        exams:['NEET UG','AIIMS MBBS (merged)','JIPMER'],
+        skills:[{n:'Biology',v:90},{n:'Chemistry',v:80},{n:'Physics',v:75},{n:'Problem Solving',v:70}],
+        alts:[{t:'NEET Repeater Year',s:'1-year drop for better rank'},{t:'BDS (Dental)',s:'Alternative medical path'}] },
+      { year:'Age 18–23', phase:2, title:'MBBS (5.5 Years)', icon:'🏥',
+        desc:'4.5 years study + 1 year mandatory internship at a medical college',
+        exams:['University Profs','USMLE Step 1 (for USA)','PG entrance prep'],
+        skills:[{n:'Clinical Skills',v:85},{n:'Anatomy',v:90},{n:'Pharmacology',v:80},{n:'Surgery Basics',v:65}],
+        alts:[{t:'Go Abroad (FMGE)',s:'Study in Russia/Ukraine/Philippines'},{t:'MD Dual Degree',s:'Research + clinical combo'}] },
+      { year:'Age 23–26', phase:2, title:'MD/MS Specialisation', icon:'🔭',
+        desc:'Post-graduate specialisation via NEET PG — choose your field',
+        exams:['NEET PG','INI-CET','State PG CET'],
+        skills:[{n:'Speciality Knowledge',v:90},{n:'Research',v:70},{n:'Leadership',v:65}],
+        alts:[{t:'General Practitioner (GP)',s:'Start practice after MBBS'},{t:'Diploma Courses (2 yr)',s:'Faster specialisation'}] },
+      { year:'Age 26+', phase:3, title:'Career Launch 🎉', icon:'🌟',
+        desc:'Government hospital, private practice, research institute, or abroad',
+        exams:['FMGE','Medical Council Registration','Fellowship Exams'],
+        skills:[{n:'Patient Management',v:95},{n:'Surgical Skills',v:90},{n:'Diagnosis',v:95}],
+        alts:[{t:'Govt Job (UPSC CMS)',s:'Central Medical Services exam'},{t:'Abroad (USMLE/PLAB)',s:'USA/UK medical practice'}] }
+    ]
+  },
+  {
+    id:'engineer', cat:'science', icon:'⚙️', title:'Software Engineer',
+    sub:'Computer Science & IT', badge:'top', badgeLabel:'TOP',
+    color:'#68d391', duration:'4–6 yrs', salary:'₹4–40L/yr', demand:'Extremely High',
+    milestones:[
+      { year:'Class 10', phase:0, title:'Foundation Phase', icon:'💻',
+        desc:'Focus on Math & Science. Start basic computer exposure.',
+        exams:['Board Exams','Math Olympiad'],
+        skills:[{n:'Mathematics',v:50},{n:'Logic',v:40},{n:'Basic Coding',v:20}],
+        alts:[{t:'PCM Stream',s:'Standard engineering path'},{t:'PCM + CS',s:'Get head-start in coding'}] },
+      { year:'Class 11–12', phase:0, title:'PCM + Computer Science', icon:'🖥️',
+        desc:'Physics, Chemistry, Math with Computer Science as extra subject',
+        exams:['Class 12 Boards','JEE Mock Tests','BITSAT Mocks'],
+        skills:[{n:'Math',v:75},{n:'Physics',v:65},{n:'C++/Python Basics',v:50}],
+        alts:[{t:'PCM only',s:'Board focus, self-learn coding'},{t:'Diploma (Polytechnic)',s:'3-yr shortcut to B.Tech'}] },
+      { year:'Age 17–18', phase:1, title:'JEE / Entrance Exams', icon:'🎯',
+        desc:'JEE Main for NITs, JEE Advanced for IITs, BITSAT for BITS',
+        exams:['JEE Main','JEE Advanced','BITSAT','State CET','VITEEE'],
+        skills:[{n:'Problem Solving',v:85},{n:'Math',v:90},{n:'Physics',v:80},{n:'Chemistry',v:75}],
+        alts:[{t:'Private University (CUET)',s:'VIT, Manipal, SRM etc.'},{t:'BSc Computer Science',s:'If JEE not cleared'}] },
+      { year:'Age 18–22', phase:2, title:'B.Tech (4 Years)', icon:'🎓',
+        desc:'Computer Science Engineering from IIT/NIT or private college',
+        exams:['Semester Exams','Coding Contests (Codeforces)','Internship Interviews'],
+        skills:[{n:'DSA',v:80},{n:'Web/App Dev',v:70},{n:'System Design',v:55},{n:'Git & Tools',v:75}],
+        alts:[{t:'BSc + MCA',s:'3+2 year alternate path'},{t:'Online Bootcamp',s:'Self-taught developer route'}] },
+      { year:'Age 21–22', phase:2, title:'Internships & Projects', icon:'🏢',
+        desc:'Campus placements, off-campus hunting, and building portfolio projects',
+        exams:['GATE (for PSU/MTech)','Placement Tests (TCS, Infosys)','FAANG Interviews'],
+        skills:[{n:'Leetcode',v:80},{n:'System Design',v:65},{n:'Communication',v:70},{n:'Projects',v:85}],
+        alts:[{t:'Startup (own project)',s:'Build and launch your own app'},{t:'M.Tech / MS Abroad',s:'Higher studies route'}] },
+      { year:'Age 22+', phase:3, title:'Software Engineer 🎉', icon:'🚀',
+        desc:'Join top product company, startup, or pursue M.Tech/MS abroad',
+        exams:['GRE (for MS Abroad)','GATE','AWS/Google Certifications'],
+        skills:[{n:'Backend Dev',v:90},{n:'Cloud & DevOps',v:75},{n:'Leadership',v:65}],
+        alts:[{t:'Move to USA/Canada',s:'H1B visa sponsorship path'},{t:'Become Founder',s:'Build your own tech startup'}] }
+    ]
+  },
+  {
+    id:'ias', cat:'govt', icon:'🏛️', title:'IAS Officer',
+    sub:'Civil Services (UPSC)', badge:'hot', badgeLabel:'HOT',
+    color:'#f6ad55', duration:'6–10 yrs', salary:'₹56K–2.5L/mo', demand:'High',
+    milestones:[
+      { year:'Class 10', phase:0, title:'Academic Foundation', icon:'📖',
+        desc:'Strong base in History, Geography, Polity & Current Affairs',
+        exams:['Board Exams','General Knowledge quizzes'],
+        skills:[{n:'General Knowledge',v:35},{n:'Reading Habit',v:40},{n:'Writing',v:30}],
+        alts:[{t:'Any Stream (11th)',s:'UPSC accepts all streams'},{t:'Humanities Preferred',s:'History/Polity background helps'}] },
+      { year:'Class 11–12', phase:0, title:'Choose Any Stream', icon:'📐',
+        desc:'Any stream works — Humanities is most relevant but not mandatory',
+        exams:['Board Exams','Newspaper Reading Daily'],
+        skills:[{n:'Current Affairs',v:50},{n:'Essay Writing',v:45},{n:'History/Geography',v:55}],
+        alts:[{t:'Humanities',s:'Best background for UPSC'},{t:'Science/Commerce',s:'Equally valid for UPSC'}] },
+      { year:'Age 18–21', phase:1, title:'Graduation (Any Subject)', icon:'🎓',
+        desc:'Complete a 3-year degree — Political Science, History, or any subject',
+        exams:['University Exams','NCC/NSS (helps in interview)'],
+        skills:[{n:'Analytical Skills',v:65},{n:'Report Writing',v:60},{n:'Current Affairs',v:70}],
+        alts:[{t:'BA Political Science',s:'Most aligned degree'},{t:'BA/BSc/BCom',s:'Any degree qualifies for UPSC'}] },
+      { year:'Age 21–24', phase:1, title:'UPSC Preparation Phase', icon:'📚',
+        desc:'2–3 years of intense preparation. Join coaching or self-study.',
+        exams:['UPSC Prelims','State PCS Prelims','Mock Test Series'],
+        skills:[{n:'GS Papers I–IV',v:80},{n:'Optional Subject',v:85},{n:'CSAT',v:75},{n:'Ethics',v:70}],
+        alts:[{t:'State PCS First',s:'UPPSC/MPPSC etc. as stepping stone'},{t:'Self-Study',s:'No coaching — free resources + books'}] },
+      { year:'Age 22–26', phase:2, title:'UPSC Mains & Interview', icon:'🏆',
+        desc:'Clear Prelims → Mains (9 papers) → Personality Test (Interview)',
+        exams:['UPSC Mains','Essay Paper','Optional Paper','Interview Board'],
+        skills:[{n:'Answer Writing',v:90},{n:'Personality',v:80},{n:'GS Depth',v:90},{n:'Current Affairs',v:95}],
+        alts:[{t:'Multiple Attempts',s:'Up to 6 attempts (Gen) / 9 (OBC)'},{t:'IPS/IFS/IRS',s:'Other all-India services'}] },
+      { year:'Age 26+', phase:3, title:'IAS Officer 🎉', icon:'🌟',
+        desc:'Training at LBSNAA Mussoorie → Posting as SDM/DM across India',
+        exams:['Foundation Course','Departmental Exams','Training Assessments'],
+        skills:[{n:'Administration',v:95},{n:'Leadership',v:90},{n:'Decision Making',v:95}],
+        alts:[{t:'State Civil Service',s:'If All-India service not cleared'},{t:'PSU via UPSC',s:'Other UPSC-based recruitment'}] }
+    ]
+  },
+  {
+    id:'ca', cat:'commerce', icon:'📊', title:'Chartered Accountant',
+    sub:'Finance & Accounting', badge:'top', badgeLabel:'TOP',
+    color:'#b96dd4', duration:'5–7 yrs', salary:'₹6–30L/yr', demand:'High',
+    milestones:[
+      { year:'Class 10', phase:0, title:'Foundation Setup', icon:'🔢',
+        desc:'Develop strong numerical aptitude and basic accounting concepts',
+        exams:['Board Exams','Math focus'],
+        skills:[{n:'Mathematics',v:50},{n:'Numeracy',v:55},{n:'Attention to Detail',v:40}],
+        alts:[{t:'Commerce Stream',s:'Ideal for CA path'},{t:'Science Stream',s:'Also valid for CA Foundation'}] },
+      { year:'Class 11–12', phase:0, title:'Commerce Stream', icon:'📈',
+        desc:'Accounts, Business Studies, Economics & Math',
+        exams:['Class 12 Boards (min 55%)','CA Foundation Registration'],
+        skills:[{n:'Accountancy',v:70},{n:'Economics',v:60},{n:'Business Law',v:50}],
+        alts:[{t:'Science + CA',s:'Science students can also do CA'},{t:'BCom parallel',s:'Start BCom alongside CA'}] },
+      { year:'Age 17–18', phase:1, title:'CA Foundation', icon:'📝',
+        desc:'4 papers: Accounts, Law, Economics, Quantitative Aptitude',
+        exams:['CA Foundation (Nov/May)','4 papers, 400 marks total'],
+        skills:[{n:'Financial Accounting',v:75},{n:'Business Law',v:65},{n:'Economics',v:70},{n:'Quant',v:80}],
+        alts:[{t:'Direct Entry Route',s:'Commerce grads skip Foundation'},{t:'CMA Foundation',s:'Cost Accountant alternative'}] },
+      { year:'Age 18–20', phase:2, title:'CA Intermediate', icon:'⚖️',
+        desc:'8 papers in 2 groups — Taxation, Audit, Costing, Financial Management',
+        exams:['CA Inter Group I','CA Inter Group II','Both groups mandatory'],
+        skills:[{n:'Taxation',v:80},{n:'Audit',v:75},{n:'Costing',v:70},{n:'Financial Mgmt',v:75}],
+        alts:[{t:'BCom LLB combo',s:'Tax law specialization path'},{t:'CFA (USA)',s:'International finance route'}] },
+      { year:'Age 20–23', phase:2, title:'Articleship (3 Years)', icon:'🏦',
+        desc:'3-year mandatory training under a practicing CA — real-world experience',
+        exams:['GMCS Course','ICITSS (IT + Orientation)'],
+        skills:[{n:'Audit Practice',v:85},{n:'Tax Filing',v:85},{n:'Client Handling',v:70},{n:'Excel/Tally',v:80}],
+        alts:[{t:'Big 4 Articleship',s:'KPMG, Deloitte, PWC, EY'},{t:'Own CA firm',s:'Small firm, broader exposure'}] },
+      { year:'Age 22–24', phase:3, title:'CA Final & Career 🎉', icon:'🌟',
+        desc:'Clear CA Final (8 papers) → Register as Chartered Accountant',
+        exams:['CA Final Group I & II','DISA (if doing systems audit)'],
+        skills:[{n:'Advanced Accounts',v:95},{n:'Strategic Mgmt',v:85},{n:'Risk Assessment',v:90}],
+        alts:[{t:'Big 4 Job',s:'₹7–20L starting package'},{t:'Own Practice',s:'Start your own CA firm'}] }
+    ]
+  },
+  {
+    id:'journalist', cat:'arts', icon:'📰', title:'Journalist / Media',
+    sub:'Mass Communication', badge:'new', badgeLabel:'NEW',
+    color:'#fc8181', duration:'3–5 yrs', salary:'₹3–15L/yr', demand:'Medium',
+    milestones:[
+      { year:'Class 10', phase:0, title:'Communication Foundation', icon:'✍️',
+        desc:'Develop writing, reading, and current affairs habit daily',
+        exams:['Board Exams','Essay Competitions'],
+        skills:[{n:'Writing',v:40},{n:'Reading',v:50},{n:'Current Affairs',v:35}],
+        alts:[{t:'Humanities Stream',s:'Ideal for journalism path'},{t:'Any Stream',s:'All backgrounds welcome'}] },
+      { year:'Class 11–12', phase:0, title:'Humanities / Any Stream', icon:'📖',
+        desc:'Language, History, Political Science — build your worldview',
+        exams:['Class 12 Boards','School Newspaper / Blog'],
+        skills:[{n:'English Writing',v:65},{n:'Research',v:50},{n:'Critical Thinking',v:55}],
+        alts:[{t:'Start a Blog',s:'Build portfolio early'},{t:'School Radio/TV',s:'Hands-on media exposure'}] },
+      { year:'Age 18–21', phase:1, title:'BA Mass Comm / Journalism', icon:'🎙️',
+        desc:'3-year degree: BA Journalism, BMM, or BA Mass Communication',
+        exams:['CUET','IPU CET','DU Entrance','IIMC Entrance'],
+        skills:[{n:'Reporting',v:70},{n:'Videography',v:60},{n:'Social Media',v:65},{n:'Ethics',v:55}],
+        alts:[{t:'IIMC (Post-grad)',s:'Premier journalism institute'},{t:'Symbiosis BMC',s:'Top private option'}] },
+      { year:'Age 20–21', phase:2, title:'Internships & Field Work', icon:'🎬',
+        desc:'Newsroom internships, freelance articles, video production',
+        exams:['Portfolio reviews','IIMC PG Entrance','NIFT (if design path)'],
+        skills:[{n:'Investigative Skill',v:75},{n:'Video Editing',v:70},{n:'Anchoring',v:65},{n:'Photography',v:60}],
+        alts:[{t:'Digital Media',s:'YouTube/Podcast content creator'},{t:'PR & Communications',s:'Corporate side of media'}] },
+      { year:'Age 21+', phase:3, title:'Journalist / Anchor 🎉', icon:'🌟',
+        desc:'Join print, TV, digital media — or go independent',
+        exams:['Press Trust of India test','Network hiring tests'],
+        skills:[{n:'Breaking News',v:90},{n:'Fact-Checking',v:85},{n:'Story-Telling',v:90}],
+        alts:[{t:'International Media',s:'BBC, Reuters, Al Jazeera'},{t:'Documentary Maker',s:'Independent film journalism'}] }
+    ]
+  },
+  {
+    id:'architect', cat:'science', icon:'🏛️', title:'Architect',
+    sub:'Design & Construction', badge:'new', badgeLabel:'NEW',
+    color:'#f6ad55', duration:'5–7 yrs', salary:'₹4–20L/yr', demand:'Medium-High',
+    milestones:[
+      { year:'Class 10', phase:0, title:'Design Foundation', icon:'✏️',
+        desc:'Excel in Math & Art. Develop spatial imagination and drawing skills.',
+        exams:['Board Exams','Art Competitions'],
+        skills:[{n:'Mathematics',v:50},{n:'Drawing/Art',v:55},{n:'Spatial Thinking',v:45}],
+        alts:[{t:'PCM Stream',s:'Required for B.Arch'},{t:'PCM + Fine Arts',s:'Best combination'}] },
+      { year:'Class 11–12', phase:0, title:'PCM Stream', icon:'📐',
+        desc:'Physics, Chemistry, Math — mandatory for NATA/JEE Paper 2',
+        exams:['Class 12 Boards (50%+ in PCM)','NATA Practice'],
+        skills:[{n:'Math',v:70},{n:'Physics',v:60},{n:'Technical Drawing',v:65}],
+        alts:[{t:'PCM + Fine Arts',s:'Dual-track preparation'},{t:'Diploma in Architecture',s:'3-year polytechnic route'}] },
+      { year:'Age 17–18', phase:1, title:'NATA / JEE Paper 2', icon:'🎯',
+        desc:'National Aptitude Test in Architecture — tests drawing, math, aptitude',
+        exams:['NATA (CoA)','JEE Paper 2 (B.Arch)','State Architecture CET'],
+        skills:[{n:'Freehand Drawing',v:80},{n:'Math Aptitude',v:75},{n:'Aesthetic Sense',v:70}],
+        alts:[{t:'Diploma → Lateral Entry',s:'Join 2nd year B.Arch'},{t:'BSc in Design',s:'Product/interior design route'}] },
+      { year:'Age 18–23', phase:2, title:'B.Arch (5 Years)', icon:'🏗️',
+        desc:'5-year professional degree — design studios, structural work, history of architecture',
+        exams:['University Thesis','CoA Registration Exam','GATE (Architecture)'],
+        skills:[{n:'AutoCAD',v:85},{n:'Revit/BIM',v:75},{n:'Structural Design',v:70},{n:'Urban Planning',v:65}],
+        alts:[{t:'B.Des (4 yr)',s:'Interior / product design'},{t:'M.Arch abroad',s:'USA/UK masters program'}] },
+      { year:'Age 23+', phase:3, title:'Architect 🎉', icon:'🌟',
+        desc:'Register with Council of Architecture → start practice or join firm',
+        exams:['CoA Registration','LEED Green Associate','M.Arch entrance'],
+        skills:[{n:'Project Management',v:90},{n:'Client Handling',v:80},{n:'3D Rendering',v:85}],
+        alts:[{t:'Urban Planner',s:'Government planning departments'},{t:'Interior Designer',s:'Niche residential/commercial'}] }
+    ]
+  },
+  {
+    id:'teacher', cat:'arts', icon:'👨‍🏫', title:'School Teacher / Professor',
+    sub:'Education Sector', badge:null,
+    color:'#68d391', duration:'3–5 yrs', salary:'₹3–12L/yr', demand:'Stable',
+    milestones:[
+      { year:'Class 10', phase:0, title:'Academic Excellence', icon:'📚',
+        desc:'Focus on your favourite subject — it will become your teaching specialty',
+        exams:['Board Exams'],
+        skills:[{n:'Subject Knowledge',v:50},{n:'Communication',v:40},{n:'Patience',v:55}],
+        alts:[{t:'Any Stream',s:'All subjects can be taught'},{t:'Humanities',s:'Best for Arts/Social subjects'}] },
+      { year:'Class 11–12', phase:0, title:'Subject Specialisation', icon:'🔍',
+        desc:'Choose stream based on subject you want to teach',
+        exams:['Class 12 Boards (50%+ required)'],
+        skills:[{n:'Subject Mastery',v:65},{n:'Writing',v:55},{n:'Presentation',v:50}],
+        alts:[{t:'Science Stream',s:'For Math/Science teaching'},{t:'Humanities',s:'For Lit/Social/Economics'}] },
+      { year:'Age 18–21', phase:1, title:'BA/BSc/BCom + B.Ed', icon:'🎓',
+        desc:'3-yr graduation + 2-yr B.Ed (can be integrated 4-yr now)',
+        exams:['CUET','State B.Ed Entrance','TET Registration'],
+        skills:[{n:'Pedagogy',v:70},{n:'Lesson Planning',v:65},{n:'Classroom Mgmt',v:60}],
+        alts:[{t:'Integrated BA B.Ed (4yr)',s:'Newer combined program'},{t:'D.El.Ed (2yr)',s:'Primary teacher diploma'}] },
+      { year:'Age 21–23', phase:2, title:'TET / CTET Exams', icon:'📝',
+        desc:'Teacher Eligibility Test — mandatory for govt school posting',
+        exams:['CTET (Central TET)','State TET','KVS/NVS Teacher Exam','NET for College'],
+        skills:[{n:'Child Psychology',v:75},{n:'Teaching Methods',v:80},{n:'Subject Knowledge',v:85}],
+        alts:[{t:'Private School (no TET)',s:'Direct placement interviews'},{t:'NET/SET for College',s:'University-level teaching'}] },
+      { year:'Age 23+', phase:3, title:'Educator 🎉', icon:'🌟',
+        desc:'Government school, private school, or pursue M.Ed / PhD for professorship',
+        exams:['M.Ed Entrance','PhD NET','School Service Commission'],
+        skills:[{n:'Teaching Excellence',v:95},{n:'Curriculum Design',v:85},{n:'Mentoring',v:90}],
+        alts:[{t:'EdTech (Online Teaching)',s:'YouTube / BYJU\'s / Unacademy'},{t:'Professor (PhD)',s:'5+ year research path'}] }
+    ]
+  },
+  {
+    id:'lawyer', cat:'arts', icon:'⚖️', title:'Lawyer / Advocate',
+    sub:'Law & Legal Services', badge:null,
+    color:'#b96dd4', duration:'5–7 yrs', salary:'₹4–50L/yr', demand:'High',
+    milestones:[
+      { year:'Class 10', phase:0, title:'Analytical Foundation', icon:'🧠',
+        desc:'Develop critical thinking, debate, and argumentation skills',
+        exams:['Board Exams','Debate Competitions'],
+        skills:[{n:'Critical Thinking',v:45},{n:'Language',v:50},{n:'Logic',v:40}],
+        alts:[{t:'Humanities Stream',s:'Best for law preparation'},{t:'Any Stream',s:'All streams accepted for CLAT'}] },
+      { year:'Class 11–12', phase:0, title:'Humanities / Any Stream', icon:'📜',
+        desc:'History, Political Science, English — strong legal base',
+        exams:['Class 12 Boards','CLAT Mock Tests','Reading Legal News'],
+        skills:[{n:'Legal Language',v:55},{n:'Current Affairs',v:60},{n:'Reading Speed',v:65}],
+        alts:[{t:'Moot Court in School',s:'Join legal debate activities'},{t:'Start reading judgements',s:'Supreme Court website is free'}] },
+      { year:'Age 17–18', phase:1, title:'CLAT / Law Entrance', icon:'🎯',
+        desc:'Common Law Admission Test for NLUs. Also AILET (NLU Delhi)',
+        exams:['CLAT','AILET','LSAT India','State Law CET'],
+        skills:[{n:'Legal Reasoning',v:80},{n:'English',v:75},{n:'Quant',v:65},{n:'GK/Current Affairs',v:80}],
+        alts:[{t:'BA LLB (Integrated 5yr)',s:'Most popular law degree'},{t:'LLB 3yr after Graduation',s:'Do any degree first'}] },
+      { year:'Age 18–23', phase:2, title:'BA LLB (5 Years)', icon:'🏛️',
+        desc:'5-year integrated law degree from NLU or affiliated college',
+        exams:['Semester Exams','Moot Courts','Law Internships'],
+        skills:[{n:'Constitutional Law',v:85},{n:'Criminal Law',v:80},{n:'Contract Law',v:75},{n:'Court Drafting',v:70}],
+        alts:[{t:'LLM (Masters in Law)',s:'Specialize in a legal area'},{t:'Civil Services',s:'UPSC with law background'}] },
+      { year:'Age 23+', phase:3, title:'Advocate / Lawyer 🎉', icon:'🌟',
+        desc:'Enroll with Bar Council → start practice in district court, high court, or join a law firm',
+        exams:['Bar Council Enrollment','AIBE (All India Bar Exam)'],
+        skills:[{n:'Courtroom Practice',v:90},{n:'Legal Research',v:90},{n:'Client Relations',v:80}],
+        alts:[{t:'Corporate Lawyer',s:'Join top law firm (₹15–50L)'},{t:'Judge / Judiciary',s:'District judge exam path'}] }
+    ]
+  }
+];
+
+// ════════════════════════════════════════════
+// APP STATE
+// ════════════════════════════════════════════
+let state = {
+  screen: 'splash',
+  career: null,
+  expanded: new Set(),
+  completedSteps: new Set(),
+  deferredPrompt: null
+};
+
+// ════════════════════════════════════════════
+// SCREEN MANAGEMENT
+// ════════════════════════════════════════════
+function show(id) {
+  const cur = document.getElementById('s-' + state.screen);
+  const next = document.getElementById('s-' + id);
+  if (!next) return;
+  cur.classList.add('out');
+  setTimeout(() => cur.classList.remove('active','out'), 450);
+  next.classList.add('active');
+  state.screen = id;
+
+  const navScreens = ['select','roadmap','saved'];
+  const bnav = document.getElementById('bnav');
+  bnav.classList.toggle('on', navScreens.includes(id));
+  updateNav(id);
+}
+
+function navTo(id) {
+  if (id === 'roadmap' && !state.career) { toast('Select a career first'); return; }
+  show(id);
+  if (id === 'saved') renderSaved();
+}
+
+function updateNav(id) {
+  const map = { select:'explore', roadmap:'roadmap', saved:'saved' };
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('on'));
+  if (map[id]) document.getElementById('nb-' + map[id])?.classList.add('on');
+}
+
+// ════════════════════════════════════════════
+// CAREER GRID
+// ════════════════════════════════════════════
+function renderCareers(cat = 'all') {
+  const grid = document.getElementById('careers-grid');
+  const filtered = cat === 'all' ? CAREERS : CAREERS.filter(c => c.cat === cat);
+  grid.innerHTML = filtered.map(c => `
+    <div class="career-card" onclick="launchCareer('${c.id}')">
+      ${c.badge ? `<div class="cc-badge badge-${c.badge === 'hot' ? 'hot' : c.badge === 'top' ? 'top' : 'new'}">${c.badgeLabel}</div>` : ''}
+      <span class="cc-icon">${c.icon}</span>
+      <div class="cc-title">${c.title}</div>
+      <div class="cc-sub">${c.sub}</div>
+    </div>
+  `).join('');
+}
+
+function filterCat(cat, el) {
+  document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  renderCareers(cat);
+}
+
+// ════════════════════════════════════════════
+// ROADMAP GENERATOR
+// ════════════════════════════════════════════
+function launchCareer(id) {
+  const career = CAREERS.find(c => c.id === id);
+  if (!career) return;
+  state.career = career;
+  state.expanded = new Set();
+  state.completedSteps = loadProgress(id);
+  renderRoadmap(career);
+  show('roadmap');
+}
+
+function renderRoadmap(career) {
+  document.getElementById('rm-topbar-title').textContent = career.title;
+  document.getElementById('rh-icon').textContent = career.icon;
+  document.getElementById('rh-career').textContent = career.title;
+  document.getElementById('rh-duration').textContent = '⏱ ' + career.duration;
+  document.getElementById('rh-salary').textContent = '💰 ' + career.salary;
+  document.getElementById('rh-demand').textContent = '📈 ' + career.demand;
+  document.getElementById('rh-glow').style.background =
+    `radial-gradient(circle,${career.color}18 0%,transparent 70%)`;
+
+  buildTimeline(career);
+  updateProgress();
+}
+
+function buildTimeline(career) {
+  const wrap = document.getElementById('timeline-wrap');
+  wrap.innerHTML = '';
+
+  career.milestones.forEach((ms, i) => {
+    const done = state.completedSteps.has(i);
+    const isExp = state.expanded.has(i);
+
+    const msEl = document.createElement('div');
+    msEl.className = 'milestone';
+    msEl.id = 'ms-' + i;
+
+    msEl.innerHTML = `
+      <div class="ms-node phase-${ms.phase} ${done ? 'done' : ''}" 
+           onclick="toggleDone(${i})" title="Click to mark done">
+        ${done ? '' : ms.icon}
+      </div>
+      <div class="ms-card ${isExp ? 'expanded' : ''}" id="msc-${i}">
+        <div class="ms-card-head" onclick="toggleExpand(${i})">
+          <div class="ms-year">${ms.year}</div>
+          <div class="ms-info">
+            <div class="ms-title">${ms.title}</div>
+            <div class="ms-desc">${ms.desc}</div>
+          </div>
+          <button class="ms-expand-btn">▼</button>
+        </div>
+        <div class="ms-details" id="msd-${i}">
+          ${ms.exams.length ? `
+          <div class="detail-section">
+            <div class="ds-label">Key Exams</div>
+            <div class="exam-chips">
+              ${ms.exams.map(e => `<div class="exam-chip">${e}</div>`).join('')}
+            </div>
+          </div>` : ''}
+          ${ms.skills.length ? `
+          <div class="detail-section">
+            <div class="ds-label">Skills to Build</div>
+            <div class="skill-bars">
+              ${ms.skills.map(s => `
+                <div class="skill-bar-row">
+                  <div class="sb-name">${s.n}</div>
+                  <div class="sb-track"><div class="sb-fill phase-${ms.phase}" style="width:${s.v}%"></div></div>
+                </div>`).join('')}
+            </div>
+          </div>` : ''}
+          ${ms.alts && ms.alts.length ? `
+          <div class="detail-section">
+            <div class="ds-label">Alternate Paths</div>
+            <div class="alt-paths">
+              ${ms.alts.map(a => `
+                <div class="alt-path">
+                  <span class="ap-arrow">↗</span>
+                  <div class="ap-title">${a.t}</div>
+                  <div class="ap-sub">${a.s}</div>
+                </div>`).join('')}
+            </div>
+          </div>` : ''}
+        </div>
+      </div>
+    `;
+    wrap.appendChild(msEl);
+  });
+}
+
+function toggleExpand(i) {
+  if (state.expanded.has(i)) {
+    state.expanded.delete(i);
+    document.getElementById('msc-' + i).classList.remove('expanded');
+  } else {
+    state.expanded.add(i);
+    document.getElementById('msc-' + i).classList.add('expanded');
+  }
+}
+
+function toggleDone(i) {
+  if (state.completedSteps.has(i)) {
+    state.completedSteps.delete(i);
+    const node = document.querySelector('#ms-' + i + ' .ms-node');
+    node.classList.remove('done');
+    node.textContent = state.career.milestones[i].icon;
+  } else {
+    state.completedSteps.add(i);
+    const node = document.querySelector('#ms-' + i + ' .ms-node');
+    node.classList.add('done');
+    node.textContent = '';
+    toast('✅ Step marked complete!');
+  }
+  saveProgress(state.career.id);
+  updateProgress();
+}
+
+function updateProgress() {
+  if (!state.career) return;
+  const total = state.career.milestones.length;
+  const done = state.completedSteps.size;
+  const pct = Math.round((done / total) * 100);
+  document.getElementById('pr-pct').textContent = pct + '%';
+  document.getElementById('pr-fill').style.width = pct + '%';
+  document.getElementById('tl-progress').style.height = pct + '%';
+}
+
+// ════════════════════════════════════════════
+// STORAGE
+// ════════════════════════════════════════════
+function saveProgress(careerId) {
+  try {
+    const key = 'crm_progress_' + careerId;
+    localStorage.setItem(key, JSON.stringify([...state.completedSteps]));
+  } catch(e) {}
+}
+
+function loadProgress(careerId) {
+  try {
+    const key = 'crm_progress_' + careerId;
+    const data = localStorage.getItem(key);
+    return new Set(data ? JSON.parse(data) : []);
+  } catch(e) { return new Set(); }
+}
+
+function saveRoadmap() {
+  if (!state.career) return;
+  try {
+    const saves = JSON.parse(localStorage.getItem('crm_saved') || '[]');
+    const exists = saves.findIndex(s => s.id === state.career.id);
+    const entry = {
+      id: state.career.id,
+      title: state.career.title,
+      icon: state.career.icon,
+      color: state.career.color,
+      duration: state.career.duration,
+      salary: state.career.salary,
+      savedAt: new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}),
+      progress: state.completedSteps.size,
+      total: state.career.milestones.length
+    };
+    if (exists >= 0) saves[exists] = entry; else saves.unshift(entry);
+    if (saves.length > 8) saves.pop();
+    localStorage.setItem('crm_saved', JSON.stringify(saves));
+    toast('💾 Roadmap saved!');
+  } catch(e) {}
+}
+
+function renderSaved() {
+  const body = document.getElementById('saved-body');
+  try {
+    const saves = JSON.parse(localStorage.getItem('crm_saved') || '[]');
+    if (!saves.length) {
+      body.innerHTML = `<div class="saved-empty"><div style="font-size:48px;margin-bottom:12px">📭</div><div>No saved roadmaps yet</div><div style="font-size:12px;margin-top:6px;font-family:'IBM Plex Mono',monospace">Select and save a career roadmap to see it here</div></div>`;
+      return;
+    }
+    body.innerHTML = saves.map(s => `
+      <div class="saved-card">
+        <div style="position:absolute;left:0;top:0;bottom:0;width:3px;background:${s.color};border-radius:14px 0 0 14px"></div>
+        <button class="btn-del" onclick="deleteSaved('${s.id}')">✕</button>
+        <div class="sc-icon">${s.icon}</div>
+        <div class="sc-career">${s.title}</div>
+        <div class="sc-meta">Saved ${s.savedAt} · ${s.duration} · ${s.salary}</div>
+        <div class="sc-progress">
+          <div style="display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:10px;color:rgba(232,240,254,.4)">
+            <span>PROGRESS</span><span>${s.progress}/${s.total} steps</span>
+          </div>
+          <div class="sc-prog-bar"><div class="sc-prog-fill" style="width:${Math.round(s.progress/s.total*100)}%;background:linear-gradient(90deg,${s.color},${s.color}88)"></div></div>
+        </div>
+        <button class="btn-resume" onclick="launchCareer('${s.id}')">▶ Resume Roadmap</button>
+      </div>
+    `).join('');
+  } catch(e) {
+    body.innerHTML = '<div class="saved-empty">Error loading saved data</div>';
+  }
+}
+
+function deleteSaved(id) {
+  try {
+    const saves = JSON.parse(localStorage.getItem('crm_saved') || '[]');
+    localStorage.setItem('crm_saved', JSON.stringify(saves.filter(s => s.id !== id)));
+    renderSaved();
+    toast('🗑️ Removed');
+  } catch(e) {}
+}
+
+// ════════════════════════════════════════════
+// TOAST
+// ════════════════════════════════════════════
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('on');
+  setTimeout(() => t.classList.remove('on'), 2400);
+}
+
+// ════════════════════════════════════════════
+// PWA
+// ════════════════════════════════════════════
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  state.deferredPrompt = e;
+});
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('service-worker.js').catch(() => {});
+}
+
+// ════════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════════
+renderCareers('all');
+</script>
+</body>
+</html>

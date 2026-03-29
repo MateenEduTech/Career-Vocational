@@ -1,0 +1,2345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0a1628">
+<meta name="description" content="Entrepreneurship, Financial Literacy & Innovation Mindset Development Studio - NEP 2020 Aligned">
+<title>Entrepreneurship & Financial Literacy Studio</title>
+<link rel="manifest" href="manifest.json">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;600&display=swap');
+
+:root {
+  --deep-blue: #0a1628;
+  --navy: #0f2044;
+  --royal: #1a3a6e;
+  --steel: #2d5986;
+  --emerald: #10b981;
+  --emerald-dark: #059669;
+  --emerald-glow: rgba(16,185,129,0.15);
+  --gold: #f59e0b;
+  --white: #f8fafc;
+  --off-white: #e2e8f0;
+  --muted: #94a3b8;
+  --card-bg: rgba(15,32,68,0.7);
+  --border: rgba(16,185,129,0.2);
+  --shadow: 0 20px 60px rgba(0,0,0,0.5);
+  --radius: 16px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--deep-blue);
+  color: var(--white);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ─── BACKGROUND ─── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 20% 20%, rgba(26,58,110,0.6) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 80%, rgba(16,185,129,0.08) 0%, transparent 50%),
+    repeating-linear-gradient(0deg, transparent, transparent 80px, rgba(255,255,255,0.012) 80px, rgba(255,255,255,0.012) 81px),
+    repeating-linear-gradient(90deg, transparent, transparent 80px, rgba(255,255,255,0.012) 80px, rgba(255,255,255,0.012) 81px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ─── SCREENS ─── */
+.screen { display: none; position: relative; z-index: 1; min-height: 100vh; }
+.screen.active { display: block; }
+
+/* ─── TITLE SCREEN ─── */
+#screen-home {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0;
+}
+#screen-home.active { display: flex; }
+
+.hero-header {
+  width: 100%;
+  text-align: center;
+  padding: 40px 20px 30px;
+  background: linear-gradient(180deg, rgba(10,22,40,0.95) 0%, rgba(10,22,40,0.6) 100%);
+  border-bottom: 1px solid var(--border);
+  position: relative;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, rgba(16,185,129,0.15), rgba(245,158,11,0.1));
+  border: 1px solid rgba(16,185,129,0.4);
+  border-radius: 100px;
+  padding: 6px 18px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--emerald);
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+.badge svg { width: 14px; height: 14px; }
+
+.hero-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(24px, 5vw, 52px);
+  font-weight: 900;
+  line-height: 1.1;
+  color: var(--white);
+  margin-bottom: 8px;
+}
+.hero-title span { color: var(--emerald); }
+
+.hero-subtitle {
+  font-size: 14px;
+  color: var(--muted);
+  letter-spacing: 0.05em;
+  margin-bottom: 24px;
+}
+
+.author-strip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  background: var(--card-bg);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  padding: 8px 24px;
+  display: inline-flex;
+  margin: 0 auto 10px;
+}
+.author-avatar {
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--emerald);
+}
+.author-info { text-align: left; }
+.author-name { font-weight: 600; font-size: 14px; color: var(--white); }
+.author-role { font-size: 11px; color: var(--muted); }
+
+/* ─── NAV BUTTONS ─── */
+.home-nav {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  padding: 30px 20px;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.nav-card {
+  background: var(--card-bg);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: left;
+  position: relative;
+  overflow: hidden;
+}
+.nav-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 3px; height: 100%;
+  background: var(--emerald);
+  transform: scaleY(0);
+  transform-origin: bottom;
+  transition: transform 0.3s ease;
+}
+.nav-card:hover { 
+  border-color: rgba(16,185,129,0.5);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+}
+.nav-card:hover::before { transform: scaleY(1); }
+
+.nav-card-icon {
+  font-size: 32px;
+  margin-bottom: 12px;
+  display: block;
+}
+.nav-card-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 6px;
+}
+.nav-card-desc {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+.nav-card-arrow {
+  position: absolute;
+  top: 20px; right: 20px;
+  width: 28px; height: 28px;
+  background: var(--emerald-glow);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px;
+  color: var(--emerald);
+}
+
+/* ─── TOP BAR ─── */
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 20px;
+  background: rgba(10,22,40,0.95);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0; z-index: 100;
+}
+.back-btn {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--emerald);
+  cursor: pointer;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 500;
+  transition: all 0.2s;
+  display: flex; align-items: center; gap: 6px;
+}
+.back-btn:hover { background: var(--emerald-glow); }
+.topbar-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  font-weight: 700;
+  flex: 1;
+}
+.topbar-badge {
+  background: var(--emerald-glow);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  padding: 4px 12px;
+  font-size: 11px;
+  color: var(--emerald);
+  font-weight: 600;
+}
+
+/* ─── CONTENT AREA ─── */
+.content-area {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 30px 20px 60px;
+}
+
+/* ─── CARDS ─── */
+.card {
+  background: var(--card-bg);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-bottom: 20px;
+}
+.card-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 12px;
+  display: flex; align-items: center; gap: 10px;
+}
+.card-title .icon { font-size: 22px; }
+
+/* ─── FOUNDATIONS ─── */
+.chapter-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 14px;
+}
+.chapter-card {
+  background: rgba(15,32,68,0.8);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px;
+  cursor: pointer;
+  transition: all 0.25s;
+}
+.chapter-card:hover {
+  border-color: rgba(16,185,129,0.5);
+  transform: translateY(-2px);
+  background: rgba(16,185,129,0.08);
+}
+.ch-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--emerald);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  margin-bottom: 6px;
+}
+.ch-title {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--white);
+  margin-bottom: 6px;
+}
+.ch-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+/* ─── CHAPTER DETAIL ─── */
+#chapter-detail { display: none; }
+#chapter-detail.active { display: block; }
+.chapter-content h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 26px;
+  font-weight: 900;
+  color: var(--white);
+  margin-bottom: 8px;
+  line-height: 1.2;
+}
+.chapter-content .ch-meta {
+  color: var(--muted);
+  font-size: 13px;
+  margin-bottom: 20px;
+  display: flex; gap: 16px; flex-wrap: wrap;
+}
+.chapter-content p {
+  font-size: 15px;
+  line-height: 1.8;
+  color: var(--off-white);
+  margin-bottom: 16px;
+}
+.chapter-content h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--emerald);
+  margin: 24px 0 10px;
+}
+.highlight-box {
+  background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(16,185,129,0.05));
+  border-left: 3px solid var(--emerald);
+  border-radius: 0 10px 10px 0;
+  padding: 14px 18px;
+  margin: 16px 0;
+  font-size: 14px;
+  color: var(--off-white);
+  line-height: 1.7;
+}
+.exercise-box {
+  background: rgba(245,158,11,0.08);
+  border: 1px solid rgba(245,158,11,0.2);
+  border-radius: 10px;
+  padding: 16px;
+  margin: 16px 0;
+}
+.exercise-box .ex-title {
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--gold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+/* ─── SLIDERS / ASSESSMENT ─── */
+.assessment-item {
+  margin-bottom: 22px;
+}
+.assess-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.assess-name { font-weight: 500; font-size: 14px; }
+.assess-val {
+  background: var(--emerald-glow);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  padding: 3px 12px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: var(--emerald);
+  font-weight: 600;
+  min-width: 40px;
+  text-align: center;
+}
+input[type="range"] {
+  width: 100%;
+  -webkit-appearance: none;
+  height: 6px;
+  border-radius: 3px;
+  background: linear-gradient(to right, var(--emerald) 0%, var(--emerald) var(--val, 40%), rgba(255,255,255,0.1) var(--val, 40%));
+  outline: none;
+  cursor: pointer;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: var(--emerald);
+  border: 3px solid var(--deep-blue);
+  box-shadow: 0 0 0 2px var(--emerald);
+  cursor: pointer;
+}
+
+/* ─── SCORE DISPLAY ─── */
+.score-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-top: 20px;
+}
+.score-item {
+  background: rgba(15,32,68,0.8);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+}
+.score-val {
+  font-family: 'Playfair Display', serif;
+  font-size: 32px;
+  font-weight: 900;
+  color: var(--emerald);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.score-label {
+  font-size: 11px;
+  color: var(--muted);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* ─── INPUTS ─── */
+.form-group {
+  margin-bottom: 18px;
+}
+.form-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted);
+  margin-bottom: 6px;
+  display: block;
+}
+.form-input, .form-select {
+  width: 100%;
+  background: rgba(10,22,40,0.8);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 14px;
+  color: var(--white);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.form-input:focus, .form-select:focus { border-color: var(--emerald); }
+.form-select option { background: var(--navy); }
+
+/* ─── BUTTONS ─── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, var(--emerald), var(--emerald-dark));
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 12px 24px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 0.02em;
+}
+.btn:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(16,185,129,0.3); }
+.btn-outline {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--muted);
+}
+.btn-outline:hover { border-color: var(--emerald); color: var(--emerald); background: var(--emerald-glow); }
+
+/* ─── RESULT PANEL ─── */
+.result-panel {
+  background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(16,185,129,0.03));
+  border: 1px solid rgba(16,185,129,0.3);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-top: 20px;
+  display: none;
+}
+.result-panel.show { display: block; }
+
+/* ─── RADAR CHART ─── */
+.radar-wrap {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+canvas { max-width: 100%; }
+
+/* ─── PROGRESS BARS ─── */
+.prog-item { margin-bottom: 14px; }
+.prog-label {
+  display: flex; justify-content: space-between;
+  font-size: 13px; color: var(--muted);
+  margin-bottom: 6px;
+}
+.prog-bar-bg {
+  height: 8px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.prog-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--emerald), var(--gold));
+  transition: width 0.8s cubic-bezier(0.4,0,0.2,1);
+}
+
+/* ─── HEATMAP ─── */
+.heatmap-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  margin-top: 10px;
+}
+.heat-cell {
+  aspect-ratio: 1;
+  border-radius: 3px;
+  background: rgba(255,255,255,0.05);
+  transition: background 0.3s;
+}
+.heat-cell.l1 { background: rgba(16,185,129,0.15); }
+.heat-cell.l2 { background: rgba(16,185,129,0.35); }
+.heat-cell.l3 { background: rgba(16,185,129,0.6); }
+.heat-cell.l4 { background: rgba(16,185,129,0.9); }
+
+/* ─── TABS ─── */
+.tab-row {
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  margin-bottom: 24px;
+  scrollbar-width: none;
+}
+.tab-row::-webkit-scrollbar { display: none; }
+.tab-btn {
+  flex-shrink: 0;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--muted);
+  padding: 8px 16px;
+  font-size: 13px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.tab-btn.active { background: var(--emerald-glow); border-color: rgba(16,185,129,0.5); color: var(--emerald); }
+
+/* ─── TABLE ─── */
+.data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.data-table th {
+  text-align: left;
+  padding: 10px 14px;
+  color: var(--muted);
+  font-weight: 600;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-bottom: 1px solid var(--border);
+}
+.data-table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  color: var(--off-white);
+}
+.data-table tr:hover td { background: rgba(16,185,129,0.04); }
+.pill {
+  display: inline-block;
+  border-radius: 100px;
+  padding: 3px 10px;
+  font-size: 11px;
+  font-weight: 600;
+}
+.pill-green { background: rgba(16,185,129,0.15); color: var(--emerald); }
+.pill-gold { background: rgba(245,158,11,0.15); color: var(--gold); }
+.pill-red { background: rgba(239,68,68,0.15); color: #f87171; }
+
+/* ─── REPORT ─── */
+.report-section { margin-bottom: 24px; }
+.report-section h4 {
+  font-family: 'Playfair Display', serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--emerald);
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+}
+.roadmap-step {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 14px;
+  position: relative;
+}
+.roadmap-step::before {
+  content: '';
+  position: absolute;
+  left: 18px; top: 36px;
+  width: 1px; height: calc(100% + 14px);
+  background: var(--border);
+}
+.roadmap-step:last-child::before { display: none; }
+.step-num {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--emerald-glow);
+  border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--emerald);
+  flex-shrink: 0;
+}
+.step-content h5 { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+.step-content p { font-size: 13px; color: var(--muted); }
+
+/* ─── TRACKER ─── */
+.tracker-log {
+  max-height: 300px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+.log-entry {
+  background: rgba(15,32,68,0.6);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin-bottom: 8px;
+  font-size: 13px;
+  display: flex; justify-content: space-between; align-items: flex-start;
+}
+.log-date { font-size: 11px; color: var(--muted); font-family: 'JetBrains Mono', monospace; }
+
+/* ─── MINI CHART ─── */
+.mini-bar-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  height: 60px;
+  margin-top: 10px;
+}
+.mini-bar {
+  flex: 1;
+  background: linear-gradient(180deg, var(--emerald), rgba(16,185,129,0.3));
+  border-radius: 3px 3px 0 0;
+  min-height: 4px;
+  transition: height 0.6s ease;
+}
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 600px) {
+  .home-nav { grid-template-columns: 1fr; }
+  .score-grid { grid-template-columns: 1fr 1fr; }
+  .chapter-grid { grid-template-columns: 1fr; }
+}
+
+/* ─── PRINT ─── */
+@media print {
+  body { background: white; color: black; }
+  body::before { display: none; }
+  .topbar, .back-btn { display: none; }
+  .card { border: 1px solid #ccc; background: white; }
+}
+
+/* ─── ANIMATIONS ─── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.fade-up { animation: fadeUp 0.5s ease forwards; }
+
+@keyframes pulse-border {
+  0%,100% { box-shadow: 0 0 0 0 rgba(16,185,129,0); }
+  50% { box-shadow: 0 0 0 6px rgba(16,185,129,0.12); }
+}
+
+.section-intro {
+  font-size: 15px;
+  color: var(--muted);
+  line-height: 1.7;
+  margin-bottom: 24px;
+  padding: 16px;
+  background: rgba(255,255,255,0.03);
+  border-radius: 10px;
+  border-left: 3px solid var(--emerald);
+}
+
+.stat-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.stat-box {
+  background: rgba(15,32,68,0.8);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px;
+  text-align: center;
+}
+.stat-val { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 900; color: var(--emerald); }
+.stat-lbl { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+.innovation-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 14px;
+  cursor: pointer;
+  transition: all 0.25s;
+}
+.innovation-card:hover { border-color: rgba(16,185,129,0.4); background: rgba(16,185,129,0.06); }
+.innovation-card.selected { border-color: var(--emerald); background: rgba(16,185,129,0.1); }
+.ic-tag { font-size: 11px; color: var(--emerald); font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; }
+.ic-title { font-weight: 700; font-size: 15px; margin-bottom: 6px; }
+.ic-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+/* TOAST */
+.toast {
+  position: fixed;
+  bottom: 24px; right: 24px;
+  background: var(--card-bg);
+  border: 1px solid var(--emerald);
+  border-radius: 10px;
+  padding: 12px 20px;
+  font-size: 13px;
+  color: var(--emerald);
+  font-weight: 500;
+  z-index: 9999;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.3s ease;
+  pointer-events: none;
+}
+.toast.show { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!--  HOME SCREEN -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div id="screen-home" class="screen active">
+  <div class="hero-header fade-up">
+    <div class="badge">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+      Aligned with NEP 2020 &nbsp;|&nbsp; Skill-Based Education &nbsp;|&nbsp; Innovation &amp; Self-Reliance
+    </div>
+    <h1 class="hero-title">Entrepreneurship, Financial Literacy<br>&amp; <span>Innovation</span> Mindset Studio</h1>
+    <p class="hero-subtitle">A Comprehensive Development Platform for Students &amp; Educators</p>
+    <div class="author-strip">
+      <img src="author.jpg" alt="Mateen Yousuf" class="author-avatar">
+      <div class="author-info">
+        <div class="author-name">Mateen Yousuf</div>
+        <div class="author-role">Teacher, School Education Department Kashmir</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="home-nav fade-up">
+    <div class="nav-card" onclick="navigate('screen-foundations')">
+      <div class="nav-card-arrow">→</div>
+      <span class="nav-card-icon">📚</span>
+      <div class="nav-card-title">Entrepreneurial Mindset Lab</div>
+      <div class="nav-card-desc">20 structured lessons covering entrepreneurship, financial literacy and innovation thinking</div>
+    </div>
+    <div class="nav-card" onclick="navigate('screen-financial')">
+      <div class="nav-card-arrow">→</div>
+      <span class="nav-card-icon">💰</span>
+      <div class="nav-card-title">Financial Literacy Studio</div>
+      <div class="nav-card-desc">Interactive budgeting, savings analysis and financial stability scoring tools</div>
+    </div>
+    <div class="nav-card" onclick="navigate('screen-innovation')">
+      <div class="nav-card-arrow">→</div>
+      <span class="nav-card-icon">💡</span>
+      <div class="nav-card-title">Innovation Simulator</div>
+      <div class="nav-card-desc">Solve real-world problems, evaluate business ideas and simulate startup feasibility</div>
+    </div>
+    <div class="nav-card" onclick="navigate('screen-dashboard')">
+      <div class="nav-card-arrow">→</div>
+      <span class="nav-card-icon">📊</span>
+      <div class="nav-card-title">Framework &amp; Economic Empowerment</div>
+      <div class="nav-card-desc">Your full profile, growth tracker, social entrepreneurship model and PDF report</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!--  FOUNDATIONS SCREEN -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div id="screen-foundations" class="screen">
+  <div class="topbar">
+    <button class="back-btn" onclick="navigate('screen-home')">← Back</button>
+    <span class="topbar-title">Entrepreneurial Mindset Lab</span>
+    <span class="topbar-badge">20 Chapters</span>
+  </div>
+
+  <div id="chapter-list-view">
+    <div class="content-area">
+      <p class="section-intro">Explore 20 comprehensive chapters covering every essential dimension of entrepreneurship, financial literacy, and innovation — aligned with NEP 2020 vocational education guidelines.</p>
+      <div class="chapter-grid" id="chapterGrid"></div>
+    </div>
+  </div>
+
+  <div id="chapter-detail">
+    <div class="content-area">
+      <button class="btn btn-outline" onclick="showChapterList()" style="margin-bottom:20px">← All Chapters</button>
+      <div class="card">
+        <div class="chapter-content" id="chapterContentArea"></div>
+      </div>
+      <!-- Mindset Self Assessment at end of some chapters -->
+      <div id="chapterAssessment" style="display:none">
+        <div class="card" style="margin-top:20px">
+          <div class="card-title"><span class="icon">🎯</span> Quick Self-Reflection</div>
+          <div id="quickReflectionContent"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!--  FINANCIAL SCREEN -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div id="screen-financial" class="screen">
+  <div class="topbar">
+    <button class="back-btn" onclick="navigate('screen-home')">← Back</button>
+    <span class="topbar-title">Financial Literacy Studio</span>
+    <span class="topbar-badge">4 Tools</span>
+  </div>
+  <div class="content-area">
+    <div class="tab-row">
+      <button class="tab-btn active" onclick="switchTab('fin','budget')">Budget Lab</button>
+      <button class="tab-btn" onclick="switchTab('fin','mindset')">Mindset Assessment</button>
+      <button class="tab-btn" onclick="switchTab('fin','business')">Business Simulator</button>
+      <button class="tab-btn" onclick="switchTab('fin','social')">Social Enterprise</button>
+    </div>
+
+    <!-- BUDGET LAB -->
+    <div id="fin-budget">
+      <div class="card">
+        <div class="card-title"><span class="icon">💰</span> Financial Literacy Lab</div>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:20px">Enter hypothetical figures to calculate your financial health scores.</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+          <div class="form-group">
+            <label class="form-label">Monthly Income (₹)</label>
+            <input class="form-input" id="fin_income" type="number" placeholder="e.g. 25000" value="25000">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Total Monthly Expenses (₹)</label>
+            <input class="form-input" id="fin_expense" type="number" placeholder="e.g. 18000" value="18000">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Savings Target (₹)</label>
+            <input class="form-input" id="fin_saving" type="number" placeholder="e.g. 5000" value="5000">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Investment Amount (₹)</label>
+            <input class="form-input" id="fin_invest" type="number" placeholder="e.g. 2000" value="2000">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Investment Type</label>
+          <select class="form-select" id="fin_invest_type">
+            <option value="fd">Fixed Deposit (6% p.a.)</option>
+            <option value="mutual">Mutual Fund (12% p.a.)</option>
+            <option value="gold">Gold (8% p.a.)</option>
+            <option value="ppf">PPF (7.1% p.a.)</option>
+          </select>
+        </div>
+        <button class="btn" onclick="calcFinancial()">📊 Calculate Financial Scores</button>
+      </div>
+
+      <div class="result-panel" id="fin-result">
+        <div class="score-grid">
+          <div class="score-item">
+            <div class="score-val" id="fr-savings-ratio">—</div>
+            <div class="score-label">Savings Ratio %</div>
+          </div>
+          <div class="score-item">
+            <div class="score-val" id="fr-stability">—</div>
+            <div class="score-label">Financial Stability</div>
+          </div>
+          <div class="score-item">
+            <div class="score-val" id="fr-budget-eff">—</div>
+            <div class="score-label">Budget Efficiency</div>
+          </div>
+        </div>
+        <div style="margin-top:20px">
+          <div class="prog-item">
+            <div class="prog-label"><span>Savings Adequacy</span><span id="p-savings-pct">0%</span></div>
+            <div class="prog-bar-bg"><div class="prog-bar-fill" id="p-savings-bar" style="width:0%"></div></div>
+          </div>
+          <div class="prog-item">
+            <div class="prog-label"><span>Expense Control</span><span id="p-expense-pct">0%</span></div>
+            <div class="prog-bar-bg"><div class="prog-bar-fill" id="p-expense-bar" style="width:0%"></div></div>
+          </div>
+          <div class="prog-item">
+            <div class="prog-label"><span>Investment Ratio</span><span id="p-invest-pct">0%</span></div>
+            <div class="prog-bar-bg"><div class="prog-bar-fill" id="p-invest-bar" style="width:0%"></div></div>
+          </div>
+        </div>
+        <div style="margin-top:16px;padding:14px;background:rgba(255,255,255,0.03);border-radius:10px">
+          <div style="font-size:13px;font-weight:600;color:var(--emerald);margin-bottom:6px">📈 1-Year Investment Projection</div>
+          <div id="fin-projection" style="font-size:14px;color:var(--off-white)"></div>
+        </div>
+        <div style="margin-top:12px">
+          <div id="fin-advice" style="font-size:13px;color:var(--muted);line-height:1.7"></div>
+        </div>
+        <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn" onclick="saveFinancialPlan()">💾 Save Plan</button>
+          <button class="btn btn-outline" onclick="loadSavedPlans()">📋 View Saved</button>
+        </div>
+      </div>
+
+      <div id="saved-plans-view" style="display:none;margin-top:16px">
+        <div class="card">
+          <div class="card-title">💾 Saved Financial Plans</div>
+          <div id="saved-plans-list"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MINDSET ASSESSMENT -->
+    <div id="fin-mindset" style="display:none">
+      <div class="card">
+        <div class="card-title"><span class="icon">🧠</span> Entrepreneurial Mindset Self-Assessment</div>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:20px">Rate yourself honestly from 1 (low) to 5 (high) on each entrepreneurial trait.</p>
+        <div id="mindset-sliders"></div>
+        <button class="btn" onclick="calcMindset()">🎯 Calculate My Scores</button>
+      </div>
+      <div class="result-panel" id="mindset-result">
+        <div class="score-grid">
+          <div class="score-item">
+            <div class="score-val" id="ms-eri">—</div>
+            <div class="score-label">Readiness Index</div>
+          </div>
+          <div class="score-item">
+            <div class="score-val" id="ms-ips">—</div>
+            <div class="score-label">Innovation Potential</div>
+          </div>
+          <div class="score-item">
+            <div class="score-val" id="ms-rr">—</div>
+            <div class="score-label">Resilience Rating</div>
+          </div>
+        </div>
+        <div style="margin-top:16px" id="mindset-advice"></div>
+        <div style="margin-top:14px">
+          <button class="btn" onclick="saveMindsetScores()">💾 Save Scores</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- BUSINESS SIMULATOR -->
+    <div id="fin-business" style="display:none">
+      <div class="card">
+        <div class="card-title"><span class="icon">🏪</span> Business Idea Simulator</div>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:20px">Design your business idea and get a feasibility analysis.</p>
+        <div class="form-group">
+          <label class="form-label">Business Category</label>
+          <select class="form-select" id="biz_cat">
+            <option value="food">Food & Beverage</option>
+            <option value="tech">Technology / Digital Services</option>
+            <option value="edu">Education & Tutoring</option>
+            <option value="craft">Handicrafts & Artisan Goods</option>
+            <option value="agri">Agriculture & Organic Produce</option>
+            <option value="service">Local Services (Repair, Cleaning)</option>
+            <option value="retail">Retail / E-commerce</option>
+          </select>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+          <div class="form-group">
+            <label class="form-label">Initial Investment (₹)</label>
+            <input class="form-input" id="biz_invest" type="number" placeholder="50000" value="50000">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Expected Monthly Revenue (₹)</label>
+            <input class="form-input" id="biz_revenue" type="number" placeholder="20000" value="20000">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Monthly Operating Cost (₹)</label>
+            <input class="form-input" id="biz_cost" type="number" placeholder="12000" value="12000">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Target Market</label>
+            <select class="form-select" id="biz_market">
+              <option value="local">Local Community</option>
+              <option value="district">District Level</option>
+              <option value="state">State Level</option>
+              <option value="online">Online / National</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Risk Level</label>
+          <select class="form-select" id="biz_risk">
+            <option value="low">Low Risk (Stable demand, proven model)</option>
+            <option value="medium">Medium Risk (Growing market, some competition)</option>
+            <option value="high">High Risk (New concept, uncertain demand)</option>
+          </select>
+        </div>
+        <button class="btn" onclick="calcBusiness()">📈 Analyze Business</button>
+      </div>
+      <div class="result-panel" id="biz-result">
+        <div class="score-grid">
+          <div class="score-item">
+            <div class="score-val" id="biz-feasibility">—</div>
+            <div class="score-label">Feasibility Score</div>
+          </div>
+          <div class="score-item">
+            <div class="score-val" id="biz-profit">—</div>
+            <div class="score-label">Monthly Profit (₹)</div>
+          </div>
+          <div class="score-item">
+            <div class="score-val" id="biz-roi">—</div>
+            <div class="score-label">ROI %</div>
+          </div>
+        </div>
+        <div style="margin-top:16px" id="biz-analysis"></div>
+        <div style="margin-top:14px">
+          <div class="mini-bar-chart" id="biz-bar-chart"></div>
+          <div style="font-size:11px;color:var(--muted);margin-top:4px">12-Month Profit Projection</div>
+        </div>
+        <div style="margin-top:14px">
+          <button class="btn" onclick="saveBusinessSim()">💾 Save Simulation</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SOCIAL ENTERPRISE -->
+    <div id="fin-social" style="display:none">
+      <div class="card">
+        <div class="card-title"><span class="icon">🌍</span> Social Entrepreneurship Model</div>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:20px">Design a community-focused social enterprise with sustainability and impact focus.</p>
+        <div class="form-group">
+          <label class="form-label">Social Problem to Address</label>
+          <select class="form-select" id="soc_problem">
+            <option value="waste">Local Waste Management</option>
+            <option value="edu">Accessible Education</option>
+            <option value="water">Clean Water Access</option>
+            <option value="women">Women Empowerment</option>
+            <option value="farmer">Farmer Income Support</option>
+            <option value="digital">Digital Literacy</option>
+            <option value="mental">Mental Health Awareness</option>
+          </select>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+          <div class="form-group">
+            <label class="form-label">Community Size (people)</label>
+            <input class="form-input" id="soc_community" type="number" placeholder="500" value="500">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Initial Fund (₹)</label>
+            <input class="form-input" id="soc_fund" type="number" placeholder="30000" value="30000">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Revenue Model</label>
+          <select class="form-select" id="soc_revenue">
+            <option value="grant">Grants & Donations</option>
+            <option value="freemium">Freemium (Basic free, paid premium)</option>
+            <option value="subsidy">Cross-subsidy (Rich pay, poor benefit)</option>
+            <option value="product">Product Sales</option>
+          </select>
+        </div>
+        <button class="btn" onclick="calcSocial()">🌱 Evaluate Social Enterprise</button>
+      </div>
+      <div class="result-panel" id="soc-result">
+        <div class="score-grid">
+          <div class="score-item">
+            <div class="score-val" id="soc-impact">—</div>
+            <div class="score-label">Social Impact Index</div>
+          </div>
+          <div class="score-item">
+            <div class="score-val" id="soc-sustain">—</div>
+            <div class="score-label">Sustainability Score</div>
+          </div>
+          <div class="score-item">
+            <div class="score-val" id="soc-reach">—</div>
+            <div class="score-label">Est. People Helped</div>
+          </div>
+        </div>
+        <div style="margin-top:16px" id="soc-analysis"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!--  INNOVATION SCREEN -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div id="screen-innovation" class="screen">
+  <div class="topbar">
+    <button class="back-btn" onclick="navigate('screen-home')">← Back</button>
+    <span class="topbar-title">Innovation Simulator</span>
+    <span class="topbar-badge">Challenge Mode</span>
+  </div>
+  <div class="content-area">
+    <div id="innovation-challenge-view">
+      <p class="section-intro">Select a real-world challenge and propose your innovation solution. The system will evaluate your idea for depth, feasibility, and social impact.</p>
+
+      <div class="card" style="margin-bottom:20px">
+        <div class="card-title"><span class="icon">🎯</span> Step 1: Choose a Challenge</div>
+        <div id="innovation-problems"></div>
+      </div>
+
+      <div class="card" id="innovation-solution-card" style="display:none">
+        <div class="card-title"><span class="icon">💡</span> Step 2: Your Innovation Solution</div>
+        <div class="form-group">
+          <label class="form-label">Describe your solution idea (min. 30 words)</label>
+          <textarea class="form-input" id="inno_solution" rows="4" placeholder="Describe how you would solve this problem innovatively..."></textarea>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+          <div class="form-group">
+            <label class="form-label">Technology Used</label>
+            <select class="form-select" id="inno_tech">
+              <option value="none">No Technology (Manual/Community)</option>
+              <option value="basic">Basic Technology (SMS, Radio)</option>
+              <option value="mobile">Mobile App / Website</option>
+              <option value="iot">IoT / Sensors</option>
+              <option value="ai">AI / Machine Learning</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Implementation Timeframe</label>
+            <select class="form-select" id="inno_time">
+              <option value="1">1 Month (Quick Fix)</option>
+              <option value="3">3 Months (Short-term)</option>
+              <option value="6">6 Months (Medium-term)</option>
+              <option value="12">1 Year (Long-term)</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Stakeholders Involved</label>
+          <select class="form-select" id="inno_stake">
+            <option value="1">Just me / Individual</option>
+            <option value="2">Small team (2–5 people)</option>
+            <option value="3">Community group (10–50)</option>
+            <option value="4">Institutional (School, NGO, Govt)</option>
+          </select>
+        </div>
+        <button class="btn" onclick="evalInnovation()">🔬 Evaluate My Innovation</button>
+      </div>
+
+      <div class="result-panel" id="inno-result">
+        <div class="score-grid">
+          <div class="score-item">
+            <div class="score-val" id="inno-depth">—</div>
+            <div class="score-label">Innovation Depth</div>
+          </div>
+          <div class="score-item">
+            <div class="score-val" id="inno-feasibility">—</div>
+            <div class="score-label">Feasibility Index</div>
+          </div>
+          <div class="score-item">
+            <div class="score-val" id="inno-impact">—</div>
+            <div class="score-label">Social Impact</div>
+          </div>
+        </div>
+        <div style="margin-top:16px" id="inno-feedback"></div>
+        <div style="margin-top:14px">
+          <button class="btn" onclick="saveInnovation()">💾 Save Innovation Log</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!--  DASHBOARD SCREEN -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div id="screen-dashboard" class="screen">
+  <div class="topbar">
+    <button class="back-btn" onclick="navigate('screen-home')">← Back</button>
+    <span class="topbar-title">Economic Empowerment Dashboard</span>
+    <span class="topbar-badge">Full Profile</span>
+  </div>
+  <div class="content-area">
+    <div class="tab-row">
+      <button class="tab-btn active" onclick="switchTab('dash','overview')">Overview</button>
+      <button class="tab-btn" onclick="switchTab('dash','tracker')">Growth Tracker</button>
+      <button class="tab-btn" onclick="switchTab('dash','report')">Report</button>
+    </div>
+
+    <!-- OVERVIEW -->
+    <div id="dash-overview">
+      <div class="stat-row">
+        <div class="stat-box">
+          <div class="stat-val" id="db-eri">—</div>
+          <div class="stat-lbl">Entrepreneurial Readiness</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-val" id="db-fin">—</div>
+          <div class="stat-lbl">Financial Stability</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-val" id="db-inno">—</div>
+          <div class="stat-lbl">Innovation Score</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon">🕸️</span> Entrepreneurial Profile Radar</div>
+        <div class="radar-wrap">
+          <canvas id="radarCanvas" width="320" height="320"></canvas>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon">📈</span> Financial Health Progress</div>
+        <div id="fin-progress-bars"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon">🔥</span> Activity Heatmap (Last 28 Days)</div>
+        <div class="heatmap-grid" id="heatmapGrid"></div>
+        <div style="display:flex;gap:8px;margin-top:10px;align-items:center;font-size:11px;color:var(--muted)">
+          <span>Less</span>
+          <div class="heat-cell" style="width:14px;height:14px;border-radius:2px"></div>
+          <div class="heat-cell l1" style="width:14px;height:14px;border-radius:2px"></div>
+          <div class="heat-cell l2" style="width:14px;height:14px;border-radius:2px"></div>
+          <div class="heat-cell l3" style="width:14px;height:14px;border-radius:2px"></div>
+          <div class="heat-cell l4" style="width:14px;height:14px;border-radius:2px"></div>
+          <span>More</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- GROWTH TRACKER -->
+    <div id="dash-tracker" style="display:none">
+      <div class="card">
+        <div class="card-title"><span class="icon">📝</span> Entrepreneurial Growth Tracker</div>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:16px">Log your daily entrepreneurship activities and reflections.</p>
+        <div class="form-group">
+          <label class="form-label">Activity Type</label>
+          <select class="form-select" id="track_type">
+            <option value="idea">💡 Generated a new business idea</option>
+            <option value="plan">📋 Worked on business plan</option>
+            <option value="finance">💰 Practiced financial planning</option>
+            <option value="research">🔍 Market research</option>
+            <option value="skill">🛠️ Learned a new skill</option>
+            <option value="reflection">🧘 Self-reflection & mindset work</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Reflection / Notes</label>
+          <textarea class="form-input" id="track_note" rows="3" placeholder="What did you learn or do today?"></textarea>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+          <div class="form-group">
+            <label class="form-label">Effort Level (1–5)</label>
+            <input class="form-input" id="track_effort" type="number" min="1" max="5" value="3">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Quality of Reflection (1–5)</label>
+            <input class="form-input" id="track_quality" type="number" min="1" max="5" value="3">
+          </div>
+        </div>
+        <button class="btn" onclick="addTrackerLog()">➕ Add Entry</button>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon">📊</span> Growth Scores</div>
+        <div class="score-grid">
+          <div class="score-item">
+            <div class="score-val" id="trak-igi">—</div>
+            <div class="score-label">Innovation Growth</div>
+          </div>
+          <div class="score-item">
+            <div class="score-val" id="trak-bsp">—</div>
+            <div class="score-label">Business Skill</div>
+          </div>
+          <div class="score-item">
+            <div class="score-val" id="trak-total">—</div>
+            <div class="score-label">Total Entries</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon">🗒️</span> Activity Log</div>
+        <div class="tracker-log" id="tracker-log-list">
+          <p style="color:var(--muted);font-size:13px;padding:12px">No entries yet. Start logging your activities above.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- REPORT -->
+    <div id="dash-report" style="display:none">
+      <div class="card">
+        <div class="card-title"><span class="icon">📄</span> Entrepreneurship Profile Report</div>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:16px">A comprehensive summary of your entrepreneurial journey and scores.</p>
+        <div id="report-content">
+          <div class="report-section">
+            <h4>👤 Student Profile</h4>
+            <div class="form-group">
+              <label class="form-label">Your Name</label>
+              <input class="form-input" id="rpt_name" placeholder="Enter your name">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Class / Grade</label>
+              <input class="form-input" id="rpt_class" placeholder="e.g. Class 10">
+            </div>
+            <div class="form-group">
+              <label class="form-label">School Name</label>
+              <input class="form-input" id="rpt_school" placeholder="Your school name">
+            </div>
+          </div>
+        </div>
+        <button class="btn" onclick="generateReport()">📊 Generate Full Report</button>
+      </div>
+      <div id="full-report" style="display:none">
+        <div class="card" id="report-output"></div>
+        <div style="margin-top:16px;display:flex;gap:10px">
+          <button class="btn" onclick="window.print()">🖨️ Print Report</button>
+          <button class="btn btn-outline" onclick="exportReportText()">📤 Export as Text</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+//  DATA
+// ═══════════════════════════════════════════════════════════════
+
+const CHAPTERS = [
+  { id:1, title:"What is Entrepreneurship?", icon:"🚀", short:"Foundations and definitions of entrepreneurship in modern India",
+    content:`<h2>What is Entrepreneurship?</h2>
+<div class="ch-meta"><span>📖 Chapter 1</span><span>⏱ 15 min read</span><span>🎯 Foundations</span></div>
+<p>Entrepreneurship is the process of identifying opportunities, mobilizing resources, and creating value by launching new ventures or innovating within existing organizations. At its core, an entrepreneur is someone who looks at the world and sees not just problems, but possibilities — not just needs, but the chance to meet them.</p>
+<p>In India, entrepreneurship is undergoing a renaissance. From the bustling technology startups of Bengaluru to the small handicraft cooperatives of Kashmir, entrepreneurship takes countless forms. What unites them all is a spirit of self-reliance, innovation, and the willingness to take calculated risks.</p>
+<h3>The Three Pillars of Entrepreneurship</h3>
+<p>Every entrepreneurial journey rests on three pillars. First, <strong>opportunity recognition</strong> — the ability to see unmet needs or inefficiencies in the market. Second, <strong>resource mobilization</strong> — gathering the people, capital, and knowledge needed to act on that opportunity. Third, <strong>value creation</strong> — producing goods, services, or experiences that customers want and are willing to pay for.</p>
+<div class="highlight-box">💡 <strong>Indian Context:</strong> India's startup ecosystem is now the third largest in the world, with over 90,000 recognized startups and 100+ unicorns. This revolution started with individual entrepreneurs who dared to imagine something different.</div>
+<h3>Types of Entrepreneurship</h3>
+<p><strong>Small Business Entrepreneurship</strong> represents the majority of businesses in India — local shops, restaurants, repair services, and small manufacturers. These businesses form the backbone of the economy and provide livelihoods for millions.</p>
+<p><strong>Scalable Startup Entrepreneurship</strong> involves creating businesses designed to grow rapidly, often using technology. Companies like Flipkart, Ola, and Byju's began as startups with big visions.</p>
+<p><strong>Social Entrepreneurship</strong> focuses on solving social problems — improving access to education, healthcare, or clean water — while maintaining financial sustainability. Organizations like Barefoot College and Pratham exemplify this model.</p>
+<p><strong>Intrapreneurship</strong> happens within existing organizations when employees are encouraged to innovate and create new products or services internally. This is increasingly important as established companies compete with agile startups.</p>
+<h3>The Entrepreneurial Ecosystem</h3>
+<p>Entrepreneurs do not operate in isolation. They exist within an ecosystem that includes government policy (schemes like Startup India, MUDRA loans), educational institutions, investors and venture capital, mentors, customers, and suppliers. Understanding and navigating this ecosystem is essential for entrepreneurial success.</p>
+<p>In Jammu &amp; Kashmir, the government has introduced specific schemes to promote entrepreneurship, including the J&amp;K Entrepreneurship Development Institute and various self-employment programs under the PMEGP scheme. These represent real opportunities for young people in the region.</p>
+<div class="exercise-box"><div class="ex-title">🏋️ Reflection Exercise</div><p>Think of three local businesses in your area. For each one, identify: (a) what problem they solve, (b) who their customers are, and (c) what makes them unique. Write your observations in your notebook.</p></div>
+<div class="exercise-box"><div class="ex-title">🏫 Classroom Project</div><p><strong>Entrepreneur Interview Project:</strong> Interview a local small business owner. Ask them about their motivation to start the business, their biggest challenges, and what they know now that they wish they had known when they started. Share your findings with the class in a 5-minute presentation.</p></div>`
+  },
+  { id:2, title:"NEP 2020 & Skill-Based Education", icon:"🎓", short:"How India's education policy transforms learning into livelihood",
+    content:`<h2>NEP 2020 &amp; Skill-Based Education</h2>
+<div class="ch-meta"><span>📖 Chapter 2</span><span>⏱ 15 min read</span><span>🎓 Policy &amp; Framework</span></div>
+<p>The National Education Policy 2020 represents the most comprehensive transformation of India's education system in over three decades. For students interested in entrepreneurship, NEP 2020 is tremendously significant because it explicitly recognizes that education must connect to the economy, to livelihood, and to the development of practical capabilities.</p>
+<p>One of the central tenets of NEP 2020 is the integration of vocational education into mainstream schooling. Beginning from Grade 6, students are now expected to engage with hands-on vocational skills — from coding and carpentry to cooking and commerce. The policy envisions that by 2025, at least 50% of students will have exposure to vocational education.</p>
+<h3>Key Provisions for Entrepreneurship Education</h3>
+<p><strong>Experiential Learning</strong> is at the heart of NEP 2020. The policy encourages project-based learning where students tackle real problems, design solutions, and reflect on outcomes. This directly mirrors the entrepreneurial method.</p>
+<p><strong>Multidisciplinary Approach</strong> breaks down the walls between subjects. An entrepreneur needs to understand science (to innovate products), economics (to price goods), psychology (to understand customers), and communication (to pitch ideas). NEP 2020 encourages this blended learning.</p>
+<p><strong>Coding and Digital Literacy</strong> from Grade 6 onward recognizes that the digital economy demands tech-savvy entrepreneurs. Even if you do not become a software engineer, understanding digital tools is essential for modern business.</p>
+<div class="highlight-box">📜 <strong>Policy Insight:</strong> NEP 2020 states that "vocational education will be integrated in a phased manner in school and higher education through an interesting and innovative course curriculum, pedagogical processes, and vocational teachers and faculty." This creates a direct pathway from classroom to career.</div>
+<h3>The Skill India Connection</h3>
+<p>NEP 2020 is closely linked with the Skill India Mission, which has trained over 400 million people in various vocational skills since 2015. This ecosystem provides students with certifications recognized by industry, improving employment and entrepreneurship prospects.</p>
+<div class="exercise-box"><div class="ex-title">🏋️ Reflection Exercise</div><p>Research one vocational skill that interests you — it could be graphic design, plumbing, agriculture, coding, or anything else. Find out: (a) where you can learn this skill locally, (b) how much practitioners earn, and (c) how this skill could be the foundation of a small business.</p></div>
+<div class="exercise-box"><div class="ex-title">🏫 Classroom Project</div><p><strong>Skills Fair:</strong> Organize a class "Skills Fair" where each student demonstrates a practical skill they have — cooking a recipe, repairing an item, creating artwork, performing a science experiment. Discuss how each skill could become the basis of a business.</p></div>`
+  },
+  { id:3, title:"Entrepreneurial Mindset Explained", icon:"🧠", short:"The mental frameworks that separate entrepreneurs from employees",
+    content:`<h2>Entrepreneurial Mindset Explained</h2>
+<div class="ch-meta"><span>📖 Chapter 3</span><span>⏱ 15 min read</span><span>🧠 Psychology</span></div>
+<p>An entrepreneurial mindset is a specific collection of beliefs, thought patterns, and behaviors that enable individuals to identify opportunities, navigate uncertainty, and persist through setbacks. It is not an innate personality trait that only a few people possess — it is a set of habits and perspectives that can be developed through deliberate practice.</p>
+<h3>Core Elements of the Entrepreneurial Mindset</h3>
+<p><strong>Growth Mindset</strong> — Psychologist Carol Dweck's research shows that people with a growth mindset believe their abilities can be developed through dedication and hard work. Entrepreneurs who believe their skills can improve are far more likely to persist through failure and reach success.</p>
+<p><strong>Opportunity Recognition</strong> — Entrepreneurs train themselves to see problems as opportunities. Where most people see a broken system, an entrepreneur sees a market gap. This skill can be developed by practicing observational awareness — noticing inconveniences, inefficiencies, and unmet needs in everyday life.</p>
+<p><strong>Calculated Risk-Taking</strong> — Contrary to popular belief, successful entrepreneurs are not reckless risk-takers. They are calculated risk-takers who gather information, weigh probabilities, test ideas in small ways before committing fully, and manage downside scenarios.</p>
+<p><strong>Resilience</strong> — Every entrepreneur faces failure. What distinguishes successful entrepreneurs is their ability to learn from failure, adapt, and continue moving forward. Resilience is like a muscle — it grows stronger each time you use it.</p>
+<div class="highlight-box">🌟 <strong>Example:</strong> Ritesh Agarwal founded OYO Rooms at age 17, initially dropped out of college, and faced enormous skepticism. His resilience through multiple pivots transformed a small idea into a global hospitality company valued at billions of dollars.</div>
+<h3>Developing Your Entrepreneurial Mindset Daily</h3>
+<p>Morning journaling, reading biographies of entrepreneurs, taking on small challenges outside your comfort zone, and engaging in deliberate reflection after failures are all proven practices for building an entrepreneurial mindset. The key is consistency — small daily habits compound into powerful mental frameworks over time.</p>
+<div class="exercise-box"><div class="ex-title">🏋️ Reflection Exercise</div><p>Think of a recent failure or setback in your life — academic, social, or personal. Write down: (a) what happened, (b) what you felt, (c) what you learned, and (d) what you would do differently. This reflection exercise is exactly what successful entrepreneurs do after every failure.</p></div>
+<div class="exercise-box"><div class="ex-title">🏫 Classroom Project</div><p><strong>Mindset Journal:</strong> For two weeks, keep a daily "opportunity journal." Each day, write down one problem you noticed, one inefficiency you observed, and one idea for how it could be improved. At the end of two weeks, review your journal and select your most promising idea to present to the class.</p></div>`
+  },
+  { id:4, title:"Innovation & Problem-Solving", icon:"⚡", short:"Design thinking and creative approaches to solving real problems",
+    content:`<h2>Innovation &amp; Problem-Solving</h2>
+<div class="ch-meta"><span>📖 Chapter 4</span><span>⏱ 15 min read</span><span>⚡ Creative Thinking</span></div>
+<p>Innovation is the process of translating an idea or invention into a good or service that creates value. It is the fuel of entrepreneurship — without innovation, a business merely copies what already exists; with innovation, a business creates something genuinely new and valuable. Problem-solving is the practical companion to innovation: it provides the structure and process for working from challenge to solution.</p>
+<h3>Design Thinking: A Framework for Innovation</h3>
+<p>Design Thinking, developed at Stanford's d.school, is one of the most powerful frameworks for innovation. It has five stages: <strong>Empathize</strong> (understand the user's needs deeply), <strong>Define</strong> (clearly articulate the problem), <strong>Ideate</strong> (generate a wide range of possible solutions), <strong>Prototype</strong> (build quick, rough versions of the best ideas), and <strong>Test</strong> (get feedback and refine).</p>
+<div class="highlight-box">🔧 <strong>Real-World Application:</strong> When designing a solution for school canteen inefficiency, start by talking to students and canteen staff to understand pain points (long queues, food waste, limited options), define the core problem (students wait 15+ minutes and miss recess), ideate solutions (pre-ordering app, multiple serving stations, weekly menu), prototype the simplest solution (a paper pre-order slip system), and test it for one week.</div>
+<h3>Types of Innovation</h3>
+<p><strong>Product Innovation</strong> involves creating new or significantly improved products. The smartphone was product innovation that disrupted dozens of industries simultaneously.</p>
+<p><strong>Process Innovation</strong> involves finding better ways to produce existing products or services. McDonald's didn't invent the hamburger — they innovated the process of making and serving it efficiently at scale.</p>
+<p><strong>Business Model Innovation</strong> involves changing the way value is created and captured. Spotify didn't invent music — they innovated the business model from ownership (buying CDs) to access (monthly subscription).</p>
+<div class="exercise-box"><div class="ex-title">🏋️ Reflection Exercise</div><p>Apply Design Thinking to a problem in your school or community. Work through all five stages: interview at least two people about the problem, define it clearly in one sentence, brainstorm 10 possible solutions, sketch a simple prototype of your best idea, and describe how you would test it.</p></div>
+<div class="exercise-box"><div class="ex-title">🏫 Classroom Project</div><p><strong>Innovation Sprint:</strong> In teams of 3–4, choose one of these challenges: (1) Reduce food waste in your school canteen, (2) Make the school library more engaging for students, or (3) Improve water conservation in your school. Apply Design Thinking to develop and present a solution in 30 minutes.</p></div>`
+  },
+  { id:5, title:"Risk & Opportunity Analysis", icon:"⚖️", short:"Evaluating business risks and identifying real market opportunities",
+    content:`<h2>Risk &amp; Opportunity Analysis</h2>
+<div class="ch-meta"><span>📖 Chapter 5</span><span>⏱ 15 min read</span><span>⚖️ Strategic Thinking</span></div>
+<p>Every business decision involves risk. The question is not whether to take risks — it is how to take smart, calculated risks that maximize the probability of success while limiting potential losses. Understanding risk and opportunity analysis is one of the most valuable skills an entrepreneur can develop.</p>
+<h3>Types of Business Risk</h3>
+<p><strong>Market Risk</strong> — the possibility that demand for your product is lower than expected, or that competitors take your customers. This is mitigated by thorough market research before launching.</p>
+<p><strong>Financial Risk</strong> — the danger of running out of money before the business becomes profitable. This is managed through careful financial planning, conservative revenue projections, and maintaining an emergency reserve.</p>
+<p><strong>Operational Risk</strong> — problems with day-to-day operations: supply chain disruptions, staff turnover, technology failures. Mitigation involves creating backup plans and standard operating procedures.</p>
+<p><strong>Regulatory Risk</strong> — changes in laws, taxes, or regulations that affect your business. Staying informed about the regulatory environment and building compliance into your business model reduces this risk.</p>
+<h3>The SWOT Framework</h3>
+<p>SWOT Analysis (Strengths, Weaknesses, Opportunities, Threats) is a foundational tool for risk and opportunity assessment. Strengths and Weaknesses are internal factors you control; Opportunities and Threats are external factors in your environment.</p>
+<div class="highlight-box">📊 <strong>Example SWOT for a Student-Run Tutoring Business:</strong> Strengths: Strong academic performance, peer trust. Weaknesses: Limited time, no formal teaching qualification. Opportunities: Growing demand for affordable tuition, digital teaching tools. Threats: Competition from established coaching centers, exam schedule conflicts.</div>
+<div class="exercise-box"><div class="ex-title">🏋️ Reflection Exercise</div><p>Choose a business idea you find interesting. Create a complete SWOT analysis with at least 3 points in each quadrant. Then write a paragraph explaining whether the opportunities outweigh the threats, and what you would do to convert weaknesses into strengths.</p></div>`
+  },
+  { id:6, title:"Basic Financial Literacy", icon:"💵", short:"Understanding money management fundamentals for life and business",
+    content:`<h2>Basic Financial Literacy</h2>
+<div class="ch-meta"><span>📖 Chapter 6</span><span>⏱ 15 min read</span><span>💵 Financial Foundations</span></div>
+<p>Financial literacy is the ability to understand and use various financial skills, including personal financial management, budgeting, and investing. It is one of the most important — and most neglected — life skills. Surveys consistently show that most adults, including educated professionals, lack basic financial literacy, leading to poor decisions about saving, borrowing, and investing.</p>
+<h3>The Time Value of Money</h3>
+<p>The single most important concept in finance is the time value of money: ₹1 today is worth more than ₹1 in the future. This is because money today can be invested to earn returns. Compound interest — earning interest on your interest — is one of the most powerful forces in personal finance.</p>
+<div class="highlight-box">🧮 <strong>Power of Compounding:</strong> If you save ₹500 per month from age 20, invested at 12% annual return, you will have approximately ₹52 lakhs by age 60. If you start at 30, you would have only ₹16 lakhs. Starting 10 years earlier gives you 3x more money — this is the magic of compound interest.</div>
+<h3>The 50-30-20 Rule</h3>
+<p>A practical budgeting guideline divides your income into three categories: <strong>50%</strong> for needs (rent, food, utilities, transport), <strong>30%</strong> for wants (entertainment, dining out, hobbies), and <strong>20%</strong> for savings and debt repayment. This simple framework can be adapted to different income levels and goals.</p>
+<h3>Emergency Fund</h3>
+<p>Financial experts unanimously recommend maintaining an emergency fund of 3–6 months of living expenses in a liquid, safe account. This fund protects you from financial emergencies — medical expenses, job loss, unexpected repairs — without going into debt.</p>
+<div class="exercise-box"><div class="ex-title">🏋️ Reflection Exercise</div><p>Create a hypothetical monthly budget for yourself as a young adult earning ₹20,000 per month. Apply the 50-30-20 rule, listing specific items in each category. Calculate how much you would save in 1 year, 5 years, and 10 years if you invested your savings at 8% annual interest.</p></div>
+<div class="exercise-box"><div class="ex-title">🏫 Classroom Project</div><p><strong>Family Budget Analysis:</strong> With permission from your family, create a simple monthly budget for your household. Identify one area where expenses could be reduced and one way the savings could be invested productively. Present your findings respectfully and constructively.</p></div>`
+  },
+  { id:7, title:"Income, Expense & Savings", icon:"📊", short:"Managing cash flow and building sustainable savings habits",
+    content:`<h2>Income, Expense &amp; Savings</h2>
+<div class="ch-meta"><span>📖 Chapter 7</span><span>⏱ 15 min read</span><span>📊 Cash Flow</span></div>
+<p>Cash flow — the movement of money in and out of your life or business — is the lifeblood of financial health. More businesses fail due to cash flow problems than due to lack of profitability. Understanding the relationship between income, expenses, and savings is fundamental to both personal finance and entrepreneurship.</p>
+<h3>Sources of Income</h3>
+<p><strong>Active Income</strong> requires continuous time and effort — a salary, freelance work, or daily business operations. Your income stops when you stop working. Most people begin here, and it is the foundation for building wealth.</p>
+<p><strong>Passive Income</strong> flows without continuous active work — rental income, dividends, royalties, or online business systems. Building passive income streams is a key goal of wealth-building because it provides financial freedom.</p>
+<p><strong>Portfolio Income</strong> comes from investments — profits from buying and selling assets like stocks, bonds, or real estate. This requires capital to start but can grow significantly over time.</p>
+<h3>Differentiating Fixed and Variable Expenses</h3>
+<p>Fixed expenses remain constant regardless of your income or activity — rent, loan EMIs, insurance premiums. Variable expenses fluctuate with usage — food, entertainment, travel. Understanding which expenses are fixed helps you plan minimum income requirements; managing variable expenses is where most savings opportunities lie.</p>
+<div class="highlight-box">💡 <strong>The Latte Factor:</strong> Financial author David Bach popularized the concept that small daily expenses (like a ₹100 coffee every day) add up to enormous sums over time — ₹36,500 per year. Redirecting just a few small expenses to savings can dramatically change your financial trajectory.</div>
+<div class="exercise-box"><div class="ex-title">🏋️ Reflection Exercise</div><p>Track all your expenses for one week, no matter how small. Categorize them as fixed or variable, and as needs or wants. At the end of the week, calculate your total spending and identify 3 specific expenses you could reduce without significantly impacting your quality of life.</p></div>`
+  },
+  { id:8, title:"Budgeting Principles", icon:"📋", short:"Creating practical budgets that work for students and young entrepreneurs",
+    content:`<h2>Budgeting Principles</h2>
+<div class="ch-meta"><span>📖 Chapter 8</span><span>⏱ 15 min read</span><span>📋 Financial Management</span></div>
+<p>A budget is a plan — a deliberate allocation of resources toward your priorities. Far from being restrictive, a well-designed budget is actually liberating: it ensures you spend money on what matters most and eliminates guilt about discretionary spending within your planned categories. Every successful business runs on a budget; every financially secure individual lives on one too.</p>
+<h3>The Budgeting Process</h3>
+<p>Effective budgeting follows a four-step process. First, <strong>calculate total income</strong> — be conservative and use the lowest reasonable estimate. Second, <strong>list all expenses</strong> — categorize them as fixed and variable, essential and discretionary. Third, <strong>ensure income exceeds expenses</strong> — if not, reduce expenses or find ways to increase income. Fourth, <strong>allocate the surplus</strong> — direct savings toward specific goals (emergency fund, investment, business capital).</p>
+<h3>Zero-Based Budgeting</h3>
+<p>In zero-based budgeting, every rupee of income is allocated to a specific purpose until Income minus Expenses equals Zero. This does not mean spending everything — the "zero" refers to unallocated money. Every rupee has a job: some go to expenses, some to savings, some to investments. This method maximizes intentionality around money.</p>
+<div class="highlight-box">📱 <strong>Digital Budgeting Tools:</strong> Apps like Walnut, Money Manager, and even simple spreadsheets make budgeting significantly easier. The key is consistent data entry — a budget you do not track is just a wish list.</div>
+<h3>Business Budgeting Essentials</h3>
+<p>For entrepreneurs, budgeting extends to the business: <strong>Sales Budget</strong> (expected revenue), <strong>Production Budget</strong> (cost of making goods or delivering services), <strong>Cash Flow Budget</strong> (when money will arrive and leave), and <strong>Capital Budget</strong> (planned investments in equipment or expansion).</p>
+<div class="exercise-box"><div class="ex-title">🏋️ Reflection Exercise</div><p>Create a zero-based monthly budget for a hypothetical small business: a home-based tutoring service serving 10 students at ₹500 per student per month. List all income, all expenses (stationery, travel, phone), and allocate the remaining profit to savings and future growth.</p></div>`
+  },
+  { id:9, title:"Profit & Loss Basics", icon:"📈", short:"Reading financial statements and understanding business health indicators",
+    content:`<h2>Profit &amp; Loss Basics</h2>
+<div class="ch-meta"><span>📖 Chapter 9</span><span>⏱ 15 min read</span><span>📈 Business Finance</span></div>
+<p>The Profit and Loss Statement (P&amp;L), also called the Income Statement, is a financial summary that shows a business's revenues, costs, and expenses over a specific period. Understanding how to read and interpret a P&amp;L is essential for every entrepreneur — it tells you whether your business is actually creating value or just keeping busy.</p>
+<h3>The P&amp;L Structure</h3>
+<p><strong>Revenue (Top Line)</strong> is the total income generated from selling goods or services before any expenses are deducted. It is called the "top line" because it appears at the top of the statement.</p>
+<p><strong>Cost of Goods Sold (COGS)</strong> represents the direct costs of producing the goods or services sold — raw materials, direct labor, packaging. Revenue minus COGS equals <strong>Gross Profit</strong>.</p>
+<p><strong>Operating Expenses (OPEX)</strong> are the ongoing costs of running the business that are not directly tied to production — rent, marketing, salaries, utilities. Gross Profit minus OPEX equals <strong>Operating Profit (EBIT)</strong>.</p>
+<p><strong>Net Profit (Bottom Line)</strong> is what remains after all expenses, taxes, and interest payments. This is the actual profit the business generates for its owners.</p>
+<div class="highlight-box">🧮 <strong>Simple Example:</strong> A student selling handmade crafts: Revenue ₹8,000 — COGS ₹3,500 (materials) = Gross Profit ₹4,500. Then: ₹4,500 — Operating Expenses ₹1,200 (packaging, travel, marketing) = Net Profit ₹3,300. Profit margin = 41%.</div>
+<h3>Break-Even Analysis</h3>
+<p>The break-even point is where total revenue equals total costs — neither profit nor loss. Understanding your break-even point is crucial for pricing decisions and for knowing how many units you need to sell to become profitable.</p>
+<div class="exercise-box"><div class="ex-title">🏋️ Reflection Exercise</div><p>Create a simple P&amp;L statement for a hypothetical business of your choice. Include at least 3 revenue sources and 5 expense categories. Calculate the break-even point and determine the minimum number of sales needed to achieve ₹5,000 profit per month.</p></div>`
+  },
+  { id:10, title:"Investment Fundamentals", icon:"💹", short:"Understanding investment vehicles and building long-term wealth",
+    content:`<h2>Investment Fundamentals</h2>
+<div class="ch-meta"><span>📖 Chapter 10</span><span>⏱ 15 min read</span><span>💹 Wealth Building</span></div>
+<p>Investing is the process of allocating money to assets that are expected to grow in value or generate income over time. While saving puts money aside, investing puts money to work. The distinction is critical: a saver is protected from loss but limited in growth; an investor accepts some risk in exchange for the potential of significant long-term returns.</p>
+<h3>The Risk-Return Relationship</h3>
+<p>In investing, there is a fundamental principle: higher potential returns come with higher risk. This is not a flaw in the system — it is a rational reflection of uncertainty. Government bonds are very safe but offer low returns. Individual stocks in small companies can deliver enormous returns but can also lose most of their value.</p>
+<h3>Key Investment Vehicles in India</h3>
+<p><strong>Fixed Deposits (FD)</strong> — Bank FDs offer guaranteed returns (currently 5–8% p.a.) with very low risk. They are suitable for short-term goals and emergency funds.</p>
+<p><strong>Mutual Funds</strong> — Pool money from many investors to buy a diversified portfolio of stocks or bonds, managed by professional fund managers. Equity mutual funds have historically returned 12–15% p.a. over the long term, though with volatility.</p>
+<p><strong>Public Provident Fund (PPF)</strong> — A government-backed long-term savings scheme offering 7.1% tax-free returns. Ideal for retirement planning.</p>
+<p><strong>Direct Stocks</strong> — Buying shares in individual companies offers the highest potential returns but requires knowledge, research, and emotional discipline to handle volatility.</p>
+<div class="highlight-box">🌱 <strong>Start Small, Start Now:</strong> Systematic Investment Plans (SIPs) in mutual funds allow you to invest as little as ₹100 per month. The discipline of investing consistently, even in small amounts, is far more important than the amount invested.</div>
+<div class="exercise-box"><div class="ex-title">🏋️ Reflection Exercise</div><p>Research the current interest rates for FD, PPF, and the historical returns of a popular index mutual fund. Calculate how ₹1,000 per month invested in each would grow over 20 years. Which option would you choose and why? What factors beyond returns influenced your decision?</p></div>`
+  },
+  { id:11, title:"Responsible Borrowing", icon:"🏦", short:"Smart use of credit, loans, and avoiding the debt trap",
+    content:`<h2>Responsible Borrowing</h2>
+<div class="ch-meta"><span>📖 Chapter 11</span><span>⏱ 15 min read</span><span>🏦 Credit Management</span></div>
+<p>Debt is one of the most powerful and most dangerous tools in finance. Used wisely, borrowed money can accelerate business growth, enable homeownership, and fund education. Used carelessly, it can spiral into a trap that takes years or decades to escape. The difference between smart and reckless borrowing lies in understanding the principles of responsible debt management.</p>
+<h3>Good Debt vs Bad Debt</h3>
+<p><strong>Good Debt</strong> is borrowed money used to acquire assets or invest in capabilities that generate returns exceeding the cost of borrowing. A business loan at 12% interest that funds an expansion generating 30% returns is good debt. An education loan that enables a higher-paying career is good debt.</p>
+<p><strong>Bad Debt</strong> is borrowed money used for depreciating assets or consumption. A personal loan to buy a smartphone you cannot afford is bad debt — the smartphone loses value rapidly and generates no income to service the loan.</p>
+<h3>Understanding Interest and EMI</h3>
+<p>Before taking any loan, calculate the total repayment amount, not just the EMI. A ₹1 lakh loan at 18% annual interest over 3 years has an EMI of approximately ₹3,615 — meaning you pay back ₹1.3 lakhs total on a ₹1 lakh loan. Understanding this arithmetic prevents surprises and helps make informed borrowing decisions.</p>
+<div class="highlight-box">⚠️ <strong>Warning Signs of a Debt Trap:</strong> Using new loans to repay old ones, paying only the minimum on credit cards, borrowing from informal moneylenders at very high rates, and having no savings because all income goes to loan repayments — these are signs of a debt spiral that requires immediate professional financial advice.</div>
+<div class="exercise-box"><div class="ex-title">🏋️ Reflection Exercise</div><p>Research the J&amp;K government's PMEGP loan scheme for entrepreneurs. Find out: interest rate, maximum loan amount, eligibility criteria, and repayment terms. Calculate whether a hypothetical small business (e.g., a small grocery shop) could realistically generate enough profit to repay the loan while remaining viable.</p></div>`
+  },
+  { id:12, title:"Business Ethics", icon:"⚖️", short:"Building trust, integrity and sustainable business practices",
+    content:`<h2>Business Ethics</h2>
+<div class="ch-meta"><span>📖 Chapter 12</span><span>⏱ 15 min read</span><span>⚖️ Values &amp; Integrity</span></div>
+<p>Business ethics is the application of ethical principles and moral problems that arise in a business environment. Far from being a constraint on profitability, ethical business practices are increasingly recognized as a source of competitive advantage, customer loyalty, and long-term sustainability. Companies that behave ethically attract better employees, retain loyal customers, and avoid costly legal and reputational crises.</p>
+<h3>Core Ethical Principles in Business</h3>
+<p><strong>Honesty and Transparency</strong> — Truthful communication with customers, employees, investors, and regulators. This includes honest marketing (not exaggerating product benefits), accurate financial reporting, and clear communication of risks and limitations.</p>
+<p><strong>Fairness</strong> — Treating all stakeholders equitably: paying employees fairly, pricing products reasonably, providing equal opportunity regardless of gender, religion, or background.</p>
+<p><strong>Responsibility</strong> — Taking accountability for the consequences of your business decisions, including environmental impact, community effects, and social consequences.</p>
+<h3>Corporate Social Responsibility (CSR)</h3>
+<p>CSR is the practice of businesses integrating social and environmental concerns into their operations and stakeholder interactions. In India, companies with a net profit over ₹5 crore are legally required to spend 2% of average net profits on CSR activities. This reflects a national consensus that businesses have obligations beyond profit-making.</p>
+<div class="highlight-box">🌟 <strong>Kashmir Example:</strong> Several Kashmir-based saffron cooperatives have built ethical businesses around fair pricing for farmers, transparent certification, and environmental stewardship of the land. Their ethical approach has commanded premium prices in international markets.</div>
+<div class="exercise-box"><div class="ex-title">🏋️ Reflection Exercise</div><p>Think of a real or hypothetical ethical dilemma a business might face — for example, whether to use cheaper but environmentally harmful packaging, or whether to advertise a product's benefits while concealing limitations. Write a one-page analysis discussing what the ethical choice is and why, and what the business consequences of each choice might be.</p></div>`
+  },
+  { id:13, title:"Value Creation", icon:"💎", short:"How businesses create, deliver and capture value sustainably",
+    content:`<h2>Value Creation</h2>
+<div class="ch-meta"><span>📖 Chapter 13</span><span>⏱ 15 min read</span><span>💎 Business Strategy</span></div>
+<p>Value creation is the fundamental purpose of any legitimate business. A business creates value when it produces goods or services that customers consider worth more than their cost. The difference between what something costs to produce and what customers are willing to pay is the business's value creation — and ultimately, its profit.</p>
+<h3>The Value Chain</h3>
+<p>Harvard Business School professor Michael Porter developed the Value Chain framework to help businesses understand how value is created at each stage of operations. Primary activities — inbound logistics, operations, outbound logistics, marketing, and service — directly create value. Support activities — technology, HR, procurement, and infrastructure — enable primary activities to function effectively.</p>
+<h3>The Business Model Canvas</h3>
+<p>Alexander Osterwalder's Business Model Canvas is a one-page strategic management tool that describes how a business creates, delivers, and captures value. Its nine building blocks are: Customer Segments, Value Propositions, Channels, Customer Relationships, Revenue Streams, Key Resources, Key Activities, Key Partnerships, and Cost Structure.</p>
+<div class="highlight-box">🔍 <strong>Value Proposition Example:</strong> A student-run delivery service for elderly customers in Srinagar. Value: They cannot travel easily; you bring goods to them. Channels: WhatsApp orders. Revenue: ₹50 delivery fee. Resources: Bicycle, smartphone. This simple model solves a real problem and creates genuine value.</div>
+<div class="exercise-box"><div class="ex-title">🏋️ Reflection Exercise</div><p>Using the Business Model Canvas framework, map out a simple business idea. Complete all nine blocks with specific, concrete details. Focus especially on the Value Proposition — what specific problem does your business solve, and why would customers choose you over alternatives?</p></div>`
+  },
+  { id:14, title:"Market Understanding", icon:"🎯", short:"Analyzing markets, customers and competitive landscapes",
+    content:`<h2>Market Understanding</h2>
+<div class="ch-meta"><span>📖 Chapter 14</span><span>⏱ 15 min read</span><span>🎯 Market Analysis</span></div>
+<p>Market understanding is the foundation of commercial success. You can have the best product in the world, but if you do not understand who your customers are, what they need, how they make decisions, and what alternatives they have, your business will struggle. Market research converts assumptions into knowledge, reducing risk and improving decision-making quality.</p>
+<h3>Defining Your Target Market</h3>
+<p><strong>Market Segmentation</strong> divides the total market into distinct groups with shared characteristics. The four main segmentation approaches are: <strong>Demographic</strong> (age, income, education, gender), <strong>Geographic</strong> (location, urban/rural, climate), <strong>Psychographic</strong> (values, lifestyle, personality), and <strong>Behavioral</strong> (purchase habits, brand loyalty, usage patterns).</p>
+<h3>Understanding Customer Needs</h3>
+<p>Harvard professor Theodore Levitt famously observed that customers do not want a quarter-inch drill — they want a quarter-inch hole. This insight captures a profound truth: customers purchase outcomes, not products. Successful entrepreneurs start with the outcome customers desire and work backward to design the product or service.</p>
+<div class="highlight-box">🗣️ <strong>Primary Research Methods:</strong> Surveys (Google Forms, WhatsApp polls), interviews (10–15 targeted customers), observation (watching how people currently solve the problem), and experiments (testing a minimum viable product with real customers) are the most valuable research tools for student entrepreneurs.</div>
+<div class="exercise-box"><div class="ex-title">🏋️ Reflection Exercise</div><p>Choose a local market need. Design and conduct a simple survey of 10–15 people to understand: (a) how they currently solve this problem, (b) what they find frustrating about current solutions, (c) what they wish existed, and (d) how much they would pay for an ideal solution. Analyze your findings and describe what product or service you would create.</p></div>`
+  },
+  { id:15, title:"Creativity in Business", icon:"🎨", short:"Techniques for generating innovative ideas and creative solutions",
+    content:`<h2>Creativity in Business</h2>
+<div class="ch-meta"><span>📖 Chapter 15</span><span>⏱ 15 min read</span><span>🎨 Creative Skills</span></div>
+<p>Creativity — the ability to generate novel, useful ideas — is perhaps the single most valuable capability an entrepreneur can cultivate. In an era of accelerating technological change and global competition, the ability to think differently, combine ideas from disparate fields, and imagine possibilities that do not yet exist is the ultimate competitive advantage.</p>
+<h3>Creativity Techniques</h3>
+<p><strong>Brainstorming</strong> — Generate as many ideas as possible without judgment. Quantity precedes quality; wild ideas often contain the seed of brilliant ones. The rule: no criticism during ideation.</p>
+<p><strong>SCAMPER</strong> — A structured brainstorming tool: Substitute, Combine, Adapt, Modify/Magnify, Put to other uses, Eliminate, Reverse. Apply each lens to an existing product or problem to generate new ideas.</p>
+<p><strong>Mind Mapping</strong> — Start with a central concept, branch out to related ideas, continue branching to create a visual web of associations. Mind maps make non-obvious connections visible.</p>
+<p><strong>Cross-Industry Innovation</strong> — Look at how other industries solve similar problems. McDonald's supply chain management informed hospital efficiency. Formula 1 pit stops inspired hospital OR team coordination. The best innovations often come from importing ideas across domain boundaries.</p>
+<div class="highlight-box">🧪 <strong>Creativity Exercise:</strong> Take any everyday object — a brick, a chair, a newspaper. Set a timer for 5 minutes and generate as many unusual uses for that object as possible. This "alternative uses" exercise is proven to develop divergent thinking, which is the cognitive foundation of creativity.</div>
+<div class="exercise-box"><div class="ex-title">🏫 Classroom Project</div><p><strong>Hackathon Day:</strong> Organize a one-day innovation hackathon. Teams of 4–5 students select a local problem, brainstorm solutions using SCAMPER, develop the best idea into a detailed proposal, create a 3-minute pitch, and present to a panel of teachers and community members who judge feasibility, innovation, and potential impact.</p></div>`
+  },
+  { id:16, title:"Startup Planning Basics", icon:"🗺️", short:"From idea to execution: building your first business plan",
+    content:`<h2>Startup Planning Basics</h2>
+<div class="ch-meta"><span>📖 Chapter 16</span><span>⏱ 15 min read</span><span>🗺️ Startup Strategy</span></div>
+<p>A startup is a young company founded to develop a unique product or service, bring it to market, and scale it rapidly. Unlike traditional small businesses, startups are designed for growth — often exponential growth, enabled by technology, scalable business models, and significant market opportunity. Planning is the bridge between a great idea and a real business.</p>
+<h3>The Lean Startup Methodology</h3>
+<p>Eric Ries developed the Lean Startup methodology, which has transformed how entrepreneurs build new businesses. Its core insight: rather than spending months building a perfect product, launch a <strong>Minimum Viable Product (MVP)</strong> — the simplest version that delivers core value — get real customer feedback, and iterate rapidly. This approach reduces the risk of building something nobody wants.</p>
+<h3>Essential Elements of a Business Plan</h3>
+<p><strong>Executive Summary</strong> — 1–2 page overview of the entire plan. Though it appears first, write it last.</p>
+<p><strong>Problem &amp; Solution</strong> — Clearly define the problem you solve and why your solution is better than alternatives.</p>
+<p><strong>Market Analysis</strong> — Size of the market, target segments, customer profile, competitive landscape.</p>
+<p><strong>Business Model</strong> — How you create, deliver, and capture value. Revenue model and pricing strategy.</p>
+<p><strong>Financial Projections</strong> — 3-year revenue forecast, expense budget, cash flow projection, break-even analysis.</p>
+<p><strong>Team</strong> — Who are the founders and key team members? What unique capabilities do they bring?</p>
+<div class="highlight-box">🚀 <strong>Student Startup Resources:</strong> JKEDI (J&amp;K Entrepreneurship Development Institute) offers training and seed funding for young entrepreneurs. The Atal Innovation Mission has established hundreds of school-level innovation labs (Atal Tinkering Labs) across India, including in J&amp;K.</div>
+<div class="exercise-box"><div class="ex-title">🏋️ Reflection Exercise</div><p>Create a simple one-page business plan for a startup idea you find compelling. Include: problem statement, solution description, target customer profile, one key metric of success, and basic financial estimate (investment needed, expected monthly revenue, break-even timeline). Focus on clarity and specificity over completeness.</p></div>`
+  },
+  { id:17, title:"Leadership in Entrepreneurship", icon:"👑", short:"Developing leadership skills essential for building teams and organizations",
+    content:`<h2>Leadership in Entrepreneurship</h2>
+<div class="ch-meta"><span>📖 Chapter 17</span><span>⏱ 15 min read</span><span>👑 Leadership</span></div>
+<p>Entrepreneurship is fundamentally a leadership challenge. The ability to inspire a vision, attract talented people to your cause, make wise decisions under uncertainty, and build a culture of excellence determines whether a promising startup becomes a sustainable organization. Technical skills can be hired; leadership must be developed by the founder.</p>
+<h3>Leadership Styles</h3>
+<p><strong>Transformational Leadership</strong> inspires followers to exceed their own interests for the good of the group, creating enthusiasm and commitment to a shared vision. Steve Jobs exemplified this style — his reality distortion field convinced brilliant people to attempt what seemed impossible.</p>
+<p><strong>Servant Leadership</strong> inverts the traditional hierarchy: instead of followers serving the leader, the leader serves followers, removing obstacles and enabling team members to do their best work. This style, associated with leaders like Narayan Murthy, builds deep loyalty and high performance.</p>
+<p><strong>Situational Leadership</strong> adapts the leadership approach to the development level and needs of each team member. Effective leaders shift between directive, coaching, supporting, and delegating styles based on the situation.</p>
+<h3>Building Your Leadership Toolkit</h3>
+<p>Communication, active listening, emotional intelligence, decision-making under uncertainty, conflict resolution, delegation, and feedback — these are the core leadership competencies that can be developed through deliberate practice, feedback, and reflection.</p>
+<div class="highlight-box">🌟 <strong>Leadership Laboratory:</strong> School and college provide ideal low-stakes environments to practice leadership. Running a club, organizing an event, captaining a sports team, or leading a group project are all genuine leadership experiences that build the skills needed for entrepreneurial success.</div>
+<div class="exercise-box"><div class="ex-title">🏋️ Reflection Exercise</div><p>Think of the best leader you have personally experienced — a teacher, coach, community elder, or peer. What specifically made them effective? List 5 concrete behaviors or qualities you observed. Now honestly assess yourself on the same 5 dimensions, rating yourself 1–5 on each. Identify your top leadership strength and the one quality you most need to develop.</p></div>`
+  },
+  { id:18, title:"Social Entrepreneurship", icon:"🌍", short:"Creating businesses that solve social problems and serve communities",
+    content:`<h2>Social Entrepreneurship</h2>
+<div class="ch-meta"><span>📖 Chapter 18</span><span>⏱ 15 min read</span><span>🌍 Social Impact</span></div>
+<p>Social entrepreneurship applies entrepreneurial principles and business methods to create social value rather than — or in addition to — economic profit. Social entrepreneurs tackle society's most pressing challenges: poverty, illiteracy, environmental degradation, healthcare access, and food security. They pursue mission alongside profit, measuring success not just in financial returns but in lives improved and problems solved.</p>
+<h3>What Makes a Social Entrepreneur?</h3>
+<p>Social entrepreneurs share the core traits of all entrepreneurs — creativity, resilience, leadership — but add a profound commitment to social mission that guides every business decision. They are not charity workers: they build sustainable organizations that can create lasting change without perpetual dependence on donations.</p>
+<h3>Double and Triple Bottom Line</h3>
+<p>Traditional business measures success by a single bottom line: profit. Social entrepreneurs measure success by a double bottom line (financial sustainability + social impact) or triple bottom line (financial sustainability + social impact + environmental sustainability). This expanded accountability reflects a more complete understanding of what it means to build a valuable organization.</p>
+<div class="highlight-box">🌱 <strong>Kashmir Example:</strong> Women Self-Help Groups (SHGs) across rural Kashmir have created micro-enterprises — producing traditional handicrafts, local food products, and herbal medicines — that simultaneously generate income for rural women and preserve cultural traditions. This is social entrepreneurship in action.</div>
+<h3>Social Enterprise Models</h3>
+<p>Common social enterprise models include: cooperatives (owned by members), social franchises (replicating proven models in new communities), B-Corporations (for-profit companies certified for social and environmental performance), and community interest companies (UK model adaptable to India).</p>
+<div class="exercise-box"><div class="ex-title">🏫 Classroom Project</div><p><strong>Social Enterprise Design Challenge:</strong> In teams, design a social enterprise addressing one of the following J&amp;K-specific challenges: (a) improving digital literacy in rural areas, (b) creating market access for local artisans, (c) reducing food waste in urban areas, or (d) supporting elderly citizens. Present a complete model including the social mission, revenue model, and measurement of impact.</p></div>`
+  },
+  { id:19, title:"Resilience & Failure", icon:"💪", short:"Learning from setbacks and building the bounce-back mindset",
+    content:`<h2>Resilience &amp; Failure</h2>
+<div class="ch-meta"><span>📖 Chapter 19</span><span>⏱ 15 min read</span><span>💪 Mental Strength</span></div>
+<p>Failure is not the opposite of success in entrepreneurship — it is part of the path to success. Every significant entrepreneurial achievement is built on a foundation of failures, pivots, and lessons learned. The ability to experience failure without being destroyed by it — to learn, adapt, and continue — is arguably the most important entrepreneurial competency of all. This ability is called resilience.</p>
+<h3>The Science of Resilience</h3>
+<p>Resilience is not a fixed trait — it is a dynamic capacity that can be strengthened through practice, reflection, and support systems. Research by psychologists like Martin Seligman shows that resilient people share several characteristics: they view adversity as temporary rather than permanent, specific rather than pervasive, and external rather than internal (when appropriate).</p>
+<h3>Learning from Failure Systematically</h3>
+<p>Post-mortem analysis — reviewing what went wrong and why after a failure — converts painful experiences into valuable learning. Effective post-mortems are blameless (focused on systems and circumstances, not individuals), thorough (examining root causes, not just symptoms), and action-oriented (producing specific changes to prevent recurrence).</p>
+<div class="highlight-box">🔄 <strong>Famous Failures:</strong> Before founding Apple Computer, Steve Jobs was fired from Apple. Before the Harry Potter series, J.K. Rowling was a single mother on welfare who received 12 consecutive rejections. Colonel Sanders founded KFC at age 65 after his restaurant had failed. These stories are not anomalies — they are the norm for significant success.</div>
+<h3>Building Your Resilience Practice</h3>
+<p>Regular reflection journaling, building a strong support network, maintaining physical health, cultivating perspective through meditation or prayer, and celebrating small wins — these practices build the psychological reserves that enable you to absorb setbacks without being permanently derailed.</p>
+<div class="exercise-box"><div class="ex-title">🏋️ Reflection Exercise</div><p>Write a "failure resume" — a list of your most significant failures, what you attempted, what went wrong, and what you learned. Many successful entrepreneurs keep failure resumes as a reminder that failure is normal and as a catalog of hard-won wisdom. This exercise destigmatizes failure and clarifies the lessons it contains.</p></div>`
+  },
+  { id:20, title:"Designing an Innovation Career", icon:"🌟", short:"Creating a personal roadmap for entrepreneurship and innovation",
+    content:`<h2>Designing an Innovation-Oriented Career</h2>
+<div class="ch-meta"><span>📖 Chapter 20</span><span>⏱ 15 min read</span><span>🌟 Career Design</span></div>
+<p>An innovation-oriented career is not a single linear path — it is a portfolio of experiences, skills, relationships, and projects that compound over time into a distinctive capability. Designing such a career requires self-knowledge, strategic thinking, and the courage to pursue unconventional paths. This final chapter integrates all previous learning into a personal action plan.</p>
+<h3>Personal SWOT for Career Planning</h3>
+<p>The same SWOT analysis used for business applies to career planning. Your Strengths (skills, knowledge, networks, personality traits that give you an advantage), Weaknesses (gaps to address), Opportunities (emerging fields, geographic advantages, underserved needs), and Threats (automation risk, competition) together reveal the strategic context for your career decisions.</p>
+<h3>The T-Shaped Professional</h3>
+<p>Modern innovation careers increasingly favor T-shaped professionals: those with deep expertise in one domain (the vertical bar of the T) combined with broad knowledge and collaboration skills across multiple domains (the horizontal bar). In Kashmir, combining deep expertise in a traditional skill like woodcarving or carpet weaving with broad knowledge of digital marketing, e-commerce, and global trends creates extraordinary opportunities.</p>
+<div class="highlight-box">🗺️ <strong>Your 3-Year Innovation Career Roadmap:</strong> Year 1: Deep skill development + theoretical foundations. Year 2: First real project or venture, even if small. Year 3: Expand network, seek mentors, pursue first meaningful opportunity. Track your progress using this app's Growth Tracker.</div>
+<h3>Resources for J&amp;K Entrepreneurs</h3>
+<p>Key institutions and programs: <strong>JKEDI</strong> (Entrepreneurship Development Institute), <strong>SIDCO</strong> (Small Industries Development Corporation), <strong>J&amp;K Bank's JKYB scheme</strong> for young entrepreneurs, <strong>Startup India registration</strong> (provides tax benefits and support), and <strong>NABARD schemes</strong> for rural entrepreneurship. Building relationships with these institutions early in your entrepreneurial journey is strategic.</p>
+<div class="exercise-box"><div class="ex-title">🏋️ Final Reflection Exercise</div><p>Write your personal 3-year Entrepreneurship Career Roadmap. Include: (a) your identified strengths and the skill you will develop to mastery, (b) the specific problem area or market you are most passionate about, (c) your first concrete step (this week), (d) your 1-year milestone, (e) your 3-year vision, and (f) the specific resources and people you need to engage to achieve it. This document becomes your living entrepreneurship plan.</p></div>
+<div class="exercise-box"><div class="ex-title">🏫 Course Culminating Project</div><p><strong>Entrepreneurship Portfolio:</strong> Compile a portfolio containing: your completed mindset assessment, financial literacy lab results, business idea simulator output, innovation challenge solution, growth tracker logs, and final career roadmap. Present your portfolio to your class in a 10-minute presentation, culminating in a pitch for your most compelling business idea.</p></div>`
+  }
+];
+
+const MINDSET_TRAITS = [
+  { id:'risk', label:'Risk Tolerance', desc:'Willingness to take calculated risks' },
+  { id:'creative', label:'Creativity', desc:'Generating novel ideas and solutions' },
+  { id:'solve', label:'Problem-Solving', desc:'Systematic approach to challenges' },
+  { id:'persist', label:'Persistence', desc:'Continuing despite setbacks' },
+  { id:'lead', label:'Leadership Initiative', desc:'Taking charge and inspiring others' },
+  { id:'opport', label:'Opportunity Recognition', desc:'Spotting unmet needs and gaps' },
+];
+
+const INNOVATION_PROBLEMS = [
+  { id:'waste', title:'Local Waste Management', tag:'Environment', desc:'Your neighborhood generates tons of waste daily. Most of it ends up in open dumps. Design an innovative solution to manage this effectively.' },
+  { id:'canteen', title:'School Canteen Efficiency', tag:'Operations', desc:'The school canteen has 400 students but only 15 minutes recess. Lines are long, food runs out, and quality is inconsistent. Redesign the system.' },
+  { id:'digital', title:'Digital Awareness Gap', tag:'Education', desc:'Many elderly and rural community members cannot use smartphones or access digital services. Design a solution to bridge this gap.' },
+  { id:'water', title:'Clean Water Access', tag:'Infrastructure', desc:'Several villages rely on contaminated water sources. A sustainable, low-cost water purification and distribution system is needed.' },
+  { id:'farmer', title:'Farmer Market Access', tag:'Agriculture', desc:'Local farmers cannot access fair prices because they depend on middlemen. Design a solution connecting farmers directly to consumers.' },
+  { id:'mental', title:'Student Mental Health Support', tag:'Wellness', desc:'Academic pressure, social media, and career uncertainty are affecting student mental health. Design a school-level wellness solution.' },
+];
+
+// ═══════════════════════════════════════════════════════════════
+//  NAVIGATION
+// ═══════════════════════════════════════════════════════════════
+
+function navigate(screenId) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(screenId).classList.add('active');
+  window.scrollTo(0,0);
+  if (screenId === 'screen-dashboard') refreshDashboard();
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  TABS
+// ═══════════════════════════════════════════════════════════════
+
+function switchTab(section, tab) {
+  const prefix = section + '-';
+  document.querySelectorAll(`[id^="${prefix}"]`).forEach(el => el.style.display='none');
+  document.getElementById(prefix + tab).style.display = 'block';
+  const allBtns = document.querySelectorAll(`#screen-${section === 'fin' ? 'financial' : 'dashboard'} .tab-btn`);
+  allBtns.forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  CHAPTERS
+// ═══════════════════════════════════════════════════════════════
+
+function buildChapterGrid() {
+  const grid = document.getElementById('chapterGrid');
+  grid.innerHTML = CHAPTERS.map(ch => `
+    <div class="chapter-card" onclick="openChapter(${ch.id})">
+      <div class="ch-num">CHAPTER ${String(ch.id).padStart(2,'0')}</div>
+      <div class="ch-title">${ch.icon} ${ch.title}</div>
+      <div class="ch-desc">${ch.short}</div>
+    </div>
+  `).join('');
+}
+
+function openChapter(id) {
+  const ch = CHAPTERS.find(c => c.id === id);
+  document.getElementById('chapterContentArea').innerHTML = ch.content;
+  document.getElementById('chapter-list-view').style.display = 'none';
+  document.getElementById('chapter-detail').classList.add('active');
+  window.scrollTo(0,0);
+  // Track chapter read
+  logActivity('chapter', `Read Chapter ${id}: ${ch.title}`, 3);
+}
+
+function showChapterList() {
+  document.getElementById('chapter-detail').classList.remove('active');
+  document.getElementById('chapter-list-view').style.display = 'block';
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  MINDSET SLIDERS
+// ═══════════════════════════════════════════════════════════════
+
+function buildMindsetSliders() {
+  const saved = JSON.parse(localStorage.getItem('mindsetScores') || '{}');
+  document.getElementById('mindset-sliders').innerHTML = MINDSET_TRAITS.map(t => `
+    <div class="assessment-item">
+      <div class="assess-label">
+        <div>
+          <div class="assess-name">${t.label}</div>
+          <div style="font-size:11px;color:var(--muted)">${t.desc}</div>
+        </div>
+        <div class="assess-val" id="val-${t.id}">${saved[t.id]||3}</div>
+      </div>
+      <input type="range" min="1" max="5" value="${saved[t.id]||3}"
+        style="--val:${((saved[t.id]||3)-1)/4*100}%"
+        oninput="updateSlider('${t.id}',this.value)">
+    </div>
+  `).join('');
+}
+
+function updateSlider(id, val) {
+  document.getElementById('val-'+id).textContent = val;
+  const input = event.target;
+  const pct = (val-1)/4*100;
+  input.style.setProperty('--val', pct + '%');
+  input.style.background = `linear-gradient(to right, var(--emerald) 0%, var(--emerald) ${pct}%, rgba(255,255,255,0.1) ${pct}%)`;
+}
+
+function calcMindset() {
+  const vals = {};
+  MINDSET_TRAITS.forEach(t => {
+    vals[t.id] = parseInt(document.querySelector(`input[oninput*="${t.id}"]`).value);
+  });
+  // Formulas
+  const ERI = Math.round(((vals.risk + vals.persist + vals.lead) / 15) * 100);
+  const IPS = Math.round(((vals.creative + vals.opport + vals.solve) / 15) * 100);
+  const RR = Math.round(((vals.persist + vals.risk + vals.solve) / 15) * 100);
+
+  document.getElementById('ms-eri').textContent = ERI + '%';
+  document.getElementById('ms-ips').textContent = IPS + '%';
+  document.getElementById('ms-rr').textContent = RR + '%';
+
+  const avg = (ERI + IPS + RR) / 3;
+  let advice = '';
+  if (avg >= 80) advice = '🌟 <strong>Outstanding!</strong> You have a highly developed entrepreneurial mindset. Focus on execution — your thinking is ready for real ventures.';
+  else if (avg >= 60) advice = '💪 <strong>Strong Foundation.</strong> You have solid entrepreneurial traits. Continue building your weaker areas and start small projects to gain experience.';
+  else if (avg >= 40) advice = '📈 <strong>Developing.</strong> Your entrepreneurial mindset is growing. Daily reflection, reading entrepreneurs\' biographies, and small challenges will accelerate your development.';
+  else advice = '🌱 <strong>Early Stage.</strong> Every great entrepreneur starts here. Focus on building one trait at a time, starting with persistence — it underlies all other entrepreneurial success.';
+  
+  document.getElementById('mindset-advice').innerHTML = `<div class="highlight-box">${advice}</div>`;
+  document.getElementById('mindset-result').classList.add('show');
+  
+  // Store for radar
+  localStorage.setItem('mindsetScores', JSON.stringify({...vals, ERI, IPS, RR}));
+  showToast('Mindset scores calculated!');
+}
+
+function saveMindsetScores() {
+  showToast('Scores saved! ✅');
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  FINANCIAL CALC
+// ═══════════════════════════════════════════════════════════════
+
+function calcFinancial() {
+  const income = parseFloat(document.getElementById('fin_income').value) || 0;
+  const expense = parseFloat(document.getElementById('fin_expense').value) || 0;
+  const saving = parseFloat(document.getElementById('fin_saving').value) || 0;
+  const invest = parseFloat(document.getElementById('fin_invest').value) || 0;
+  const investType = document.getElementById('fin_invest_type').value;
+
+  const rates = { fd:0.06, mutual:0.12, gold:0.08, ppf:0.071 };
+  const rate = rates[investType];
+
+  // Formulas
+  const actualSaving = income - expense;
+  const savingsRatio = Math.round((actualSaving / income) * 100);
+  const budgetEff = Math.round(Math.min(100, (actualSaving / saving) * 100));
+  const stabilityScore = Math.round(
+    (savingsRatio * 0.4) + 
+    (Math.min(100, (invest / income) * 100 * 5) * 0.3) + 
+    (expense <= income ? 30 : 0)
+  );
+  
+  const projectedVal = invest * 12 * (1 + rate);
+
+  document.getElementById('fr-savings-ratio').textContent = savingsRatio + '%';
+  document.getElementById('fr-stability').textContent = stabilityScore + '%';
+  document.getElementById('fr-budget-eff').textContent = budgetEff + '%';
+
+  const sP = Math.min(100, savingsRatio * 2);
+  const eP = Math.max(0, 100 - Math.round((expense/income)*100));
+  const iP = Math.min(100, Math.round((invest/income)*200));
+
+  setBar('p-savings', sP);
+  setBar('p-expense', eP);
+  setBar('p-invest', iP);
+
+  const typeNames = { fd:'Fixed Deposit', mutual:'Mutual Fund', gold:'Gold', ppf:'PPF' };
+  document.getElementById('fin-projection').innerHTML = 
+    `Investing ₹${invest.toLocaleString()}/month in <strong>${typeNames[investType]}</strong> at ${(rate*100).toFixed(1)}% p.a. → <strong>₹${Math.round(projectedVal).toLocaleString()}</strong> after 1 year (₹${Math.round(invest*12*(1+rate)*5).toLocaleString()} after 5 years with compounding)`;
+
+  let advice = '<div style="margin-top:8px">';
+  if (savingsRatio < 10) advice += '⚠️ Your savings ratio is below 10%. Aim for at least 20% of income to savings.<br>';
+  if (expense > income * 0.8) advice += '⚠️ Expenses are over 80% of income. Review and reduce discretionary spending.<br>';
+  if (invest === 0) advice += '💡 Consider starting even a small investment to harness compound growth.<br>';
+  if (savingsRatio >= 20) advice += '✅ Excellent savings ratio! You are on a strong financial path.<br>';
+  if (stabilityScore >= 70) advice += '✅ Strong financial stability score. Keep maintaining this discipline.';
+  advice += '</div>';
+  document.getElementById('fin-advice').innerHTML = advice;
+
+  document.getElementById('fin-result').classList.add('show');
+  
+  // Save data
+  localStorage.setItem('lastFinancial', JSON.stringify({ income, expense, saving, invest, savingsRatio, stabilityScore, budgetEff }));
+  showToast('Financial scores calculated!');
+}
+
+function setBar(id, pct) {
+  document.getElementById(id+'-pct').textContent = pct + '%';
+  setTimeout(() => document.getElementById(id+'-bar').style.width = pct + '%', 50);
+}
+
+function saveFinancialPlan() {
+  const plans = JSON.parse(localStorage.getItem('financialPlans') || '[]');
+  const data = JSON.parse(localStorage.getItem('lastFinancial') || '{}');
+  if (!data.income) { showToast('Calculate first!'); return; }
+  plans.push({ ...data, date: new Date().toLocaleDateString() });
+  localStorage.setItem('financialPlans', JSON.stringify(plans));
+  showToast('Plan saved! ✅');
+}
+
+function loadSavedPlans() {
+  const view = document.getElementById('saved-plans-view');
+  view.style.display = view.style.display === 'none' ? 'block' : 'none';
+  const plans = JSON.parse(localStorage.getItem('financialPlans') || '[]');
+  if (!plans.length) { document.getElementById('saved-plans-list').innerHTML = '<p style="color:var(--muted);font-size:13px">No saved plans yet.</p>'; return; }
+  document.getElementById('saved-plans-list').innerHTML = `
+    <table class="data-table">
+      <thead><tr><th>Date</th><th>Income</th><th>Savings %</th><th>Stability</th><th>Budget Eff.</th></tr></thead>
+      <tbody>${plans.map(p => `<tr>
+        <td>${p.date}</td>
+        <td>₹${p.income?.toLocaleString()}</td>
+        <td><span class="pill ${p.savingsRatio>=20?'pill-green':'pill-gold'}">${p.savingsRatio}%</span></td>
+        <td><span class="pill ${p.stabilityScore>=70?'pill-green':'pill-gold'}">${p.stabilityScore}%</span></td>
+        <td><span class="pill ${p.budgetEff>=80?'pill-green':'pill-gold'}">${p.budgetEff}%</span></td>
+      </tr>`).join('')}</tbody>
+    </table>`;
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  BUSINESS SIMULATOR
+// ═══════════════════════════════════════════════════════════════
+
+function calcBusiness() {
+  const invest = parseFloat(document.getElementById('biz_invest').value) || 0;
+  const revenue = parseFloat(document.getElementById('biz_revenue').value) || 0;
+  const cost = parseFloat(document.getElementById('biz_cost').value) || 0;
+  const market = document.getElementById('biz_market').value;
+  const risk = document.getElementById('biz_risk').value;
+  const cat = document.getElementById('biz_cat').value;
+
+  const profit = revenue - cost;
+  const annualProfit = profit * 12;
+  const roi = invest > 0 ? Math.round((annualProfit / invest) * 100) : 0;
+  
+  const riskMultiplier = { low:1.0, medium:0.85, high:0.65 }[risk];
+  const marketMultiplier = { local:0.8, district:0.9, state:1.0, online:1.1 }[market];
+  
+  let feasibility = 0;
+  if (roi > 0) feasibility += 30;
+  if (roi > 20) feasibility += 15;
+  if (roi > 50) feasibility += 10;
+  if (profit > 0) feasibility += 20;
+  feasibility += Math.min(25, Math.round(roi / 4));
+  feasibility = Math.round(feasibility * riskMultiplier * marketMultiplier);
+  feasibility = Math.min(99, Math.max(5, feasibility));
+
+  document.getElementById('biz-feasibility').textContent = feasibility + '%';
+  document.getElementById('biz-profit').textContent = profit > 0 ? '₹' + profit.toLocaleString() : '₹0';
+  document.getElementById('biz-roi').textContent = roi + '%';
+
+  let analysis = `<div class="highlight-box">`;
+  const months = invest > 0 && profit > 0 ? Math.ceil(invest / profit) : 'N/A';
+  analysis += `<strong>Break-Even Point:</strong> ${months === 'N/A' ? 'Cannot calculate — business is not profitable at these numbers.' : months + ' months to recover initial investment.'}<br>`;
+  if (feasibility >= 70) analysis += '<br>✅ <strong>Strong Feasibility</strong> — This business idea shows good financial viability. The risk-adjusted returns support moving forward to planning.';
+  else if (feasibility >= 50) analysis += '<br>💛 <strong>Moderate Feasibility</strong> — The idea has promise but needs refinement. Consider ways to increase revenue or reduce costs before launching.';
+  else analysis += '<br>⚠️ <strong>Low Feasibility</strong> — The current numbers suggest this idea may not be financially viable. Re-evaluate pricing, cost structure, or market size.';
+  analysis += '</div>';
+  document.getElementById('biz-analysis').innerHTML = analysis;
+
+  // Bar chart (12-month projection with growth)
+  const bars = Array.from({length:12}, (_,i) => Math.max(0, profit * (1 + i * 0.03)));
+  const maxBar = Math.max(...bars);
+  document.getElementById('biz-bar-chart').innerHTML = bars.map(b => 
+    `<div class="mini-bar" style="height:${Math.round((b/maxBar)*56)+4}px" title="₹${Math.round(b).toLocaleString()}"></div>`
+  ).join('');
+
+  document.getElementById('biz-result').classList.add('show');
+  localStorage.setItem('lastBusiness', JSON.stringify({ invest, revenue, cost, profit, roi, feasibility }));
+  showToast('Business analysis complete!');
+}
+
+function saveBusinessSim() {
+  const sims = JSON.parse(localStorage.getItem('businessSimulations') || '[]');
+  const data = JSON.parse(localStorage.getItem('lastBusiness') || '{}');
+  if (!data.invest) { showToast('Analyze first!'); return; }
+  sims.push({ ...data, date: new Date().toLocaleDateString() });
+  localStorage.setItem('businessSimulations', JSON.stringify(sims));
+  showToast('Simulation saved! ✅');
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  SOCIAL ENTERPRISE
+// ═══════════════════════════════════════════════════════════════
+
+function calcSocial() {
+  const problem = document.getElementById('soc_problem').value;
+  const community = parseInt(document.getElementById('soc_community').value) || 100;
+  const fund = parseFloat(document.getElementById('soc_fund').value) || 10000;
+  const revenue = document.getElementById('soc_revenue').value;
+
+  const problemScores = { waste:85, edu:90, water:95, women:88, farmer:82, digital:75, mental:80 };
+  const revenueScores = { grant:70, freemium:80, subsidy:85, product:75 };
+  
+  const baseImpact = problemScores[problem] || 75;
+  const baseSustain = revenueScores[revenue] || 75;
+  const reach = Math.round(community * (fund > 50000 ? 0.6 : fund > 20000 ? 0.4 : 0.25));
+
+  const impactScore = Math.round(baseImpact * (community > 1000 ? 1.1 : 1.0));
+  const sustainScore = Math.round(baseSustain * (fund > 30000 ? 1.05 : 0.95));
+
+  document.getElementById('soc-impact').textContent = Math.min(99, impactScore) + '%';
+  document.getElementById('soc-sustain').textContent = Math.min(99, sustainScore) + '%';
+  document.getElementById('soc-reach').textContent = reach.toLocaleString();
+
+  const problemLabels = { waste:'waste management', edu:'education access', water:'clean water', women:'women empowerment', farmer:'farmer income', digital:'digital literacy', mental:'mental health' };
+  document.getElementById('soc-analysis').innerHTML = `
+    <div class="highlight-box">
+      <strong>Social Impact Summary:</strong><br>
+      Your ${problemLabels[problem]} enterprise could reach approximately <strong>${reach.toLocaleString()} people</strong> with an initial fund of ₹${fund.toLocaleString()}.<br><br>
+      <strong>Recommendation:</strong> ${sustainScore >= 80 ? 'Your revenue model shows strong sustainability potential. This enterprise could operate without perpetual grant dependency.' : 'Consider diversifying your revenue streams to reduce dependence on grants and increase long-term sustainability.'}
+    </div>`;
+  document.getElementById('soc-result').classList.add('show');
+  localStorage.setItem('lastSocial', JSON.stringify({ impactScore, sustainScore, reach }));
+  showToast('Social enterprise evaluated!');
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  INNOVATION
+// ═══════════════════════════════════════════════════════════════
+
+let selectedProblem = null;
+
+function buildInnovationProblems() {
+  document.getElementById('innovation-problems').innerHTML = INNOVATION_PROBLEMS.map(p => `
+    <div class="innovation-card" id="ic-${p.id}" onclick="selectProblem('${p.id}')">
+      <div class="ic-tag">${p.tag}</div>
+      <div class="ic-title">${p.title}</div>
+      <div class="ic-desc">${p.desc}</div>
+    </div>
+  `).join('');
+}
+
+function selectProblem(id) {
+  selectedProblem = id;
+  document.querySelectorAll('.innovation-card').forEach(c => c.classList.remove('selected'));
+  document.getElementById('ic-' + id).classList.add('selected');
+  document.getElementById('innovation-solution-card').style.display = 'block';
+  document.getElementById('inno-result').classList.remove('show');
+}
+
+function evalInnovation() {
+  if (!selectedProblem) { showToast('Select a challenge first!'); return; }
+  const solution = document.getElementById('inno_solution').value.trim();
+  const tech = document.getElementById('inno_tech').value;
+  const time = parseInt(document.getElementById('inno_time').value);
+  const stake = parseInt(document.getElementById('inno_stake').value);
+
+  if (solution.split(' ').length < 20) { showToast('Please describe your solution in more detail (20+ words)'); return; }
+
+  const techScore = { none:50, basic:65, mobile:80, iot:88, ai:92 }[tech];
+  const timeScore = { 1:70, 3:80, 6:90, 12:85 }[time];
+  const stakeScore = [0, 60, 75, 88, 95][stake];
+  const wordScore = Math.min(100, solution.split(' ').length * 2);
+
+  const depth = Math.round((wordScore * 0.4 + techScore * 0.3 + timeScore * 0.3));
+  const feasibility = Math.round((timeScore * 0.4 + stakeScore * 0.3 + techScore * 0.3));
+  const impact = Math.round((stakeScore * 0.5 + wordScore * 0.3 + techScore * 0.2));
+
+  document.getElementById('inno-depth').textContent = Math.min(99,depth) + '%';
+  document.getElementById('inno-feasibility').textContent = Math.min(99,feasibility) + '%';
+  document.getElementById('inno-impact').textContent = Math.min(99,impact) + '%';
+
+  const avg = (depth + feasibility + impact) / 3;
+  let feedback = '<div class="highlight-box">';
+  if (avg >= 80) feedback += '🌟 <strong>Excellent Innovation!</strong> Your solution demonstrates strong creative thinking, practical feasibility, and meaningful social impact. This idea is worth developing further.';
+  else if (avg >= 65) feedback += '💡 <strong>Good Innovation.</strong> Your solution shows solid thinking. Consider deepening the technology component and expanding stakeholder involvement to strengthen the impact.';
+  else feedback += '📝 <strong>Keep Developing.</strong> Your solution has a foundation. Expand your description with more specific implementation steps, and consider how technology could amplify your impact.';
+  feedback += '</div>';
+  document.getElementById('inno-feedback').innerHTML = feedback;
+  document.getElementById('inno-result').classList.add('show');
+  localStorage.setItem('lastInnovation', JSON.stringify({ problem: selectedProblem, depth, feasibility, impact }));
+  showToast('Innovation evaluated!');
+}
+
+function saveInnovation() {
+  const logs = JSON.parse(localStorage.getItem('innovationLogs') || '[]');
+  const data = JSON.parse(localStorage.getItem('lastInnovation') || '{}');
+  if (!data.problem) { showToast('Evaluate first!'); return; }
+  logs.push({ ...data, date: new Date().toLocaleDateString() });
+  localStorage.setItem('innovationLogs', JSON.stringify(logs));
+  showToast('Innovation saved! ✅');
+  logActivity('innovation', `Completed innovation challenge: ${data.problem}`, 4);
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  TRACKER
+// ═══════════════════════════════════════════════════════════════
+
+function addTrackerLog() {
+  const type = document.getElementById('track_type').value;
+  const note = document.getElementById('track_note').value.trim();
+  const effort = parseInt(document.getElementById('track_effort').value) || 3;
+  const quality = parseInt(document.getElementById('track_quality').value) || 3;
+  
+  if (!note) { showToast('Please add a reflection note'); return; }
+  logActivity(type, note, effort, quality);
+  document.getElementById('track_note').value = '';
+  refreshTrackerScores();
+  renderTrackerLog();
+  showToast('Activity logged! ✅');
+}
+
+function logActivity(type, note, effort=3, quality=3) {
+  const logs = JSON.parse(localStorage.getItem('growthLogs') || '[]');
+  logs.push({ type, note, effort, quality, date: new Date().toLocaleDateString(), ts: Date.now() });
+  localStorage.setItem('growthLogs', JSON.stringify(logs));
+  // Update heatmap
+  const heatData = JSON.parse(localStorage.getItem('heatData') || '{}');
+  const today = new Date().toISOString().split('T')[0];
+  heatData[today] = (heatData[today] || 0) + 1;
+  localStorage.setItem('heatData', JSON.stringify(heatData));
+}
+
+function refreshTrackerScores() {
+  const logs = JSON.parse(localStorage.getItem('growthLogs') || '[]');
+  if (!logs.length) { document.getElementById('trak-igi').textContent='—'; document.getElementById('trak-bsp').textContent='—'; document.getElementById('trak-total').textContent=0; return; }
+  const total = logs.length;
+  const avgEffort = logs.reduce((s,l) => s + l.effort, 0) / total;
+  const avgQuality = logs.reduce((s,l) => s + l.quality, 0) / total;
+  const innLogs = logs.filter(l => ['idea','innovation'].includes(l.type)).length;
+  const IGI = Math.round(Math.min(99, (innLogs/total)*50 + avgEffort*10));
+  const BSP = Math.round(Math.min(99, (avgEffort + avgQuality) / 2 * 20 * (total/20 > 1 ? 1 : total/20)));
+  document.getElementById('trak-igi').textContent = IGI + '%';
+  document.getElementById('trak-bsp').textContent = BSP + '%';
+  document.getElementById('trak-total').textContent = total;
+}
+
+function renderTrackerLog() {
+  const logs = JSON.parse(localStorage.getItem('growthLogs') || '[]');
+  const typeEmoji = { idea:'💡', plan:'📋', finance:'💰', research:'🔍', skill:'🛠️', reflection:'🧘', chapter:'📖', innovation:'⚡' };
+  if (!logs.length) return;
+  document.getElementById('tracker-log-list').innerHTML = [...logs].reverse().slice(0,20).map(l => `
+    <div class="log-entry">
+      <div>
+        <div style="font-weight:600;margin-bottom:4px">${typeEmoji[l.type]||'📝'} ${l.note.substring(0,80)}${l.note.length>80?'...':''}</div>
+        <div style="font-size:11px;color:var(--muted)">Effort: ${l.effort}/5 &nbsp;|&nbsp; Quality: ${l.quality}/5</div>
+      </div>
+      <div class="log-date">${l.date}</div>
+    </div>
+  `).join('');
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  DASHBOARD
+// ═══════════════════════════════════════════════════════════════
+
+function refreshDashboard() {
+  const ms = JSON.parse(localStorage.getItem('mindsetScores') || '{}');
+  const fin = JSON.parse(localStorage.getItem('lastFinancial') || '{}');
+  const inno = JSON.parse(localStorage.getItem('lastInnovation') || '{}');
+
+  document.getElementById('db-eri').textContent = ms.ERI ? ms.ERI + '%' : '—';
+  document.getElementById('db-fin').textContent = fin.stabilityScore ? fin.stabilityScore + '%' : '—';
+  document.getElementById('db-inno').textContent = inno.depth ? inno.depth + '%' : '—';
+
+  // Radar
+  drawRadar(ms);
+  
+  // Fin progress bars
+  const finBarsEl = document.getElementById('fin-progress-bars');
+  if (fin.savingsRatio) {
+    finBarsEl.innerHTML = `
+      <div class="prog-item"><div class="prog-label"><span>Savings Ratio</span><span>${fin.savingsRatio}%</span></div><div class="prog-bar-bg"><div class="prog-bar-fill" style="width:${Math.min(100,fin.savingsRatio*2)}%"></div></div></div>
+      <div class="prog-item"><div class="prog-label"><span>Budget Efficiency</span><span>${fin.budgetEff}%</span></div><div class="prog-bar-bg"><div class="prog-bar-fill" style="width:${fin.budgetEff}%"></div></div></div>
+      <div class="prog-item"><div class="prog-label"><span>Financial Stability</span><span>${fin.stabilityScore}%</span></div><div class="prog-bar-bg"><div class="prog-bar-fill" style="width:${fin.stabilityScore}%"></div></div></div>
+    `;
+  } else {
+    finBarsEl.innerHTML = '<p style="color:var(--muted);font-size:13px">Complete the Financial Literacy Lab to see your progress.</p>';
+  }
+
+  // Heatmap
+  buildHeatmap();
+  refreshTrackerScores();
+  renderTrackerLog();
+}
+
+function drawRadar(ms) {
+  const canvas = document.getElementById('radarCanvas');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+  
+  const cx = W/2, cy = H/2, r = Math.min(W,H)/2 - 40;
+  const labels = ['Risk', 'Creativity', 'Problem\nSolving', 'Persistence', 'Leadership', 'Opportunity'];
+  const vals = [ms.risk||1, ms.creative||1, ms.solve||1, ms.persist||1, ms.lead||1, ms.opport||1];
+  const n = 6;
+  const angle = (2 * Math.PI) / n;
+
+  // Draw grid
+  for (let ring = 1; ring <= 5; ring++) {
+    ctx.beginPath();
+    for (let i = 0; i < n; i++) {
+      const a = -Math.PI/2 + i * angle;
+      const x = cx + (r * ring / 5) * Math.cos(a);
+      const y = cy + (r * ring / 5) * Math.sin(a);
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.closePath();
+    ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  }
+
+  // Draw spokes
+  for (let i = 0; i < n; i++) {
+    const a = -Math.PI/2 + i * angle;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(cx + r * Math.cos(a), cy + r * Math.sin(a));
+    ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+    ctx.stroke();
+  }
+
+  // Draw data
+  ctx.beginPath();
+  for (let i = 0; i < n; i++) {
+    const a = -Math.PI/2 + i * angle;
+    const v = vals[i] / 5;
+    const x = cx + r * v * Math.cos(a);
+    const y = cy + r * v * Math.sin(a);
+    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+  }
+  ctx.closePath();
+  ctx.fillStyle = 'rgba(16,185,129,0.2)';
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(16,185,129,0.8)';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  // Dots
+  for (let i = 0; i < n; i++) {
+    const a = -Math.PI/2 + i * angle;
+    const v = vals[i] / 5;
+    const x = cx + r * v * Math.cos(a);
+    const y = cy + r * v * Math.sin(a);
+    ctx.beginPath();
+    ctx.arc(x, y, 5, 0, Math.PI*2);
+    ctx.fillStyle = '#10b981';
+    ctx.fill();
+  }
+
+  // Labels
+  ctx.font = '11px DM Sans, sans-serif';
+  ctx.fillStyle = 'rgba(148,163,184,0.9)';
+  ctx.textAlign = 'center';
+  for (let i = 0; i < n; i++) {
+    const a = -Math.PI/2 + i * angle;
+    const lx = cx + (r + 22) * Math.cos(a);
+    const ly = cy + (r + 22) * Math.sin(a);
+    const lines = labels[i].split('\n');
+    lines.forEach((line, li) => ctx.fillText(line, lx, ly + li * 14));
+  }
+}
+
+function buildHeatmap() {
+  const heatData = JSON.parse(localStorage.getItem('heatData') || '{}');
+  const grid = document.getElementById('heatmapGrid');
+  const cells = [];
+  for (let i = 27; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    const key = d.toISOString().split('T')[0];
+    const val = heatData[key] || 0;
+    const cls = val === 0 ? '' : val === 1 ? 'l1' : val <= 3 ? 'l2' : val <= 5 ? 'l3' : 'l4';
+    cells.push(`<div class="heat-cell ${cls}" title="${key}: ${val} activities"></div>`);
+  }
+  grid.innerHTML = cells.join('');
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  REPORT
+// ═══════════════════════════════════════════════════════════════
+
+function generateReport() {
+  const name = document.getElementById('rpt_name').value || 'Student';
+  const cls = document.getElementById('rpt_class').value || 'Class —';
+  const school = document.getElementById('rpt_school').value || '—';
+
+  const ms = JSON.parse(localStorage.getItem('mindsetScores') || '{}');
+  const fin = JSON.parse(localStorage.getItem('lastFinancial') || '{}');
+  const inno = JSON.parse(localStorage.getItem('lastInnovation') || '{}');
+  const biz = JSON.parse(localStorage.getItem('lastBusiness') || '{}');
+  const logs = JSON.parse(localStorage.getItem('growthLogs') || '[]');
+
+  const reportEl = document.getElementById('report-output');
+  reportEl.innerHTML = `
+    <div style="text-align:center;padding:20px 0;border-bottom:1px solid var(--border);margin-bottom:20px">
+      <div style="font-size:11px;color:var(--muted);letter-spacing:0.1em;margin-bottom:4px">ENTREPRENEURSHIP PROFILE REPORT</div>
+      <h2 style="font-family:'Playfair Display',serif;font-size:22px;margin-bottom:4px">${name}</h2>
+      <div style="font-size:13px;color:var(--muted)">${cls} &nbsp;|&nbsp; ${school}</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:6px">Generated: ${new Date().toLocaleDateString('en-IN', {day:'numeric',month:'long',year:'numeric'})}</div>
+    </div>
+
+    <div class="report-section">
+      <h4>🧠 Entrepreneurial Mindset Profile</h4>
+      <table class="data-table">
+        <tr><td>Entrepreneurial Readiness Index</td><td><span class="pill ${ms.ERI>=70?'pill-green':'pill-gold'}">${ms.ERI||'Not assessed'}${ms.ERI?'%':''}</span></td></tr>
+        <tr><td>Innovation Potential Score</td><td><span class="pill ${ms.IPS>=70?'pill-green':'pill-gold'}">${ms.IPS||'Not assessed'}${ms.IPS?'%':''}</span></td></tr>
+        <tr><td>Resilience Rating</td><td><span class="pill ${ms.RR>=70?'pill-green':'pill-gold'}">${ms.RR||'Not assessed'}${ms.RR?'%':''}</span></td></tr>
+      </table>
+    </div>
+
+    <div class="report-section">
+      <h4>💰 Financial Literacy Summary</h4>
+      <table class="data-table">
+        <tr><td>Savings Ratio</td><td>${fin.savingsRatio !== undefined ? fin.savingsRatio+'%' : 'Not assessed'}</td></tr>
+        <tr><td>Financial Stability Score</td><td>${fin.stabilityScore !== undefined ? fin.stabilityScore+'%' : 'Not assessed'}</td></tr>
+        <tr><td>Budget Efficiency Index</td><td>${fin.budgetEff !== undefined ? fin.budgetEff+'%' : 'Not assessed'}</td></tr>
+      </table>
+    </div>
+
+    <div class="report-section">
+      <h4>💡 Innovation Strengths</h4>
+      <table class="data-table">
+        <tr><td>Innovation Depth Score</td><td>${inno.depth !== undefined ? inno.depth+'%' : 'Not assessed'}</td></tr>
+        <tr><td>Practical Feasibility Index</td><td>${inno.feasibility !== undefined ? inno.feasibility+'%' : 'Not assessed'}</td></tr>
+        <tr><td>Social Impact Potential</td><td>${inno.impact !== undefined ? inno.impact+'%' : 'Not assessed'}</td></tr>
+      </table>
+    </div>
+
+    <div class="report-section">
+      <h4>🏪 Business Awareness</h4>
+      <table class="data-table">
+        <tr><td>Business Feasibility Score</td><td>${biz.feasibility !== undefined ? biz.feasibility+'%' : 'Not assessed'}</td></tr>
+        <tr><td>Total Activities Logged</td><td>${logs.length}</td></tr>
+        <tr><td>Chapters Studied</td><td>${logs.filter(l=>l.type==='chapter').length} of 20</td></tr>
+      </table>
+    </div>
+
+    <div class="report-section">
+      <h4>🗺️ 3-Year Development Roadmap</h4>
+      <div class="roadmap-step">
+        <div class="step-num">Y1</div>
+        <div class="step-content">
+          <h5>Foundation &amp; Skill Building</h5>
+          <p>Complete all 20 chapters, identify your core entrepreneurial strength, and launch one small experimental project (school club, community initiative, or micro-business). Develop financial literacy through monthly budgeting practice.</p>
+        </div>
+      </div>
+      <div class="roadmap-step">
+        <div class="step-num">Y2</div>
+        <div class="step-content">
+          <h5>First Venture &amp; Market Learning</h5>
+          <p>Launch a Minimum Viable Product, gather real customer feedback, iterate the business model, and begin building a network of mentors and collaborators. Aim for first revenue, however small — it validates the concept.</p>
+        </div>
+      </div>
+      <div class="roadmap-step">
+        <div class="step-num">Y3</div>
+        <div class="step-content">
+          <h5>Scale &amp; Impact Expansion</h5>
+          <p>Based on Year 2 learning, either scale the successful venture or pivot to a better opportunity. Apply for government startup schemes (PMEGP, JKEDI), seek mentorship from JKYB or Startup India, and begin building your team.</p>
+        </div>
+      </div>
+    </div>
+
+    <div style="text-align:center;padding:16px;background:rgba(16,185,129,0.06);border-radius:10px;margin-top:16px">
+      <div style="font-size:12px;color:var(--muted)">Developed by <strong style="color:var(--emerald)">Mateen Yousuf</strong> &nbsp;|&nbsp; Teacher, School Education Department Kashmir &nbsp;|&nbsp; Aligned with NEP 2020</div>
+    </div>
+  `;
+  document.getElementById('full-report').style.display = 'block';
+  showToast('Report generated! ✅');
+  logActivity('reflection', `Generated entrepreneurship report`, 4, 5);
+}
+
+function exportReportText() {
+  const text = document.getElementById('report-output').innerText;
+  const blob = new Blob([text], { type: 'text/plain' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'entrepreneurship_report.txt';
+  a.click();
+  showToast('Report exported! ✅');
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  TOAST
+// ═══════════════════════════════════════════════════════════════
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════════════════════
+
+document.addEventListener('DOMContentLoaded', () => {
+  buildChapterGrid();
+  buildMindsetSliders();
+  buildInnovationProblems();
+  refreshTrackerScores();
+  renderTrackerLog();
+});
+</script>
+
+<!-- PWA Service Worker Registration -->
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('service-worker.js').catch(() => {});
+  });
+}
+</script>
+</body>
+</html>

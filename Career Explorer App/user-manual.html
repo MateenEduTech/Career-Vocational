@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>User Manual – Career Explorer App</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --navy:#0a0e27; --navy2:#111633; --blue:#1a56db; --gold:#f5a623;
+      --teal:#0fcfb8; --rose:#e8445a; --lavender:#a78bfa;
+      --white:#f0f4ff; --muted:#8892b0; --card:#13193a;
+    }
+    * { box-sizing:border-box; margin:0; padding:0; }
+    body { font-family:'DM Sans',sans-serif; background:var(--navy); color:var(--white); line-height:1.8; }
+
+    .topbar {
+      background:rgba(10,14,39,0.97); border-bottom:1px solid rgba(26,86,219,0.3);
+      padding:14px 32px; display:flex; align-items:center; justify-content:space-between;
+      position:sticky; top:0; z-index:50; backdrop-filter:blur(10px);
+    }
+    .topbar-logo { font-family:'Playfair Display',serif; font-size:1.1rem; color:var(--gold); display:flex; align-items:center; gap:10px; }
+    .back-btn { background:var(--blue); color:#fff; border:none; padding:8px 18px; border-radius:8px; cursor:pointer; font-size:0.82rem; font-family:'DM Sans',sans-serif; }
+
+    .hero {
+      background:linear-gradient(135deg,#0a0e27,#0d1540); border-bottom:1px solid rgba(26,86,219,0.2);
+      padding:56px 40px 44px; text-align:center;
+    }
+    .badge { display:inline-block; background:rgba(26,86,219,0.2); border:1px solid rgba(26,86,219,0.5); color:var(--teal); font-size:0.72rem; letter-spacing:2px; text-transform:uppercase; padding:5px 16px; border-radius:20px; margin-bottom:20px; }
+    .hero h1 { font-family:'Playfair Display',serif; font-size:clamp(1.8rem,4vw,2.8rem); font-weight:900; background:linear-gradient(135deg,#fff 40%,var(--teal)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; margin-bottom:14px; }
+    .hero-sub { color:var(--muted); max-width:640px; margin:0 auto 24px; font-size:0.92rem; }
+    .author-bar { display:inline-flex; align-items:center; gap:14px; background:var(--card); border:1px solid rgba(26,86,219,0.3); border-radius:60px; padding:10px 22px 10px 10px; }
+    .author-bar img { width:44px; height:44px; border-radius:50%; object-fit:cover; border:2px solid var(--gold); }
+    .author-name { font-family:'Playfair Display',serif; font-size:0.88rem; font-weight:700; }
+    .author-role { font-size:0.68rem; color:var(--muted); }
+
+    /* Sidebar TOC + Main content layout */
+    .layout { display:flex; max-width:1100px; margin:0 auto; }
+    .toc {
+      width:240px; flex-shrink:0; padding:32px 16px;
+      position:sticky; top:64px; height:calc(100vh - 64px); overflow-y:auto;
+      border-right:1px solid rgba(255,255,255,0.07);
+    }
+    .toc h4 { font-size:0.7rem; text-transform:uppercase; letter-spacing:1.5px; color:var(--muted); margin-bottom:14px; }
+    .toc a { display:block; padding:6px 10px; border-radius:6px; text-decoration:none; color:var(--muted); font-size:0.8rem; margin-bottom:2px; transition:all 0.2s; }
+    .toc a:hover { background:rgba(26,86,219,0.12); color:var(--teal); }
+
+    .content { flex:1; padding:40px 32px 80px; max-width:820px; }
+
+    h2 { font-family:'Playfair Display',serif; font-size:1.5rem; color:var(--gold); margin:44px 0 12px; border-left:3px solid var(--gold); padding-left:16px; scroll-margin-top:80px; }
+    h3 { font-family:'Playfair Display',serif; font-size:1.1rem; color:var(--teal); margin:26px 0 10px; scroll-margin-top:80px; }
+    h4 { color:var(--lavender); font-size:0.95rem; margin:18px 0 8px; }
+    p { color:#ccd6f6; font-size:0.9rem; margin-bottom:14px; }
+    ul, ol { margin:0 0 16px 22px; color:#ccd6f6; font-size:0.88rem; }
+    li { margin-bottom:7px; }
+    strong { color:var(--white); }
+
+    .step-box {
+      background:var(--card); border-radius:12px; padding:18px 22px; margin:16px 0;
+      border-left:3px solid var(--blue);
+    }
+    .step-box h4 { color:var(--blue); margin-top:0; }
+
+    .tip-box {
+      background:rgba(15,207,184,0.07); border:1px solid rgba(15,207,184,0.2);
+      border-radius:10px; padding:14px 18px; margin:14px 0; font-size:0.86rem; color:#ccd6f6;
+    }
+    .tip-box strong { color:var(--teal); }
+
+    .warn-box {
+      background:rgba(232,68,90,0.07); border:1px solid rgba(232,68,90,0.2);
+      border-radius:10px; padding:14px 18px; margin:14px 0; font-size:0.86rem; color:#ccd6f6;
+    }
+    .warn-box strong { color:var(--rose); }
+
+    .feature-row {
+      display:flex; gap:12px; align-items:flex-start; background:var(--card);
+      border-radius:12px; padding:16px 18px; margin:12px 0;
+      border:1px solid rgba(255,255,255,0.06);
+    }
+    .feature-icon { font-size:1.8rem; flex-shrink:0; }
+    .feature-body h4 { margin:0 0 4px; color:var(--white); font-size:0.92rem; }
+    .feature-body p { margin:0; font-size:0.82rem; }
+
+    table { width:100%; border-collapse:collapse; margin:16px 0; font-size:0.82rem; }
+    th { background:var(--blue); color:#fff; padding:10px 14px; text-align:left; }
+    td { background:var(--card); color:#ccd6f6; padding:10px 14px; border-bottom:1px solid rgba(255,255,255,0.05); vertical-align:top; }
+
+    .kbd { background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15); border-radius:4px; padding:1px 7px; font-size:0.78rem; font-family:monospace; color:var(--white); }
+
+    .footer { text-align:center; padding:28px; border-top:1px solid rgba(255,255,255,0.07); color:var(--muted); font-size:0.78rem; }
+
+    @media (max-width:640px) {
+      .toc { display:none; }
+      .content { padding:24px 16px 60px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-logo">📘 Career Explorer – User Manual</div>
+  <button class="back-btn" onclick="window.location='index.html'">← Back to App</button>
+</div>
+
+<div class="hero">
+  <div class="badge">✦ Complete User Manual ✦</div>
+  <h1>How to Use the<br>Career Explorer App</h1>
+  <p class="hero-sub">A detailed guide for students, teachers, and career counsellors — every feature explained with step-by-step instructions.</p>
+  <div class="author-bar">
+    <img src="author.jpg" alt="Mateen Yousuf" onerror="this.style.display='none'" />
+    <div>
+      <div class="author-name">Mateen Yousuf</div>
+      <div class="author-role">Teacher – School Education Department, J&K</div>
+    </div>
+  </div>
+</div>
+
+<div class="layout">
+
+  <!-- TABLE OF CONTENTS -->
+  <nav class="toc">
+    <h4>Contents</h4>
+    <a href="#getting-started">Getting Started</a>
+    <a href="#installing">Installing the App</a>
+    <a href="#navigation">Navigation</a>
+    <a href="#explore">Explore Careers</a>
+    <a href="#interest">Interest Explorer</a>
+    <a href="#quiz">Career Quiz</a>
+    <a href="#pathways">Education Pathways</a>
+    <a href="#compare">Compare Careers</a>
+    <a href="#bookmarks">Bookmarks</a>
+    <a href="#notes">My Notes</a>
+    <a href="#badges">Badges</a>
+    <a href="#offline">Offline Use</a>
+    <a href="#teachers">For Teachers</a>
+    <a href="#hosting">Hosting & Sharing</a>
+    <a href="#troubleshooting">Troubleshooting</a>
+  </nav>
+
+  <div class="content">
+
+    <!-- GETTING STARTED -->
+    <h2 id="getting-started">1. Getting Started</h2>
+    <p>The Career Explorer App is a <strong>Progressive Web App (PWA)</strong> — it runs directly in your browser and can be installed on your device without any app store. It works <strong>100% offline</strong> after the first visit, making it ideal for schools with limited internet access.</p>
+
+    <h3>System Requirements</h3>
+    <ul>
+      <li>Any modern smartphone, tablet, or computer (Android, iOS, Windows, Mac, Linux)</li>
+      <li>Browser: Chrome, Firefox, Edge, or Safari (Chrome recommended for best PWA support)</li>
+      <li>Storage: Less than 2 MB (very lightweight)</li>
+      <li>Internet: Required only for the first visit; fully offline after that</li>
+    </ul>
+
+    <div class="tip-box">
+      <strong>💡 NEP 2020 Note:</strong> This app requires no registration, no personal data, and no payment — reflecting NEP 2020's principle of equitable, barrier-free educational access.
+    </div>
+
+    <!-- INSTALLING -->
+    <h2 id="installing">2. Installing the App on Your Device</h2>
+
+    <h3>On Android (Chrome Browser)</h3>
+    <ol>
+      <li>Open the app URL or the <kbd class="kbd">index.html</kbd> file in Chrome</li>
+      <li>Look for the <strong>"📲 Install Career Explorer App"</strong> banner at the bottom of the screen</li>
+      <li>Tap it, then tap <strong>Install</strong> in the popup</li>
+      <li>The app icon will appear on your home screen — tap it to launch like a native app</li>
+    </ol>
+
+    <h3>On Desktop (Chrome/Edge)</h3>
+    <ol>
+      <li>Open the app in Chrome or Edge</li>
+      <li>Click the install icon (⊕) in the address bar, OR go to the browser menu → <strong>Install Career Explorer</strong></li>
+      <li>Click <strong>Install</strong> — the app opens in its own window</li>
+    </ol>
+
+    <h3>Running Locally from Files</h3>
+    <div class="step-box">
+      <h4>Option A: VS Code Live Server (Recommended)</h4>
+      <ol>
+        <li>Download VS Code and install the <strong>Live Server</strong> extension</li>
+        <li>Place all app files in one folder (<kbd class="kbd">career-explorer-app/</kbd>)</li>
+        <li>Right-click <kbd class="kbd">index.html</kbd> → <strong>Open with Live Server</strong></li>
+        <li>App opens at <kbd class="kbd">http://127.0.0.1:5500</kbd></li>
+      </ol>
+    </div>
+    <div class="step-box">
+      <h4>Option B: Python Simple Server</h4>
+      <p>Open terminal in the app folder and run: <br>
+      Python 3: <kbd class="kbd">python -m http.server 8000</kbd><br>
+      Then visit: <kbd class="kbd">http://localhost:8000</kbd></p>
+    </div>
+
+    <!-- NAVIGATION -->
+    <h2 id="navigation">3. Navigating the App</h2>
+    <p>The app has two navigation systems working together:</p>
+
+    <div class="feature-row">
+      <div class="feature-icon">📱</div>
+      <div class="feature-body">
+        <h4>Bottom Navigation Bar (Mobile)</h4>
+        <p>The 9-tab bar at the bottom of the screen is your primary navigation on mobile devices. Each icon leads to a major section: Home, Explore, Interests, Quiz, Paths, Compare, Saved, Notes, Badges.</p>
+      </div>
+    </div>
+    <div class="feature-row">
+      <div class="feature-icon">🖥️</div>
+      <div class="feature-body">
+        <h4>Top Navigation Bar (Desktop)</h4>
+        <p>On wider screens, the top bar shows Home, Explore, Quiz, and Pathways buttons for quick access.</p>
+      </div>
+    </div>
+
+    <!-- EXPLORE CAREERS -->
+    <h2 id="explore">4. Explore Careers</h2>
+    <p>This is the core content module — your gateway to 20+ detailed career profiles (expandable to 50+) covering Technology, Healthcare, Law, Finance, Arts, Environment, Education, Government, and more.</p>
+
+    <h3>How to Use</h3>
+    <ol>
+      <li>Tap <strong>🔭 Explore</strong> in the bottom navigation</li>
+      <li>Browse career cards or use the <strong>search bar</strong> to find specific careers</li>
+      <li>Use the <strong>category filter buttons</strong> (All Fields, Technology, Healthcare, etc.) to narrow down</li>
+      <li>Tap any career card to open the full detail modal</li>
+    </ol>
+
+    <h3>Career Detail Modal</h3>
+    <p>When you tap a career card, a detailed panel opens with:</p>
+    <ul>
+      <li><strong>Overview:</strong> What this career is and its real-world role</li>
+      <li><strong>Key Skills Required:</strong> 6+ specific skills shown as chips</li>
+      <li><strong>Education Pathway:</strong> Step-by-step numbered journey from school to career</li>
+      <li><strong>Future Outlook:</strong> Growth analysis and India-specific opportunities</li>
+      <li><strong>🔖 Bookmark Button:</strong> Top-right corner — save careers you want to revisit</li>
+    </ul>
+
+    <div class="tip-box">
+      <strong>💡 Teacher Tip:</strong> Use the Explore section during Career Awareness periods (SAT, Activity periods, or Life Skills classes). Ask students to open 3 careers and take notes on which one interests them most and why.
+    </div>
+
+    <!-- INTEREST EXPLORER -->
+    <h2 id="interest">5. Interest Explorer</h2>
+    <p>The Interest Explorer helps students discover careers matched to their personal interests — aligned with NCF 2023's emphasis on self-awareness and student-centered learning.</p>
+
+    <h3>Step-by-Step Guide</h3>
+    <ol>
+      <li>Tap <strong>💡 Interests</strong> in the bottom navigation</li>
+      <li>You will see <strong>8 interest tiles</strong>: Technology, Science, Helping People, Arts & Creativity, Data & Analysis, Communication & Writing, Business & Finance, Nature & Environment</li>
+      <li>Tap one or more tiles that resonate with you — they will highlight in teal when selected</li>
+      <li>You may select <strong>multiple interests</strong> (recommended for more results)</li>
+      <li>Tap <strong>"🔍 Find Matching Careers"</strong></li>
+      <li>A grid of matched career cards appears below — tap any to view details</li>
+    </ol>
+
+    <div class="tip-box">
+      <strong>💡 Classroom Activity Idea:</strong> Ask each student to select their top 2 interests, find matching careers, then present to the class why one career matched them. This builds self-awareness and communication skills simultaneously — both NCF 2023 priorities.
+    </div>
+
+    <!-- QUIZ -->
+    <h2 id="quiz">6. Career Discovery Quiz</h2>
+    <p>The quiz is the most reflective tool in the app — 10 carefully crafted questions help students identify their dominant interest profile and receive personalized career suggestions. It is based on career development psychology and NCF 2023's holistic learning philosophy.</p>
+
+    <h3>How to Use</h3>
+    <ol>
+      <li>Tap <strong>🧠 Quiz</strong> in the navigation</li>
+      <li>Answer each question by tapping the option that best describes you — there are no right or wrong answers</li>
+      <li>The progress bar at the top shows how far along you are (10 questions total)</li>
+      <li>After the final question, your result appears automatically</li>
+      <li>The result shows: your dominant career profile type, a description, and 4–5 matched career suggestions</li>
+      <li>Tap any career suggestion to view its full profile</li>
+      <li>Tap <strong>"🔄 Retake Quiz"</strong> to try again with different answers</li>
+    </ol>
+
+    <h3>Understanding Quiz Results</h3>
+    <p>The quiz maps your answers to 8 interest domains (Technology, Science, Helping, Creativity, Analysis, Communication, Business, Environment). The domain with the highest score becomes your career profile. Your top 2 domains are used to match careers.</p>
+
+    <div class="warn-box">
+      <strong>⚠️ Important Note for Students:</strong> Quiz results are suggestions for exploration, not a life decision. NEP 2020 encourages flexible, open exploration — your interests can and will change. Take the quiz multiple times with honest answers.
+    </div>
+
+    <!-- PATHWAYS -->
+    <h2 id="pathways">7. Education Pathways</h2>
+    <p>The Pathways section provides visual, linear roadmaps showing how to get from your current school level to a successful career. Six major pathways are included, all reflecting NEP 2020's emphasis on flexible academic routes.</p>
+
+    <h3>Available Pathways</h3>
+    <table>
+      <thead><tr><th>Pathway</th><th>Best For</th></tr></thead>
+      <tbody>
+        <tr><td>🔬 Science (PCM) → Engineering</td><td>Students interested in technology, construction, design</td></tr>
+        <tr><td>🧬 Science (PCB) → Medicine</td><td>Students interested in healthcare, biology, research</td></tr>
+        <tr><td>📚 Humanities → Law / Civil Services</td><td>Students interested in governance, justice, society</td></tr>
+        <tr><td>💰 Commerce → Finance / CA</td><td>Students interested in business, accounting, economics</td></tr>
+        <tr><td>🎨 Arts → Design / Media</td><td>Students interested in visual arts, film, communication</td></tr>
+        <tr><td>🌿 Environment → Green Careers</td><td>Students passionate about nature and sustainability</td></tr>
+      </tbody>
+    </table>
+
+    <h3>How to Read the Pathway Map</h3>
+    <p>Each pathway shows a horizontal flow: each <strong>blue node</strong> is a stage, connected by gold arrows <strong>→</strong>. Read left to right. The flow represents the typical journey from secondary school to professional practice — but remember, NEP 2020 means there are often multiple valid routes.</p>
+
+    <div class="tip-box">
+      <strong>💡 Class 9–10 Teacher Tip:</strong> Show the Pathways section during stream selection counselling sessions. Ask students: "Which path excites you? Which first step have you already taken?" This creates meaningful stream selection conversations grounded in real educational roadmaps.
+    </div>
+
+    <!-- COMPARE -->
+    <h2 id="compare">8. Compare Careers</h2>
+    <p>The Comparison Tool enables structured, evidence-based career decision-making — directly aligned with PARAKH's emphasis on informed evaluation and analytical thinking skills.</p>
+
+    <h3>How to Use</h3>
+    <ol>
+      <li>Tap <strong>⚖️ Compare</strong> in the navigation</li>
+      <li>Use the first dropdown to select <strong>Career 1</strong></li>
+      <li>Use the second dropdown to select <strong>Career 2</strong></li>
+      <li>The comparison table generates automatically below</li>
+      <li>The table shows 7 dimensions: Field, Salary Range, Future Outlook, Key Skills, Top Entry Route, Tags, and Overview</li>
+    </ol>
+
+    <h3>Dimensions Explained</h3>
+    <ul>
+      <li><strong>Field:</strong> The broad professional category of each career</li>
+      <li><strong>Salary Range:</strong> Indicative annual income range in Indian Rupees (₹)</li>
+      <li><strong>Future Outlook:</strong> Star rating (⭐) based on projected growth and demand</li>
+      <li><strong>Key Skills:</strong> Top 3 skills required — helps students assess their own alignment</li>
+      <li><strong>Top Entry Route:</strong> The most common first step in the educational pathway</li>
+    </ul>
+
+    <div class="tip-box">
+      <strong>💡 Classroom Activity:</strong> Give students a worksheet: "Compare one career you're excited about with one your parents suggest. What does the data show? What questions does it raise?" This builds critical thinking and family communication simultaneously.
+    </div>
+
+    <!-- BOOKMARKS -->
+    <h2 id="bookmarks">9. Bookmarks — My Saved Careers</h2>
+    <p>Bookmarks allow students to save careers they find interesting during exploration and revisit them for deeper study — functioning as a personal shortlist for career planning.</p>
+
+    <h3>How to Bookmark a Career</h3>
+    <ol>
+      <li>Open any career (from Explore, Interest Explorer, or Quiz results)</li>
+      <li>Tap the <strong>🔖 bookmark icon</strong> in the top-right corner of the career detail panel</li>
+      <li>The icon turns gold (★) to confirm it's saved</li>
+      <li>To remove: tap the gold bookmark again</li>
+    </ol>
+
+    <h3>Viewing Bookmarks</h3>
+    <ol>
+      <li>Tap <strong>🔖 Saved</strong> in the bottom navigation</li>
+      <li>All saved careers appear as cards — tap any to reopen the full detail</li>
+      <li>Bookmarks persist across sessions (stored in your browser's local storage)</li>
+    </ol>
+
+    <div class="warn-box">
+      <strong>⚠️ Important:</strong> Bookmarks are saved in your browser's local storage. Clearing browser data or using a different browser/device will reset them. Encourage students to take a screenshot of their bookmarks list for their records.
+    </div>
+
+    <!-- NOTES -->
+    <h2 id="notes">10. My Notes</h2>
+    <p>The Notes section is a private offline journal — students write career reflections, goals, and questions. This implements NCF 2023's emphasis on metacognition and reflective learning practices.</p>
+
+    <h3>How to Use</h3>
+    <ol>
+      <li>Tap <strong>📝 Notes</strong> in the bottom navigation</li>
+      <li>Type in the large text area — write freely about your career thoughts</li>
+      <li>Tap <strong>💾 Save Notes</strong> — a confirmation appears briefly</li>
+      <li>Your notes are automatically restored every time you return to this section</li>
+    </ol>
+
+    <h4>Suggested Note Prompts for Students</h4>
+    <ul>
+      <li>"The career I explored today that surprised me was…"</li>
+      <li>"My strongest interest from the quiz was… because…"</li>
+      <li>"The educational pathway I need to follow for my dream career is…"</li>
+      <li>"Three questions I want to ask a professional in this field…"</li>
+      <li>"My parent's suggested career vs my chosen career — differences are…"</li>
+    </ul>
+
+    <!-- BADGES -->
+    <h2 id="badges">11. Badges & Achievements</h2>
+    <p>The gamification system awards badges for meaningful app interactions — encouraging students to engage deeply with all features. This reflects NEP 2020's vision of recognizing holistic achievement beyond exam scores.</p>
+
+    <table>
+      <thead><tr><th>Badge</th><th>How to Earn</th></tr></thead>
+      <tbody>
+        <tr><td>🔭 Career Explorer</td><td>View 5 or more career profiles</td></tr>
+        <tr><td>🌟 Opportunity Seeker</td><td>View 10 or more career profiles</td></tr>
+        <tr><td>🧠 Deep Thinker</td><td>Complete the full Career Quiz</td></tr>
+        <tr><td>🗺️ Future Planner</td><td>Save 3 or more bookmarks</td></tr>
+        <tr><td>📝 Reflective Writer</td><td>Save at least one note</td></tr>
+        <tr><td>📊 Career Analyst</td><td>Use the Compare tool at least once</td></tr>
+      </tbody>
+    </table>
+
+    <div class="tip-box">
+      <strong>💡 Teacher Tip:</strong> Use badges as a simple classroom achievement system. At the end of a career guidance period, ask: "Who earned the Opportunity Seeker badge? Who earned the Reflective Writer badge?" This creates positive motivation without competition.
+    </div>
+
+    <!-- OFFLINE -->
+    <h2 id="offline">12. Using the App Offline</h2>
+    <p>The app is designed for offline-first use. After the first successful load with internet:</p>
+    <ul>
+      <li>The Service Worker automatically caches all app files</li>
+      <li>On subsequent visits — even with no internet — the full app loads</li>
+      <li>All features work offline: exploring careers, the quiz, pathways, compare, bookmarks, and notes</li>
+      <li>The only thing that requires internet is loading the app for the very first time</li>
+    </ul>
+
+    <div class="tip-box">
+      <strong>💡 School Setup Tip:</strong> Load the app once on Wi-Fi (school or home internet) before taking it to areas with poor connectivity. After that first load, it works permanently offline on that device until browser data is cleared.
+    </div>
+
+    <!-- TEACHERS -->
+    <h2 id="teachers">13. Guide for Teachers & Counsellors</h2>
+    <p>This app is designed to complement structured career counselling sessions. Here are recommended ways to integrate it into school activities:</p>
+
+    <h3>Suggested Lesson Plans</h3>
+    <div class="step-box">
+      <h4>Session 1: Career Awareness (45 minutes)</h4>
+      <ol>
+        <li>Open the app on the class display (projector or smart board)</li>
+        <li>Navigate to Explore → browse 3 careers from different fields together</li>
+        <li>Ask students: "Which skill from these careers do you already have?"</li>
+        <li>Students individually explore 2 more careers on their own devices</li>
+        <li>Exit activity: Each student bookmarks 1 career and writes one sentence in Notes</li>
+      </ol>
+    </div>
+
+    <div class="step-box">
+      <h4>Session 2: Self-Discovery Quiz (30 minutes)</h4>
+      <ol>
+        <li>Introduce the Interest Explorer — demonstrate selecting interests on display</li>
+        <li>Students individually complete the Career Quiz on their devices</li>
+        <li>Students write their quiz result in their Notes section</li>
+        <li>Group discussion: "Did the result surprise you? Why or why not?"</li>
+        <li>Connect quiz results to stream selection considerations</li>
+      </ol>
+    </div>
+
+    <div class="step-box">
+      <h4>Session 3: Pathway Planning (45 minutes)</h4>
+      <ol>
+        <li>Show the Education Pathways section on display</li>
+        <li>Walk through 2 pathways together — ask students to identify where they currently are</li>
+        <li>Students choose their preferred pathway and use Compare to evaluate 2 related careers</li>
+        <li>Students write a career plan in Notes: "My goal career is X. The steps I need to take are…"</li>
+        <li>Teacher reviews notes with individual students for counselling follow-up</li>
+      </ol>
+    </div>
+
+    <h3>Assessment Integration</h3>
+    <p>While the app has no built-in teacher dashboard (by design — privacy-first), teachers can:</p>
+    <ul>
+      <li>Ask students to share their Notes screenshot as a written reflection assignment</li>
+      <li>Ask students to share their Bookmarks list as a "Career Shortlist" portfolio submission</li>
+      <li>Use badge screenshots as evidence of career exploration for holistic assessment records</li>
+    </ul>
+
+    <!-- HOSTING -->
+    <h2 id="hosting">14. Hosting & Sharing the App</h2>
+
+    <h3>GitHub Pages (Free)</h3>
+    <ol>
+      <li>Create a free account at <strong>github.com</strong></li>
+      <li>Create a new repository named <kbd class="kbd">career-explorer</kbd></li>
+      <li>Upload all app files (index.html, manifest.json, service-worker.js, author.jpg, etc.)</li>
+      <li>Go to Settings → Pages → Source: <strong>main branch</strong></li>
+      <li>Your app is live at <kbd class="kbd">https://yourusername.github.io/career-explorer</kbd></li>
+    </ol>
+
+    <h3>Netlify (Easiest — Drag & Drop)</h3>
+    <ol>
+      <li>Go to <strong>netlify.com</strong> → Sign Up (free)</li>
+      <li>Drag your entire app folder onto the Netlify dashboard</li>
+      <li>Your app is live instantly with a free URL (you can customize it)</li>
+    </ol>
+
+    <h3>Converting to Android APK</h3>
+    <ol>
+      <li>Host the app online (GitHub Pages or Netlify)</li>
+      <li>Visit <strong>pwabuilder.com</strong></li>
+      <li>Enter your app's URL → click <strong>Start</strong></li>
+      <li>Download the <strong>Android APK / AAB</strong> package</li>
+      <li>Install directly on Android (APK) or upload to Google Play Console (AAB)</li>
+    </ol>
+
+    <!-- TROUBLESHOOTING -->
+    <h2 id="troubleshooting">15. Troubleshooting</h2>
+
+    <table>
+      <thead><tr><th>Problem</th><th>Solution</th></tr></thead>
+      <tbody>
+        <tr><td>App doesn't load offline</td><td>Load it once with internet first; wait for the page to fully finish loading; then try offline</td></tr>
+        <tr><td>Install banner not appearing</td><td>Must use Chrome on Android; ensure app is served over HTTPS (not file://)</td></tr>
+        <tr><td>Bookmarks/Notes disappeared</td><td>Browser data was cleared; or a different browser was used. Remind students to screenshot important notes</td></tr>
+        <tr><td>Images not showing (author photo)</td><td>Ensure author.jpg is in the same folder as index.html with the exact filename</td></tr>
+        <tr><td>App looks broken (no styles)</td><td>Must be served through a local server or hosted URL — not opened directly as a file in some browsers</td></tr>
+        <tr><td>Quiz doesn't advance</td><td>Tap an answer option once and wait 0.6 seconds for the auto-advance animation</td></tr>
+      </tbody>
+    </table>
+
+  </div>
+</div>
+
+<div class="footer">
+  <p>Career Explorer App User Manual — Developed by <strong>Mateen Yousuf</strong>, Teacher, School Education Department, J&K</p>
+  <p style="margin-top:6px;">Aligned with <strong>NEP 2020 · NCF 2023 · PARAKH</strong></p>
+</div>
+
+</body>
+</html>

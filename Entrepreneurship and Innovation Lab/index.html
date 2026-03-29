@@ -1,0 +1,2762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Entrepreneurship & Innovation Lab - Offline Educational PWA by Mateen Yousuf">
+<meta name="theme-color" content="#0a1628">
+<title>Entrepreneurship & Innovation Lab</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="author.jpg">
+<style>
+/* ============================================================
+   FONTS & ROOT VARIABLES
+   ============================================================ */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;600&display=swap');
+
+:root {
+  --navy: #0a1628;
+  --navy-mid: #112240;
+  --navy-light: #1d3461;
+  --orange: #f4801a;
+  --orange-light: #ffab5e;
+  --white: #f0f4ff;
+  --white-dim: #b8c4e0;
+  --gold: #e8c86d;
+  --success: #4caf82;
+  --danger: #e05252;
+  --card-bg: rgba(17,34,64,0.85);
+  --glass: rgba(255,255,255,0.06);
+  --radius: 16px;
+  --shadow: 0 8px 40px rgba(0,0,0,0.4);
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body: 'DM Sans', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--navy);
+  color: var(--white);
+  min-height: 100vh;
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+
+/* ============================================================
+   BACKGROUND MESH
+   ============================================================ */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 20% 10%, rgba(244,128,26,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 80% at 80% 80%, rgba(29,52,97,0.6) 0%, transparent 60%),
+    radial-gradient(ellipse 100% 100% at 50% 50%, #0a1628 0%, #060e1f 100%);
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* ============================================================
+   GRID PATTERN
+   ============================================================ */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(244,128,26,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(244,128,26,0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* ============================================================
+   SCROLLBAR
+   ============================================================ */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--navy); }
+::-webkit-scrollbar-thumb { background: var(--orange); border-radius: 3px; }
+
+/* ============================================================
+   NAVIGATION
+   ============================================================ */
+#topnav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  background: rgba(10,22,40,0.95);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(244,128,26,0.2);
+  padding: 0 24px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.nav-brand {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  color: var(--orange);
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.nav-links {
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  flex: 1;
+  justify-content: flex-end;
+}
+.nav-links::-webkit-scrollbar { display: none; }
+
+.nav-btn {
+  background: none;
+  border: none;
+  color: var(--white-dim);
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 8px;
+  white-space: nowrap;
+  transition: all 0.2s;
+  letter-spacing: 0.02em;
+}
+.nav-btn:hover, .nav-btn.active {
+  background: rgba(244,128,26,0.15);
+  color: var(--orange);
+}
+
+/* ============================================================
+   MAIN WRAPPER
+   ============================================================ */
+#app {
+  padding-top: 60px;
+  min-height: 100vh;
+}
+
+.page { display: none; animation: fadeUp 0.4s ease; }
+.page.active { display: block; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+   HERO / LANDING PAGE
+   ============================================================ */
+#page-home {
+  min-height: calc(100vh - 60px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+  text-align: center;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(244,128,26,0.12);
+  border: 1px solid rgba(244,128,26,0.35);
+  border-radius: 100px;
+  padding: 6px 16px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--orange-light);
+  text-transform: uppercase;
+  margin-bottom: 28px;
+}
+
+.hero-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 6vw, 4rem);
+  font-weight: 900;
+  line-height: 1.1;
+  margin-bottom: 12px;
+  background: linear-gradient(135deg, #fff 30%, var(--orange-light) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-sub {
+  font-size: 1rem;
+  color: var(--white-dim);
+  margin-bottom: 8px;
+  font-weight: 400;
+}
+
+.hero-author {
+  font-size: 0.85rem;
+  color: var(--gold);
+  font-style: italic;
+  margin-bottom: 40px;
+}
+
+.hero-author img {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  vertical-align: middle;
+  margin-right: 8px;
+  border: 2px solid var(--orange);
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  justify-content: center;
+  margin-bottom: 56px;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--orange), #e06000);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 14px 28px;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 20px rgba(244,128,26,0.35);
+  letter-spacing: 0.01em;
+}
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(244,128,26,0.5);
+}
+
+.btn-secondary {
+  background: rgba(255,255,255,0.07);
+  color: var(--white);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 12px;
+  padding: 14px 28px;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  backdrop-filter: blur(8px);
+}
+.btn-secondary:hover {
+  background: rgba(255,255,255,0.12);
+  border-color: rgba(244,128,26,0.4);
+  color: var(--orange-light);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--orange-light);
+  border: 1.5px solid var(--orange);
+  border-radius: 12px;
+  padding: 14px 28px;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-outline:hover {
+  background: rgba(244,128,26,0.12);
+}
+
+/* Hero features grid */
+.hero-features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 14px;
+  width: 100%;
+  max-width: 800px;
+}
+
+.feature-card {
+  background: var(--glass);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: var(--radius);
+  padding: 20px 16px;
+  text-align: center;
+  backdrop-filter: blur(8px);
+  transition: all 0.25s;
+  cursor: pointer;
+}
+.feature-card:hover {
+  border-color: rgba(244,128,26,0.4);
+  background: rgba(244,128,26,0.07);
+  transform: translateY(-3px);
+}
+.feature-card .icon { font-size: 2rem; margin-bottom: 8px; display: block; }
+.feature-card .label { font-size: 0.78rem; font-weight: 600; color: var(--white-dim); }
+
+/* ============================================================
+   SECTION WRAPPER
+   ============================================================ */
+.section-wrap {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 40px 20px 60px;
+}
+
+.section-header {
+  margin-bottom: 32px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(244,128,26,0.2);
+}
+
+.section-tag {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--orange);
+  margin-bottom: 8px;
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--white);
+}
+
+.section-desc {
+  margin-top: 10px;
+  font-size: 0.9rem;
+  color: var(--white-dim);
+}
+
+/* ============================================================
+   CARDS
+   ============================================================ */
+.card {
+  background: var(--card-bg);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: var(--radius);
+  padding: 24px;
+  backdrop-filter: blur(12px);
+  box-shadow: var(--shadow);
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.card h3 {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+  color: var(--orange-light);
+}
+
+.card p {
+  font-size: 0.85rem;
+  color: var(--white-dim);
+  line-height: 1.7;
+}
+
+/* ============================================================
+   POLICY PAGES (Section 1)
+   ============================================================ */
+.policy-nav {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+.policy-tab {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: var(--white-dim);
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.policy-tab:hover, .policy-tab.active {
+  background: rgba(244,128,26,0.2);
+  border-color: var(--orange);
+  color: var(--orange-light);
+}
+
+.policy-content {
+  background: var(--card-bg);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: var(--radius);
+  padding: 32px;
+  line-height: 1.85;
+}
+
+.policy-content h2 {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  color: var(--white);
+  margin-bottom: 6px;
+}
+
+.policy-content h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--orange-light);
+  margin: 24px 0 8px;
+}
+
+.policy-content p {
+  font-size: 0.88rem;
+  color: var(--white-dim);
+  margin-bottom: 14px;
+}
+
+.policy-content .highlight-box {
+  background: rgba(244,128,26,0.1);
+  border-left: 3px solid var(--orange);
+  border-radius: 0 8px 8px 0;
+  padding: 14px 18px;
+  margin: 16px 0;
+  font-size: 0.85rem;
+  color: var(--orange-light);
+  font-style: italic;
+}
+
+.policy-content .activity-box {
+  background: rgba(76,175,130,0.08);
+  border: 1px solid rgba(76,175,130,0.3);
+  border-radius: 10px;
+  padding: 14px 18px;
+  margin: 16px 0;
+}
+
+.policy-content .activity-box strong {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--success);
+  display: block;
+  margin-bottom: 6px;
+}
+
+.policy-content ul {
+  padding-left: 20px;
+  margin-bottom: 14px;
+}
+.policy-content li {
+  font-size: 0.88rem;
+  color: var(--white-dim);
+  margin-bottom: 5px;
+}
+
+.policy-content .page-badge {
+  display: inline-block;
+  background: rgba(244,128,26,0.15);
+  border: 1px solid rgba(244,128,26,0.3);
+  border-radius: 6px;
+  padding: 3px 10px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--orange);
+  margin-bottom: 14px;
+}
+
+/* ============================================================
+   FORMS & INPUTS
+   ============================================================ */
+.form-group {
+  margin-bottom: 18px;
+}
+
+label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--white-dim);
+  margin-bottom: 7px;
+}
+
+input[type="text"], textarea, select {
+  width: 100%;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 10px;
+  color: var(--white);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  padding: 11px 14px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+input[type="text"]:focus, textarea:focus, select:focus {
+  border-color: var(--orange);
+  box-shadow: 0 0 0 3px rgba(244,128,26,0.12);
+}
+
+textarea { resize: vertical; min-height: 90px; }
+
+select option { background: var(--navy-mid); }
+
+input[type="range"] {
+  width: 100%;
+  accent-color: var(--orange);
+  height: 6px;
+  cursor: pointer;
+}
+
+/* ============================================================
+   STEP WIZARD (Design Thinking)
+   ============================================================ */
+.steps-indicator {
+  display: flex;
+  gap: 0;
+  margin-bottom: 28px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.steps-indicator::-webkit-scrollbar { display: none; }
+
+.step-indicator {
+  flex: 1;
+  min-width: 80px;
+  text-align: center;
+  position: relative;
+  padding-bottom: 14px;
+  cursor: pointer;
+}
+
+.step-indicator::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 3px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 2px;
+}
+
+.step-indicator.active::after, .step-indicator.done::after {
+  background: var(--orange);
+}
+
+.step-circle {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.08);
+  border: 2px solid rgba(255,255,255,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  margin: 0 auto 6px;
+  transition: all 0.2s;
+}
+
+.step-indicator.active .step-circle {
+  background: var(--orange);
+  border-color: var(--orange);
+  color: white;
+}
+
+.step-indicator.done .step-circle {
+  background: var(--success);
+  border-color: var(--success);
+  color: white;
+}
+
+.step-label {
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--white-dim);
+}
+.step-indicator.active .step-label { color: var(--orange); }
+
+.step-panel { display: none; }
+.step-panel.active { display: block; }
+
+/* ============================================================
+   RADAR CHART (SVG)
+   ============================================================ */
+.radar-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+.radar-controls {
+  width: 100%;
+  max-width: 400px;
+}
+
+.skill-slider-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.skill-slider-row label {
+  width: 140px;
+  font-size: 0.78rem;
+  text-transform: none;
+  color: var(--white);
+  margin: 0;
+  flex-shrink: 0;
+}
+
+.skill-val {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--orange);
+  width: 28px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   SIMULATION
+   ============================================================ */
+.sim-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+@media (max-width: 600px) {
+  .sim-grid { grid-template-columns: 1fr; }
+}
+
+.sim-result {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  padding: 18px;
+}
+
+.sim-result h4 {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--white-dim);
+  margin-bottom: 6px;
+}
+
+.sim-value {
+  font-family: var(--font-mono);
+  font-size: 1.8rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.sim-value.positive { color: var(--success); }
+.sim-value.negative { color: var(--danger); }
+.sim-value.neutral  { color: var(--gold); }
+
+.progress-bar-wrap {
+  background: rgba(255,255,255,0.08);
+  border-radius: 100px;
+  height: 8px;
+  margin-top: 10px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  border-radius: 100px;
+  background: linear-gradient(90deg, var(--orange), var(--success));
+  transition: width 0.4s ease;
+}
+
+/* ============================================================
+   PORTFOLIO CARDS
+   ============================================================ */
+.portfolio-item {
+  background: var(--card-bg);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: var(--radius);
+  padding: 20px;
+  transition: all 0.2s;
+}
+
+.portfolio-item:hover {
+  border-color: rgba(244,128,26,0.3);
+}
+
+.portfolio-item .p-title {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  color: var(--white);
+  margin-bottom: 6px;
+}
+
+.portfolio-item .p-meta {
+  font-size: 0.75rem;
+  color: var(--orange-light);
+  margin-bottom: 10px;
+}
+
+.portfolio-item .p-body {
+  font-size: 0.83rem;
+  color: var(--white-dim);
+  margin-bottom: 14px;
+  line-height: 1.6;
+}
+
+.tag {
+  display: inline-block;
+  background: rgba(244,128,26,0.12);
+  border: 1px solid rgba(244,128,26,0.25);
+  border-radius: 100px;
+  padding: 3px 10px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--orange-light);
+  margin-right: 6px;
+  margin-bottom: 4px;
+}
+
+/* ============================================================
+   FINANCIAL CALCULATOR
+   ============================================================ */
+.calc-result {
+  background: linear-gradient(135deg, rgba(244,128,26,0.1), rgba(232,200,109,0.05));
+  border: 1px solid rgba(244,128,26,0.25);
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 16px;
+  text-align: center;
+}
+
+.calc-result .label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--white-dim); margin-bottom: 6px; }
+.calc-result .amount { font-family: var(--font-mono); font-size: 2.2rem; font-weight: 700; }
+.calc-result .amount.profit { color: var(--success); }
+.calc-result .amount.loss { color: var(--danger); }
+.calc-result .amount.breakeven { color: var(--gold); }
+
+/* SWOT Grid */
+.swot-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 16px 0;
+}
+
+.swot-cell {
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.swot-cell.S { background: rgba(76,175,130,0.1); border: 1px solid rgba(76,175,130,0.3); }
+.swot-cell.W { background: rgba(224,82,82,0.1); border: 1px solid rgba(224,82,82,0.3); }
+.swot-cell.O { background: rgba(244,128,26,0.1); border: 1px solid rgba(244,128,26,0.3); }
+.swot-cell.T { background: rgba(232,200,109,0.1); border: 1px solid rgba(232,200,109,0.3); }
+
+.swot-cell .swot-label {
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-bottom: 8px;
+  display: block;
+}
+.swot-cell.S .swot-label { color: var(--success); }
+.swot-cell.W .swot-label { color: var(--danger); }
+.swot-cell.O .swot-label { color: var(--orange-light); }
+.swot-cell.T .swot-label { color: var(--gold); }
+
+/* ============================================================
+   ABOUT PAGE
+   ============================================================ */
+.about-author {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 20px;
+  padding: 32px;
+}
+
+.about-author img {
+  width: 120px; height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--orange);
+  box-shadow: 0 0 0 6px rgba(244,128,26,0.12);
+}
+
+.about-author h2 {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  color: var(--white);
+}
+
+.about-author .role {
+  color: var(--orange-light);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+/* ============================================================
+   TOAST NOTIFICATION
+   ============================================================ */
+#toast {
+  position: fixed;
+  bottom: 24px; right: 24px;
+  background: var(--navy-mid);
+  border: 1px solid rgba(244,128,26,0.4);
+  border-radius: 12px;
+  padding: 12px 20px;
+  font-size: 0.85rem;
+  color: var(--orange-light);
+  z-index: 9999;
+  transform: translateY(80px);
+  opacity: 0;
+  transition: all 0.3s;
+  max-width: 300px;
+}
+#toast.show {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* ============================================================
+   PRINT STYLES
+   ============================================================ */
+@media print {
+  body::before, body::after { display: none; }
+  #topnav { display: none; }
+  #app { padding-top: 0; }
+  .nav-links, .btn-primary, .btn-secondary, .btn-outline { display: none; }
+  body { background: white; color: black; }
+  .card, .policy-content { background: white; border: 1px solid #ddd; }
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 640px) {
+  .swot-grid { grid-template-columns: 1fr; }
+  .policy-content { padding: 20px 16px; }
+  .section-wrap { padding: 28px 14px 48px; }
+  .hero-actions { flex-direction: column; align-items: stretch; }
+}
+
+/* ============================================================
+   MISC UTILITIES
+   ============================================================ */
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.gap-2 { gap: 8px; }
+.gap-3 { gap: 12px; }
+.items-center { align-items: center; }
+.justify-between { justify-content: space-between; }
+.mt-2 { margin-top: 8px; }
+.mt-4 { margin-top: 16px; }
+.mb-2 { margin-bottom: 8px; }
+.mb-4 { margin-bottom: 16px; }
+.text-sm { font-size: 0.85rem; }
+.text-xs { font-size: 0.75rem; }
+.text-orange { color: var(--orange-light); }
+.text-gold { color: var(--gold); }
+.text-dim { color: var(--white-dim); }
+.bold { font-weight: 700; }
+.italic { font-style: italic; }
+hr { border: none; border-top: 1px solid rgba(255,255,255,0.08); margin: 20px 0; }
+
+</style>
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<nav id="topnav">
+  <div class="nav-brand" onclick="showPage('home')">🚀 E&I Lab</div>
+  <div class="nav-links">
+    <button class="nav-btn active" data-page="home" onclick="showPage('home')">Home</button>
+    <button class="nav-btn" data-page="policy" onclick="showPage('policy')">📚 Policy</button>
+    <button class="nav-btn" data-page="idea-lab" onclick="showPage('idea-lab')">💡 Ideas</button>
+    <button class="nav-btn" data-page="design-thinking" onclick="showPage('design-thinking')">🧩 Design</button>
+    <button class="nav-btn" data-page="business-plan" onclick="showPage('business-plan')">📋 B-Plan</button>
+    <button class="nav-btn" data-page="finance" onclick="showPage('finance')">💰 Finance</button>
+    <button class="nav-btn" data-page="simulation" onclick="showPage('simulation')">📊 Simulate</button>
+    <button class="nav-btn" data-page="skill-tracker" onclick="showPage('skill-tracker')">🎯 Skills</button>
+    <button class="nav-btn" data-page="portfolio" onclick="showPage('portfolio')">🗂️ Portfolio</button>
+    <button class="nav-btn" data-page="about" onclick="showPage('about')">ℹ️ About</button>
+  </div>
+</nav>
+
+<div id="app">
+
+<!-- ============================================================
+     PAGE: HOME
+     ============================================================ -->
+<div id="page-home" class="page active">
+  <div style="min-height:calc(100vh - 60px); display:flex; flex-direction:column; align-items:center; justify-content:center; padding:40px 20px; text-align:center;">
+
+    <div class="hero-badge">
+      ✦ Aligned with NEP 2020 &nbsp;|&nbsp; NCF 2023 &nbsp;|&nbsp; Skill-Based Learning ✦
+    </div>
+
+    <h1 class="hero-title">Entrepreneurship &<br>Innovation Lab</h1>
+
+    <p class="hero-sub">Offline Experiential Learning Studio for Grades 9–12</p>
+
+    <p class="hero-author">
+      <img src="author.jpg" alt="Mateen Yousuf" onerror="this.style.display='none'">
+      Developed by <strong>Mateen Yousuf</strong> · Teacher, School Education Department Kashmir
+    </p>
+
+    <div class="hero-actions">
+      <button class="btn-primary" onclick="showPage('idea-lab')">🚀 Start Innovation Lab</button>
+      <button class="btn-outline" onclick="showPage('business-plan')">📋 Business Plan Builder</button>
+      <button class="btn-secondary" onclick="showPage('policy')">📖 Learn Experiential Learning</button>
+    </div>
+
+    <div class="hero-features" style="max-width:860px;">
+      <div class="feature-card" onclick="showPage('policy')">
+        <span class="icon">📚</span>
+        <div class="label">Policy Foundation<br><span style="color:var(--orange);font-size:0.65rem;">13 Academic Pages</span></div>
+      </div>
+      <div class="feature-card" onclick="showPage('idea-lab')">
+        <span class="icon">💡</span>
+        <div class="label">Idea Generation<br><span style="color:var(--orange);font-size:0.65rem;">Interactive Lab</span></div>
+      </div>
+      <div class="feature-card" onclick="showPage('design-thinking')">
+        <span class="icon">🧩</span>
+        <div class="label">Design Thinking<br><span style="color:var(--orange);font-size:0.65rem;">5-Step Workspace</span></div>
+      </div>
+      <div class="feature-card" onclick="showPage('business-plan')">
+        <span class="icon">📋</span>
+        <div class="label">Business Plan<br><span style="color:var(--orange);font-size:0.65rem;">Builder + SWOT</span></div>
+      </div>
+      <div class="feature-card" onclick="showPage('finance')">
+        <span class="icon">💰</span>
+        <div class="label">Financial Literacy<br><span style="color:var(--orange);font-size:0.65rem;">Calculators</span></div>
+      </div>
+      <div class="feature-card" onclick="showPage('simulation')">
+        <span class="icon">📊</span>
+        <div class="label">Market Simulation<br><span style="color:var(--orange);font-size:0.65rem;">Live Graphs</span></div>
+      </div>
+      <div class="feature-card" onclick="showPage('skill-tracker')">
+        <span class="icon">🎯</span>
+        <div class="label">Skill Tracker<br><span style="color:var(--orange);font-size:0.65rem;">Radar Chart</span></div>
+      </div>
+      <div class="feature-card" onclick="showPage('portfolio')">
+        <span class="icon">🗂️</span>
+        <div class="label">Portfolio Manager<br><span style="color:var(--orange);font-size:0.65rem;">Save Projects</span></div>
+      </div>
+    </div>
+
+    <p style="margin-top:48px; font-size:0.72rem; color:rgba(184,196,224,0.4); letter-spacing:0.06em;">
+      100% Offline · No Login Required · Works on Any Device · PWA Installable
+    </p>
+  </div>
+</div>
+
+<!-- ============================================================
+     PAGE: POLICY FOUNDATION
+     ============================================================ -->
+<div id="page-policy" class="page">
+  <div class="section-wrap">
+    <div class="section-header">
+      <div class="section-tag">Section 1</div>
+      <h2 class="section-title">Policy Foundation</h2>
+      <p class="section-desc">13 structured academic pages covering NEP 2020, experiential learning, and entrepreneurship education.</p>
+    </div>
+
+    <div class="policy-nav" id="policy-tab-nav"></div>
+    <div id="policy-content-area" class="policy-content"></div>
+
+    <div style="display:flex; gap:12px; margin-top:20px; justify-content:flex-end;">
+      <button class="btn-secondary" onclick="policyPrev()">← Prev</button>
+      <button class="btn-primary" onclick="policyNext()">Next →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     PAGE: IDEA LAB
+     ============================================================ -->
+<div id="page-idea-lab" class="page">
+  <div class="section-wrap">
+    <div class="section-header">
+      <div class="section-tag">Section 2</div>
+      <h2 class="section-title">Idea Generation Lab</h2>
+      <p class="section-desc">Select your problem area and generate a structured innovation worksheet instantly.</p>
+    </div>
+
+    <div class="card mb-4">
+      <div class="form-group">
+        <label>Problem Area</label>
+        <select id="idea-area">
+          <option value="">— Select a domain —</option>
+          <option value="Education">📚 Education</option>
+          <option value="Environment">🌿 Environment</option>
+          <option value="Agriculture">🌾 Agriculture</option>
+          <option value="Local Market">🏪 Local Market</option>
+          <option value="Technology">💻 Technology</option>
+          <option value="Tourism">🏔️ Tourism</option>
+          <option value="Healthcare">🏥 Healthcare</option>
+          <option value="Handicrafts">🧵 Handicrafts</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Target Audience</label>
+        <select id="idea-audience">
+          <option value="">— Select audience —</option>
+          <option value="School Students">School Students</option>
+          <option value="Farmers">Farmers</option>
+          <option value="Small Business Owners">Small Business Owners</option>
+          <option value="Tourists">Tourists</option>
+          <option value="Senior Citizens">Senior Citizens</option>
+          <option value="Women Entrepreneurs">Women Entrepreneurs</option>
+          <option value="Youth">Youth (18–25)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Available Resources</label>
+        <select id="idea-resources">
+          <option value="">— Select resources —</option>
+          <option value="Mobile Phone Only">Mobile Phone Only</option>
+          <option value="Basic Tools & Materials">Basic Tools & Materials</option>
+          <option value="Community Support">Community Support</option>
+          <option value="Small Capital (< ₹10,000)">Small Capital (&lt; ₹10,000)</option>
+          <option value="Medium Capital (₹10,000–₹50,000)">Medium Capital (₹10,000–₹50,000)</option>
+          <option value="Skills & Knowledge">Skills & Knowledge</option>
+        </select>
+      </div>
+      <button class="btn-primary" onclick="generateIdea()">✨ Generate Idea Worksheet</button>
+    </div>
+
+    <div id="idea-output" style="display:none;"></div>
+  </div>
+</div>
+
+<!-- ============================================================
+     PAGE: DESIGN THINKING
+     ============================================================ -->
+<div id="page-design-thinking" class="page">
+  <div class="section-wrap">
+    <div class="section-header">
+      <div class="section-tag">Section 3</div>
+      <h2 class="section-title">Design Thinking Workspace</h2>
+      <p class="section-desc">Move through the 5-step Design Thinking process. All data is saved locally.</p>
+    </div>
+
+    <div class="steps-indicator" id="dt-steps">
+      <div class="step-indicator active" onclick="dtGoTo(0)">
+        <div class="step-circle">1</div>
+        <div class="step-label">Empathize</div>
+      </div>
+      <div class="step-indicator" onclick="dtGoTo(1)">
+        <div class="step-circle">2</div>
+        <div class="step-label">Define</div>
+      </div>
+      <div class="step-indicator" onclick="dtGoTo(2)">
+        <div class="step-circle">3</div>
+        <div class="step-label">Ideate</div>
+      </div>
+      <div class="step-indicator" onclick="dtGoTo(3)">
+        <div class="step-circle">4</div>
+        <div class="step-label">Prototype</div>
+      </div>
+      <div class="step-indicator" onclick="dtGoTo(4)">
+        <div class="step-circle">5</div>
+        <div class="step-label">Test</div>
+      </div>
+    </div>
+
+    <!-- Step 1: Empathize -->
+    <div class="step-panel active card" id="dt-step-0">
+      <div class="policy-content" style="background:none; border:none; padding:0;">
+        <span class="page-badge">Step 1 — Empathize</span>
+        <h2>Understand the User</h2>
+        <p>Empathy is the foundation of Design Thinking. You must deeply understand the people you're designing for — their needs, frustrations, context, and goals.</p>
+      </div>
+      <div class="form-group mt-4">
+        <label>Who are you designing for? (User Profile)</label>
+        <textarea id="dt-0-user" placeholder="Describe the person or group you are trying to help…" rows="3"></textarea>
+      </div>
+      <div class="form-group">
+        <label>What problem are they facing? (Observations)</label>
+        <textarea id="dt-0-problem" placeholder="Write what you observed, heard, or experienced…" rows="3"></textarea>
+      </div>
+      <div class="form-group">
+        <label>What are their unmet needs?</label>
+        <textarea id="dt-0-needs" placeholder="List 3–5 needs this person has that are not being met…" rows="3"></textarea>
+      </div>
+      <div class="activity-box" style="background:rgba(244,128,26,0.08); border:1px solid rgba(244,128,26,0.25); border-radius:10px; padding:14px 18px; margin-top:12px;">
+        <strong style="color:var(--orange); font-size:0.72rem; text-transform:uppercase; letter-spacing:0.08em; display:block; margin-bottom:6px;">💬 Reflection Prompt</strong>
+        <p style="font-size:0.85rem; color:var(--white-dim); margin:0;">If you could spend a day with the person you're designing for, what would you observe? What questions would you ask? Write your reflections above.</p>
+      </div>
+      <div style="display:flex; gap:10px; margin-top:20px; justify-content:flex-end;">
+        <button class="btn-primary" onclick="dtSaveAndNext(0)">Save & Continue →</button>
+      </div>
+    </div>
+
+    <!-- Step 2: Define -->
+    <div class="step-panel card" id="dt-step-1">
+      <div class="policy-content" style="background:none; border:none; padding:0;">
+        <span class="page-badge">Step 2 — Define</span>
+        <h2>Frame the Problem</h2>
+        <p>Use insights from empathy research to define a clear, human-centered problem statement (Point of View or POV).</p>
+      </div>
+      <div class="form-group mt-4">
+        <label>POV Statement: [User] needs to [need] because [insight]</label>
+        <textarea id="dt-1-pov" placeholder="Example: A farmer in rural Kashmir needs a simple way to check crop prices because they lack smartphone literacy…" rows="4"></textarea>
+      </div>
+      <div class="form-group">
+        <label>How Might We (HMW) Questions — List 3</label>
+        <textarea id="dt-1-hmw" placeholder="HMW make price checking accessible for low-literacy farmers?
+HMW leverage local community networks for information sharing?
+HMW …" rows="4"></textarea>
+      </div>
+      <div style="display:flex; gap:10px; margin-top:20px; justify-content:space-between;">
+        <button class="btn-secondary" onclick="dtGoTo(0)">← Back</button>
+        <button class="btn-primary" onclick="dtSaveAndNext(1)">Save & Continue →</button>
+      </div>
+    </div>
+
+    <!-- Step 3: Ideate -->
+    <div class="step-panel card" id="dt-step-2">
+      <div class="policy-content" style="background:none; border:none; padding:0;">
+        <span class="page-badge">Step 3 — Ideate</span>
+        <h2>Generate Solutions</h2>
+        <p>Brainstorm as many ideas as possible. Quantity over quality at this stage — wild ideas are welcome!</p>
+      </div>
+      <div class="form-group mt-4">
+        <label>Brainstorm Ideas (list at least 5–10, one per line)</label>
+        <textarea id="dt-2-ideas" placeholder="1. Create a voice-based price alert system
+2. Set up a village notice board with daily prices
+3. Train one youth in each village as a 'price ambassador'
+4. …" rows="8"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Top 3 Ideas to Explore Further</label>
+        <textarea id="dt-2-top3" placeholder="Rank and briefly explain why these 3 ideas stand out…" rows="4"></textarea>
+      </div>
+      <div style="display:flex; gap:10px; margin-top:20px; justify-content:space-between;">
+        <button class="btn-secondary" onclick="dtGoTo(1)">← Back</button>
+        <button class="btn-primary" onclick="dtSaveAndNext(2)">Save & Continue →</button>
+      </div>
+    </div>
+
+    <!-- Step 4: Prototype -->
+    <div class="step-panel card" id="dt-step-3">
+      <div class="policy-content" style="background:none; border:none; padding:0;">
+        <span class="page-badge">Step 4 — Prototype</span>
+        <h2>Build to Think</h2>
+        <p>Create a simple, low-cost representation of your best idea. It could be a sketch, a cardboard model, a role-play, or a paper prototype.</p>
+      </div>
+      <div class="form-group mt-4">
+        <label>Prototype Description (What will you build/create?)</label>
+        <textarea id="dt-3-prototype" placeholder="Describe your prototype in detail. What materials will you use? What does it look like? How does it work?…" rows="4"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Assumptions Being Tested</label>
+        <textarea id="dt-3-assumptions" placeholder="What key assumptions does this prototype test? What do you want to learn from it?…" rows="3"></textarea>
+      </div>
+      <div style="display:flex; gap:10px; margin-top:20px; justify-content:space-between;">
+        <button class="btn-secondary" onclick="dtGoTo(2)">← Back</button>
+        <button class="btn-primary" onclick="dtSaveAndNext(3)">Save & Continue →</button>
+      </div>
+    </div>
+
+    <!-- Step 5: Test -->
+    <div class="step-panel card" id="dt-step-4">
+      <div class="policy-content" style="background:none; border:none; padding:0;">
+        <span class="page-badge">Step 5 — Test</span>
+        <h2>Learn from Feedback</h2>
+        <p>Share your prototype with real users. Observe their reactions, note what works and what doesn't. Use feedback to improve your solution.</p>
+      </div>
+      <div class="form-group mt-4">
+        <label>Testing Plan (Who, How, When)</label>
+        <textarea id="dt-4-plan" placeholder="Who will you test with? How will you present the prototype? What questions will you ask?…" rows="3"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Feedback Received</label>
+        <textarea id="dt-4-feedback" placeholder="What did users say? What worked? What didn't? What surprised you?…" rows="3"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Iteration Plan (How will you improve?)</label>
+        <textarea id="dt-4-iteration" placeholder="Based on feedback, what specific changes will you make in the next version?…" rows="3"></textarea>
+      </div>
+      <div style="display:flex; gap:10px; margin-top:20px; justify-content:space-between;">
+        <button class="btn-secondary" onclick="dtGoTo(3)">← Back</button>
+        <button class="btn-primary" onclick="saveDTToPortfolio()">💾 Save to Portfolio</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     PAGE: BUSINESS PLAN
+     ============================================================ -->
+<div id="page-business-plan" class="page">
+  <div class="section-wrap">
+    <div class="section-header">
+      <div class="section-tag">Section 4</div>
+      <h2 class="section-title">Business Plan Builder</h2>
+      <p class="section-desc">Fill in the fields below to generate a complete structured business plan with SWOT analysis.</p>
+    </div>
+
+    <div class="card mb-4">
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+        <div class="form-group">
+          <label>Business Name</label>
+          <input type="text" id="bp-name" placeholder="e.g., Kashmir Saffron Co.">
+        </div>
+        <div class="form-group">
+          <label>Product / Service</label>
+          <input type="text" id="bp-product" placeholder="e.g., Premium Kashmiri Saffron Packages">
+        </div>
+        <div class="form-group">
+          <label>Target Market</label>
+          <input type="text" id="bp-market" placeholder="e.g., Urban consumers across India">
+        </div>
+        <div class="form-group">
+          <label>Revenue Model</label>
+          <select id="bp-revenue">
+            <option value="Direct Sales">Direct Sales</option>
+            <option value="Subscription">Subscription</option>
+            <option value="Marketplace">Marketplace</option>
+            <option value="Service Fee">Service Fee</option>
+            <option value="Freemium">Freemium</option>
+            <option value="B2B Supply">B2B Supply</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Monthly Fixed Cost (₹)</label>
+          <input type="text" id="bp-fixed" placeholder="e.g., 5000">
+        </div>
+        <div class="form-group">
+          <label>Price Per Unit (₹)</label>
+          <input type="text" id="bp-price" placeholder="e.g., 250">
+        </div>
+        <div class="form-group">
+          <label>Cost Per Unit (₹)</label>
+          <input type="text" id="bp-cost" placeholder="e.g., 120">
+        </div>
+        <div class="form-group">
+          <label>Expected Monthly Sales (units)</label>
+          <input type="text" id="bp-units" placeholder="e.g., 100">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Marketing Strategy</label>
+        <textarea id="bp-marketing" placeholder="Describe how you will reach your customers: social media, local fairs, word of mouth, etc." rows="3"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Unique Value Proposition</label>
+        <textarea id="bp-uvp" placeholder="What makes your business unique? Why should customers choose you?" rows="2"></textarea>
+      </div>
+      <button class="btn-primary" onclick="generateBusinessPlan()">📋 Generate Business Plan</button>
+    </div>
+
+    <div id="bp-output" style="display:none;"></div>
+  </div>
+</div>
+
+<!-- ============================================================
+     PAGE: FINANCE
+     ============================================================ -->
+<div id="page-finance" class="page">
+  <div class="section-wrap">
+    <div class="section-header">
+      <div class="section-tag">Section 5</div>
+      <h2 class="section-title">Financial Literacy Module</h2>
+      <p class="section-desc">Interactive calculators for Profit & Loss, Break-Even, and Revenue Projection.</p>
+    </div>
+
+    <!-- P&L Calculator -->
+    <div class="card mb-4">
+      <h3 style="font-family:var(--font-display); font-size:1.2rem; margin-bottom:16px; color:var(--white);">📊 Profit & Loss Calculator</h3>
+      <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px;">
+        <div class="form-group">
+          <label>Revenue (₹)</label>
+          <input type="text" id="pl-revenue" placeholder="25000" oninput="calcPL()">
+        </div>
+        <div class="form-group">
+          <label>Variable Costs (₹)</label>
+          <input type="text" id="pl-variable" placeholder="12000" oninput="calcPL()">
+        </div>
+        <div class="form-group">
+          <label>Fixed Costs (₹)</label>
+          <input type="text" id="pl-fixed" placeholder="5000" oninput="calcPL()">
+        </div>
+      </div>
+      <div id="pl-result"></div>
+    </div>
+
+    <!-- Break-Even Calculator -->
+    <div class="card mb-4">
+      <h3 style="font-family:var(--font-display); font-size:1.2rem; margin-bottom:16px; color:var(--white);">⚖️ Break-Even Calculator</h3>
+      <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px;">
+        <div class="form-group">
+          <label>Fixed Costs (₹)</label>
+          <input type="text" id="be-fixed" placeholder="5000" oninput="calcBE()">
+        </div>
+        <div class="form-group">
+          <label>Price Per Unit (₹)</label>
+          <input type="text" id="be-price" placeholder="250" oninput="calcBE()">
+        </div>
+        <div class="form-group">
+          <label>Variable Cost/Unit (₹)</label>
+          <input type="text" id="be-varcost" placeholder="120" oninput="calcBE()">
+        </div>
+      </div>
+      <div id="be-result"></div>
+    </div>
+
+    <!-- Revenue Projection -->
+    <div class="card mb-4">
+      <h3 style="font-family:var(--font-display); font-size:1.2rem; margin-bottom:16px; color:var(--white);">📈 Revenue Projection Chart</h3>
+      <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; margin-bottom:16px;">
+        <div class="form-group">
+          <label>Monthly Units Sold</label>
+          <input type="text" id="rp-units" placeholder="50" oninput="drawRevChart()">
+        </div>
+        <div class="form-group">
+          <label>Price Per Unit (₹)</label>
+          <input type="text" id="rp-price" placeholder="200" oninput="drawRevChart()">
+        </div>
+        <div class="form-group">
+          <label>Growth Rate (%/month)</label>
+          <input type="text" id="rp-growth" placeholder="10" oninput="drawRevChart()">
+        </div>
+      </div>
+      <canvas id="rev-chart" width="800" height="260" style="width:100%; border-radius:10px; background:rgba(255,255,255,0.03);"></canvas>
+    </div>
+
+    <!-- Budgeting Planner -->
+    <div class="card">
+      <h3 style="font-family:var(--font-display); font-size:1.2rem; margin-bottom:16px; color:var(--white);">💼 Simple Budgeting Planner</h3>
+      <div id="budget-rows">
+        <div class="budget-row" style="display:grid; grid-template-columns:1fr 1fr 80px; gap:10px; margin-bottom:10px;">
+          <input type="text" placeholder="Category (e.g., Rent)" class="budget-cat">
+          <input type="text" placeholder="Amount (₹)" class="budget-amt" oninput="calcBudget()">
+          <select class="budget-type" onchange="calcBudget()">
+            <option value="expense">Expense</option>
+            <option value="income">Income</option>
+          </select>
+        </div>
+      </div>
+      <div style="display:flex; gap:10px; margin:14px 0;">
+        <button class="btn-secondary" onclick="addBudgetRow()">+ Add Row</button>
+        <button class="btn-primary" onclick="calcBudget()">Calculate</button>
+      </div>
+      <div id="budget-result"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     PAGE: SIMULATION
+     ============================================================ -->
+<div id="page-simulation" class="page">
+  <div class="section-wrap">
+    <div class="section-header">
+      <div class="section-tag">Section 6</div>
+      <h2 class="section-title">Market Simulation Tool</h2>
+      <p class="section-desc">Adjust market variables and instantly see Profit, Risk, and Sustainability scores.</p>
+    </div>
+
+    <div class="card mb-4">
+      <div class="sim-grid">
+        <div>
+          <div class="skill-slider-row">
+            <label>Price per Unit (₹)</label>
+            <input type="range" id="sim-price" min="50" max="1000" value="250" oninput="runSim()">
+            <span class="skill-val" id="sim-price-val">250</span>
+          </div>
+          <div class="skill-slider-row">
+            <label>Marketing Cost (₹/mo)</label>
+            <input type="range" id="sim-mktcost" min="0" max="20000" step="500" value="3000" oninput="runSim()">
+            <span class="skill-val" id="sim-mktcost-val">3000</span>
+          </div>
+          <div class="skill-slider-row">
+            <label>Production Cost (₹/unit)</label>
+            <input type="range" id="sim-prodcost" min="10" max="800" value="100" oninput="runSim()">
+            <span class="skill-val" id="sim-prodcost-val">100</span>
+          </div>
+          <div class="skill-slider-row">
+            <label>Demand (units/mo)</label>
+            <input type="range" id="sim-demand" min="1" max="500" value="80" oninput="runSim()">
+            <span class="skill-val" id="sim-demand-val">80</span>
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; align-content:start;">
+          <div class="sim-result">
+            <h4>Monthly Revenue</h4>
+            <div class="sim-value neutral" id="sim-revenue">₹20,000</div>
+          </div>
+          <div class="sim-result">
+            <h4>Net Profit</h4>
+            <div class="sim-value positive" id="sim-profit">₹9,000</div>
+          </div>
+          <div class="sim-result">
+            <h4>Risk Level</h4>
+            <div class="sim-value" id="sim-risk" style="font-size:1rem; padding-top:8px;">🟢 Low</div>
+          </div>
+          <div class="sim-result">
+            <h4>Sustainability</h4>
+            <div class="sim-value" id="sim-sustain" style="font-size:1rem; padding-top:8px;">⭐⭐⭐⭐</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:20px;">
+        <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+          <span style="font-size:0.78rem; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; color:var(--white-dim);">Profitability Score</span>
+          <span style="font-size:0.78rem; color:var(--orange); font-family:var(--font-mono);" id="sim-score">72%</span>
+        </div>
+        <div class="progress-bar-wrap">
+          <div class="progress-bar" id="sim-bar" style="width:72%;"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 style="font-family:var(--font-display); font-size:1.1rem; margin-bottom:16px; color:var(--white);">📉 Profit vs. Cost Visualization</h3>
+      <canvas id="sim-chart" width="800" height="240" style="width:100%; border-radius:10px; background:rgba(255,255,255,0.02);"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     PAGE: SKILL TRACKER
+     ============================================================ -->
+<div id="page-skill-tracker" class="page">
+  <div class="section-wrap">
+    <div class="section-header">
+      <div class="section-tag">Section 7</div>
+      <h2 class="section-title">Entrepreneurial Skill Tracker</h2>
+      <p class="section-desc">Rate your entrepreneurial competencies from 1–10. Your profile is saved locally.</p>
+    </div>
+
+    <div class="card">
+      <div class="radar-wrap">
+        <div class="radar-controls" style="width:100%; max-width:500px;">
+          <div id="skill-sliders"></div>
+          <div style="display:flex; gap:12px; margin-top:20px; flex-wrap:wrap;">
+            <button class="btn-primary" onclick="saveSkills()">💾 Save Skills</button>
+            <button class="btn-secondary" onclick="resetSkills()">↺ Reset</button>
+          </div>
+        </div>
+        <svg id="radar-svg" viewBox="0 0 380 380" style="width:100%; max-width:380px;" xmlns="http://www.w3.org/2000/svg"></svg>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     PAGE: PORTFOLIO
+     ============================================================ -->
+<div id="page-portfolio" class="page">
+  <div class="section-wrap">
+    <div class="section-header">
+      <div class="section-tag">Section 8</div>
+      <h2 class="section-title">Project Portfolio</h2>
+      <p class="section-desc">All your saved projects live here. Edit, export, or backup as JSON.</p>
+    </div>
+
+    <div style="display:flex; gap:12px; margin-bottom:24px; flex-wrap:wrap;">
+      <button class="btn-primary" onclick="showNewProjectForm()">+ New Project</button>
+      <button class="btn-secondary" onclick="exportPortfolioJSON()">⬇ Backup JSON</button>
+      <button class="btn-secondary" onclick="printPortfolio()">🖨 Print Portfolio</button>
+    </div>
+
+    <div id="new-project-form" style="display:none;" class="card mb-4">
+      <h3 style="font-family:var(--font-display); margin-bottom:16px;">New Project</h3>
+      <div class="form-group">
+        <label>Project Title</label>
+        <input type="text" id="np-title" placeholder="Enter project name…">
+      </div>
+      <div class="form-group">
+        <label>Category</label>
+        <select id="np-category">
+          <option>Innovation Idea</option>
+          <option>Business Plan</option>
+          <option>Design Thinking</option>
+          <option>Research</option>
+          <option>Market Study</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Description</label>
+        <textarea id="np-desc" placeholder="Describe your project…" rows="4"></textarea>
+      </div>
+      <div style="display:flex; gap:10px;">
+        <button class="btn-primary" onclick="saveNewProject()">Save Project</button>
+        <button class="btn-secondary" onclick="document.getElementById('new-project-form').style.display='none'">Cancel</button>
+      </div>
+    </div>
+
+    <div id="portfolio-list" class="card-grid"></div>
+  </div>
+</div>
+
+<!-- ============================================================
+     PAGE: ABOUT
+     ============================================================ -->
+<div id="page-about" class="page">
+  <div class="section-wrap">
+    <div class="section-header">
+      <div class="section-tag">About This App</div>
+      <h2 class="section-title">Entrepreneurship & Innovation Lab</h2>
+    </div>
+
+    <div class="card mb-4">
+      <div class="about-author">
+        <img src="author.jpg" alt="Mateen Yousuf">
+        <div>
+          <h2>Mateen Yousuf</h2>
+          <p class="role">Teacher · School Education Department, Kashmir</p>
+          <p style="margin-top:12px; font-size:0.88rem; color:var(--white-dim); max-width:480px;">
+            An educator committed to bringing experiential, skill-based learning into secondary classrooms across Kashmir. This app represents a vision to make entrepreneurship education accessible, offline, and student-centred.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-grid">
+      <div class="card">
+        <h3>🎯 Purpose</h3>
+        <p>Help students (Grades 9–12) develop entrepreneurial mindset, learn business fundamentals, and create real-world innovation projects.</p>
+      </div>
+      <div class="card">
+        <h3>📜 Policy Alignment</h3>
+        <p>Fully aligned with NEP 2020, NCF 2023, and JKBOSE curriculum goals for vocational education and skill development.</p>
+      </div>
+      <div class="card">
+        <h3>📱 Offline PWA</h3>
+        <p>Works 100% offline. No internet, no login, no backend required. Installable as a mobile app. Runs on low-end Android devices.</p>
+      </div>
+      <div class="card">
+        <h3>🔒 Privacy</h3>
+        <p>All data is stored only on the student's device using LocalStorage. Nothing is sent to any server. Complete data privacy.</p>
+      </div>
+      <div class="card">
+        <h3>📦 Installation</h3>
+        <p>Open in Chrome → tap the three-dot menu → "Add to Home Screen". The app installs like a native app on Android and iOS.</p>
+      </div>
+      <div class="card">
+        <h3>🏫 Classroom Use</h3>
+        <p>Share the app via USB or local network. No internet needed. Each student works on their own device independently.</p>
+      </div>
+    </div>
+
+    <div class="card mt-4" style="margin-top:20px;">
+      <h3 style="font-family:var(--font-display); margin-bottom:12px;">🚀 APK Conversion Guide</h3>
+      <div style="display:grid; gap:10px;">
+        <div style="background:rgba(255,255,255,0.04); border-radius:10px; padding:14px;">
+          <strong style="color:var(--orange); font-size:0.8rem;">Step 1 — Build the App</strong>
+          <p style="font-size:0.82rem; color:var(--white-dim); margin-top:4px;">Place index.html, manifest.json, service-worker.js, and author.jpg in one folder.</p>
+        </div>
+        <div style="background:rgba(255,255,255,0.04); border-radius:10px; padding:14px;">
+          <strong style="color:var(--orange); font-size:0.8rem;">Step 2 — Host Locally or on GitHub Pages</strong>
+          <p style="font-size:0.82rem; color:var(--white-dim); margin-top:4px;">Use VS Code Live Server, or deploy to GitHub Pages (free) at username.github.io/app-name.</p>
+        </div>
+        <div style="background:rgba(255,255,255,0.04); border-radius:10px; padding:14px;">
+          <strong style="color:var(--orange); font-size:0.8rem;">Step 3 — Convert to APK using Bubblewrap or PWA Builder</strong>
+          <p style="font-size:0.82rem; color:var(--white-dim); margin-top:4px;">Visit pwabuilder.com → enter your app URL → click Android → download the APK/AAB package.</p>
+        </div>
+        <div style="background:rgba(255,255,255,0.04); border-radius:10px; padding:14px;">
+          <strong style="color:var(--orange); font-size:0.8rem;">Step 4 — Sign & Install</strong>
+          <p style="font-size:0.82rem; color:var(--white-dim); margin-top:4px;">Use Android Studio or keytool to sign the APK. Enable "Install from unknown sources" on the device and install.</p>
+        </div>
+        <div style="background:rgba(255,255,255,0.04); border-radius:10px; padding:14px;">
+          <strong style="color:var(--orange); font-size:0.8rem;">Step 5 — Distribute</strong>
+          <p style="font-size:0.82rem; color:var(--white-dim); margin-top:4px;">Share the APK file via WhatsApp, USB, Bluetooth, or school LAN. No Play Store required.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /app -->
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<script>
+// ================================================================
+//  LOCAL DATA
+// ================================================================
+const POLICIES = [
+  {
+    title: "NEP 2020 and Skill-Based Education",
+    content: `
+<span class="page-badge">Page 1 of 13</span>
+<h2>NEP 2020 and Skill-Based Education</h2>
+<p>The National Education Policy 2020 marks a historic transformation in India's educational landscape. After more than three decades, India has revised its foundational educational framework, placing skill development, critical thinking, and experiential learning at the very centre of the curriculum. For the first time, a national policy explicitly mandates that vocational education must be integrated with mainstream education, beginning as early as Grade 6.</p>
+
+<h3>Core Philosophy of NEP 2020</h3>
+<p>NEP 2020 envisions an education system that is holistic, flexible, multidisciplinary, and aligned with the needs of the 21st century. It moves away from rote memorisation and compartmentalised learning towards competency-based education that prepares students to think, create, adapt, and contribute meaningfully to society.</p>
+<p>The policy identifies five key competencies for the future: critical thinking, creativity, communication, collaboration, and character. These are not incidental but foundational — every subject, every lesson, every assessment should nurture these qualities.</p>
+
+<h3>Skill-Based Education: What It Means</h3>
+<p>Skill-based education is not merely about vocational training in the traditional sense. It is about equipping students with transferable skills — the ability to identify problems, design solutions, manage resources, work in teams, and persist through failures. In the context of entrepreneurship education, skill-based learning means students do not just study business theory; they practice being entrepreneurs.</p>
+
+<div class="highlight-box">💡 NEP 2020, Paragraph 4.26: "Vocational education will be integrated in a phased manner over the school years beginning with Grades 6–8 and extending to secondary education. Students will learn by doing, through internships, apprenticeships, and project-based learning."</div>
+
+<h3>Secondary Stage (Grades 9–12) Focus</h3>
+<p>For secondary school students, NEP 2020 recommends deepened engagement with real-world applications. Students at this stage are developmentally ready for entrepreneurial thinking. They can handle abstract concepts, plan projects, manage budgets, and think strategically. The policy specifically calls for exposure to financial literacy, market understanding, and innovation processes during these years.</p>
+
+<h3>Local Context: Kashmir</h3>
+<p>In Jammu & Kashmir, skill-based education holds particular significance. The region has unique economic strengths — handicrafts, horticulture, tourism, and traditional arts — that align perfectly with entrepreneurship education. A student learning about value propositions can connect directly to the saffron trade; a lesson in market segmentation can reference pashmina exports. NEP 2020 encourages this localisation of content.</p>
+
+<div class="activity-box">
+<strong>🏫 Classroom Activity</strong>
+Ask students to identify one skill-based activity they perform outside school (cooking, repairing, crafting, farming). Then discuss: How could this skill become a business? What would they need to learn to make it viable? This simple exercise connects NEP 2020's philosophy to lived experience.
+</div>
+
+<h3>Assessment Transformation</h3>
+<p>NEP 2020 moves decisively away from high-stakes, single-examination assessment. It introduces portfolios, project evaluations, competency assessments, and 360-degree feedback. For entrepreneurship education, this is transformative — students can be assessed on their ability to create a business plan, present an idea, or analyse a market rather than memorise definitions.</p>
+
+<div class="highlight-box">🔍 Reflection Prompt: How does your own learning experience compare to the vision of NEP 2020? What changes would make your school more aligned with skill-based education?</div>
+    `
+  },
+  {
+    title: "Entrepreneurship in School Education",
+    content: `
+<span class="page-badge">Page 2 of 13</span>
+<h2>Entrepreneurship in School Education</h2>
+<p>Entrepreneurship education in schools is not about turning every student into a business owner. Its deeper purpose is to cultivate an entrepreneurial mindset — a way of thinking that embraces challenges, seeks opportunities, tolerates uncertainty, and drives meaningful action. This mindset is valuable whether a student becomes a doctor, artist, farmer, or founder.</p>
+
+<h3>Why Entrepreneurship at the School Level?</h3>
+<p>Research consistently shows that entrepreneurial attitudes and skills are most effectively developed early. By the time students reach university, many foundational beliefs about risk, failure, and possibility have already been formed. School-level entrepreneurship education shapes these beliefs positively — teaching students that failure is data, not defeat; that problems are invitations, not obstacles.</p>
+<p>In the Indian context, there is also an economic imperative. India's youth population is the largest in the world. Not all of them can be employed by existing institutions. The country needs millions of job creators — and school education is where this pipeline begins.</p>
+
+<h3>Elements of Entrepreneurship Education</h3>
+<p>Effective entrepreneurship education in schools involves three dimensions:</p>
+<ul>
+<li><strong>Knowledge:</strong> Understanding how businesses work — value chains, markets, finance, regulation, and marketing.</li>
+<li><strong>Skills:</strong> Being able to identify opportunities, plan projects, manage resources, communicate effectively, and lead teams.</li>
+<li><strong>Mindset:</strong> Developing self-efficacy, resilience, creativity, ethical awareness, and a bias toward action.</li>
+</ul>
+
+<div class="highlight-box">💡 The European Commission's EntreComp Framework defines entrepreneurship as "the ability to act upon opportunities and ideas, and to transform them into value for others." This definition broadens entrepreneurship beyond commerce to include social, cultural, and civic value creation.</div>
+
+<h3>Integration with Existing Subjects</h3>
+<p>Entrepreneurship does not require a separate subject. It can be woven into Business Studies, Social Science, Science, Mathematics, and even Language classes. A Mathematics lesson on percentages becomes more engaging when connected to profit margins. A Social Science lesson on rural livelihoods becomes transformative when students design solutions for rural entrepreneurs.</p>
+
+<h3>Case Study: Srinagar's Young Innovators</h3>
+<p>In recent years, several students from Kashmir have developed innovative solutions to local problems — from apps connecting artisans to buyers, to composting systems for urban waste. These students were not exceptional in intelligence; they were taught to see problems as opportunities and given tools to act. This is the promise of entrepreneurship education.</p>
+
+<div class="activity-box">
+<strong>🏫 Classroom Activity</strong>
+Mini "Shark Tank" Exercise: Each student pitches a one-minute business idea inspired by a local problem. Classmates play the role of investors and ask: Who needs this? How will you make money? What's the biggest challenge? This builds pitch skills, critical thinking, and peer learning simultaneously.
+</div>
+    `
+  },
+  {
+    title: "Experiential Learning Model",
+    content: `
+<span class="page-badge">Page 3 of 13</span>
+<h2>Experiential Learning Model</h2>
+<p>Experiential learning is the process of learning through experience, and more specifically, the process of learning through reflection on doing. The model, most comprehensively articulated by David Kolb in 1984, proposes that knowledge is created through the transformation of experience. Unlike passive reception of information, experiential learning actively involves the learner in creating meaning.</p>
+
+<h3>Kolb's Learning Cycle</h3>
+<p>Kolb's Experiential Learning Cycle consists of four stages:</p>
+<ul>
+<li><strong>Concrete Experience (CE):</strong> Doing or having an experience. In an entrepreneurship class, this might be running a small stall at a school fair.</li>
+<li><strong>Reflective Observation (RO):</strong> Reviewing and reflecting on the experience. What happened? What worked? What didn't?</li>
+<li><strong>Abstract Conceptualisation (AC):</strong> Concluding and learning from the experience. What general principles can we draw?</li>
+<li><strong>Active Experimentation (AE):</strong> Planning and trying out what you've learned. Applying concepts to a new situation.</li>
+</ul>
+
+<div class="highlight-box">💡 Kolb's research found that learning is most durable when all four stages of the cycle are completed. Simply doing an activity without reflection does not produce lasting learning. Reflection is the key ingredient that transforms experience into knowledge.</div>
+
+<h3>Application in Entrepreneurship Education</h3>
+<p>In the Entrepreneurship & Innovation Lab, every module follows this cycle. When a student uses the Business Plan Builder, they first experience creating a plan (CE), then review what financial assumptions they made (RO), then understand general principles of viability (AC), and finally adapt their plan for a new context (AE).</p>
+
+<h3>NEP 2020 and Experiential Learning</h3>
+<p>NEP 2020 explicitly endorses experiential learning as a pedagogical strategy. It calls for "activity-based, project-based, and inquiry-based learning" across all stages of education. The policy notes that "understanding and application of knowledge are far more important than memorisation," which is the philosophical foundation of experiential learning.</p>
+
+<div class="activity-box">
+<strong>🏫 Classroom Activity</strong>
+"Egg Drop Challenge": Teams are given limited materials (paper, tape, straw) and must design a container to protect a raw egg dropped from 2 metres. After the experiment: debrief on what they planned, what happened, what they'd change. Connect to entrepreneurship: testing prototypes, failing fast, iterating based on evidence.
+</div>
+
+<h3>The Role of Failure in Experiential Learning</h3>
+<p>A crucial and often uncomfortable aspect of experiential learning is that failure is expected and celebrated. When a student's market simulation results in a loss, that is not a bad grade — it is a rich learning opportunity. The question is: Why did it fail? What does this teach us about pricing, costs, or demand? This reframing of failure as learning data is one of the most important mindset shifts entrepreneurship education can catalyse.</p>
+    `
+  },
+  {
+    title: "Design Thinking Framework",
+    content: `
+<span class="page-badge">Page 4 of 13</span>
+<h2>Design Thinking Framework</h2>
+<p>Design Thinking is a human-centred approach to creative problem-solving. Originally developed at Stanford's d.school and popularised by IDEO, it has become one of the most widely used innovation frameworks in education, business, and social sectors worldwide. Its power lies in its insistence that we deeply understand the people we're designing for before we begin generating solutions.</p>
+
+<h3>The Five Stages</h3>
+<ul>
+<li><strong>Empathize:</strong> Observe and engage with people to understand their experiences and motivations. This is qualitative, not quantitative — you're listening for feelings, frustrations, and aspirations.</li>
+<li><strong>Define:</strong> Synthesise observations into a clear problem statement. The "Point of View" (POV) statement structures this: "[User] needs to [need] because [insight]."</li>
+<li><strong>Ideate:</strong> Generate a wide range of ideas without judgment. Quantity precedes quality. Wild ideas often contain seeds of brilliant solutions.</li>
+<li><strong>Prototype:</strong> Build quick, cheap representations of your ideas. A prototype is not a finished product — it is a tool for learning.</li>
+<li><strong>Test:</strong> Share prototypes with users and observe reactions. Iterate based on feedback. Return to earlier stages as needed.</li>
+</ul>
+
+<div class="highlight-box">💡 Design Thinking is not a linear process. You may test your prototype and discover you've defined the problem incorrectly, sending you back to the Empathize stage. This non-linearity is a feature, not a bug — it reflects how real innovation actually works.</div>
+
+<h3>Design Thinking in Kashmiri Classrooms</h3>
+<p>Consider a student applying Design Thinking to a local problem: declining interest in traditional Kashmiri embroidery among young people. Through empathy interviews with artisans, they discover that the problem is not the craft itself but its association with poverty and low status. The "Define" stage produces a powerful insight: young Kashmiris need to see embroidery as a skill that can produce premium, globally recognised products, because their economic opportunities are currently limited by traditional market structures.</p>
+<p>This insight reframes the entire solution space. Instead of designing "ways to teach embroidery," the student designs "a brand that positions Kashmiri embroidery as luxury craft for global markets."</p>
+
+<div class="activity-box">
+<strong>🏫 Classroom Activity</strong>
+"Wallet Project" (adapted from Stanford d.school): In pairs, students redesign each other's wallets. Step 1: Interview partner about their relationship with their wallet (5 min). Step 2: Identify a key need or problem. Step 3: Generate 5 ideas. Step 4: Build a paper prototype. Step 5: Present and get feedback. Entire cycle in 45 minutes. Powerful introduction to all five Design Thinking stages.
+</div>
+    `
+  },
+  {
+    title: "Innovation in Local Context",
+    content: `
+<span class="page-badge">Page 5 of 13</span>
+<h2>Innovation in Local Context</h2>
+<p>Innovation is often mistakenly associated with Silicon Valley, high-tech labs, and billion-dollar startups. But innovation, at its most fundamental level, is simply the introduction of something new or improved that creates value. This definition is as applicable to a Kashmiri farmer who discovers a better way to package saffron for direct sale as it is to a tech entrepreneur building an AI product.</p>
+
+<h3>Grassroots Innovation</h3>
+<p>India has a rich tradition of grassroots innovation — problem-solving by ordinary people with limited resources. Anil Gupta's Honey Bee Network has documented thousands of innovations by farmers, artisans, and rural communities that solve real problems with locally available materials. This tradition is particularly strong in Jammu & Kashmir, where geographic isolation has historically required self-reliance and creative problem-solving.</p>
+
+<h3>Innovation Opportunities in Kashmir</h3>
+<p>The Kashmiri economy presents rich opportunities for student innovation:</p>
+<ul>
+<li><strong>Horticulture:</strong> Apple, saffron, and walnut supply chains suffer from post-harvest losses, price volatility, and middlemen exploitation. Innovation in packaging, direct marketing, or cooperative models could transform livelihoods.</li>
+<li><strong>Tourism:</strong> Kashmir's unparalleled natural beauty is underutilised due to safety perceptions and seasonal limitations. Innovative products — winter tourism, heritage tours, homestay networks — could extend seasons and spread benefits.</li>
+<li><strong>Handicrafts:</strong> Traditional crafts face competition from machine-made imitations and declining apprenticeship. Innovation in branding, authentication, online marketing, and artisan cooperatives could revive these industries.</li>
+<li><strong>Education:</strong> Rural schools face challenges of connectivity, resource availability, and teacher shortages. Offline educational technology, peer learning models, and community-based learning centres represent significant opportunities.</li>
+</ul>
+
+<div class="highlight-box">💡 "Jugaad" — the Indian concept of frugal innovation — teaches us that constraints breed creativity. Limited budgets, scarce materials, and simple tools often produce more elegant solutions than unlimited resources. This is a powerful mindset for student entrepreneurs.</div>
+
+<div class="activity-box">
+<strong>🏫 Classroom Activity</strong>
+"Innovation Safari": Students spend 20 minutes walking around their school or neighbourhood observing problems. They photograph or sketch 3 problems they notice. Back in class, they share observations and vote on which problem has the most innovative potential. Then they each write a one-sentence "innovation idea" to solve it. This trains the most fundamental entrepreneurial skill: seeing problems everywhere.
+</div>
+    `
+  },
+  {
+    title: "Problem-Solving as Core Competency",
+    content: `
+<span class="page-badge">Page 6 of 13</span>
+<h2>Problem-Solving as Core Competency</h2>
+<p>If entrepreneurship had a single, irreducible essence, it would be this: solving problems that matter for people who need the solution. Every successful business, social enterprise, and innovation project begins with a problem worth solving. Teaching students to identify, frame, and systematically address problems is therefore the most foundational competency in entrepreneurship education.</p>
+
+<h3>Types of Problems</h3>
+<ul>
+<li><strong>Well-defined problems</strong> have clear parameters, known solutions, and verifiable answers. Solving a maths equation is a well-defined problem.</li>
+<li><strong>Ill-defined problems</strong> have ambiguous parameters, multiple possible solutions, and no single correct answer. Most real-world entrepreneurial problems are ill-defined: "How do we reduce food waste in our city?" or "How might we improve mental health support for rural youth?"</li>
+</ul>
+<p>Entrepreneurship education must primarily develop students' ability to navigate ill-defined problems — the kind that don't come with answer keys.</p>
+
+<h3>Problem-Solving Frameworks</h3>
+<p>Several frameworks help structure problem-solving:</p>
+<ul>
+<li><strong>Root Cause Analysis (5 Whys):</strong> Ask "Why?" five times to move from symptoms to underlying causes. If a school canteen is losing money, asking "Why?" repeatedly may reveal the root cause is food wastage due to poor demand forecasting, not high ingredient costs.</li>
+<li><strong>Problem Tree Analysis:</strong> Map a problem as a tree — the trunk is the core problem, roots are causes, branches are effects. This visual mapping helps identify leverage points.</li>
+<li><strong>SCAMPER:</strong> A creative thinking tool — Substitute, Combine, Adapt, Modify, Put to other uses, Eliminate, Reverse. Applied to any existing product or service, SCAMPER generates innovation ideas rapidly.</li>
+</ul>
+
+<div class="highlight-box">💡 Thomas Edison reportedly said: "I have not failed. I've just found 10,000 ways that won't work." This reframing — from failure to data — is the psychological foundation of effective problem-solving in entrepreneurship.</div>
+
+<div class="activity-box">
+<strong>🏫 Classroom Activity</strong>
+"5 Whys" Practice: Present students with this problem: "Students in our school are not reading enough books." In groups, have them apply the 5 Whys technique. Compare results across groups — they will reach very different root causes, which opens a discussion about how problem framing determines solution quality.
+</div>
+    `
+  },
+  {
+    title: "Vocational Integration in Secondary Stage",
+    content: `
+<span class="page-badge">Page 7 of 13</span>
+<h2>Vocational Integration in Secondary Stage</h2>
+<p>One of the most significant structural changes introduced by NEP 2020 is the mandatory integration of vocational education with mainstream secondary schooling. Historically, vocational education in India was treated as a separate, parallel track — often associated with students who "could not" pursue academic pathways. NEP 2020 dismantles this hierarchy decisively.</p>
+
+<h3>The NEP 2020 Vision for Vocational Education</h3>
+<p>NEP 2020 mandates that at least 50% of learners by 2025 should have exposure to vocational education. For secondary students (Grades 9–12), this means meaningful engagement with at least one vocational subject during their school years. Crucially, the policy specifies that this exposure must be experiential — not classroom-based theory about trades, but actual skill development through doing.</p>
+
+<h3>Vocational Subjects with Entrepreneurship Potential</h3>
+<p>In Jammu & Kashmir, several vocational subjects align naturally with entrepreneurship education:</p>
+<ul>
+<li><strong>Agriculture:</strong> Students learning organic farming practices can connect to agri-business models, farm-to-table enterprises, and export opportunities.</li>
+<li><strong>Textiles & Crafts:</strong> Kashmiri crafts — Pashmina, Sozni embroidery, Papier-Mâché — represent premium products in global markets. Students can learn both the craft and the business of marketing it.</li>
+<li><strong>IT & Computing:</strong> Basic software skills combined with entrepreneurship education can produce student-built apps, websites, and digital services for local businesses.</li>
+<li><strong>Tourism & Hospitality:</strong> With Kashmir's tourism potential, students trained in hospitality can conceptualise home-stay businesses, guided tour services, or cultural experience packages.</li>
+</ul>
+
+<div class="highlight-box">💡 The JKBOSE curriculum for Classes 9–12 includes Business Studies as a core subject. This creates an ideal platform for integrating entrepreneurship education — connecting theoretical concepts like demand, supply, and profit with practical innovation projects.</div>
+
+<div class="activity-box">
+<strong>🏫 Classroom Activity</strong>
+"Vocational Entrepreneur" Project: Each student selects a local craft, agricultural practice, or service skill. They research: (1) the current market for this skill, (2) who the customers are, (3) what value could be added to increase income. They present their findings as a 2-minute "Opportunity Brief." This connects vocational education directly to entrepreneurial thinking.
+</div>
+    `
+  },
+  {
+    title: "Financial Literacy Basics",
+    content: `
+<span class="page-badge">Page 8 of 13</span>
+<h2>Financial Literacy Basics</h2>
+<p>Financial literacy — the ability to understand and effectively manage financial resources — is one of the most critical and most neglected competencies in school education. Studies consistently show that financially literate individuals make better decisions about saving, borrowing, investing, and starting businesses. Yet financial education remains largely absent from most school curricula.</p>
+
+<h3>Core Financial Concepts Every Student Should Know</h3>
+<ul>
+<li><strong>Revenue:</strong> The total income generated by selling products or services. Revenue = Price × Quantity Sold.</li>
+<li><strong>Cost:</strong> The expenses incurred to produce and sell a product. Costs are of two types: Fixed (rent, salaries — constant regardless of output) and Variable (raw materials — increase with production).</li>
+<li><strong>Profit/Loss:</strong> Profit = Revenue − Total Costs. When Revenue exceeds Costs, the business is profitable. When Costs exceed Revenue, the business makes a loss.</li>
+<li><strong>Break-Even Point:</strong> The quantity of sales at which Revenue exactly equals Total Costs. No profit, no loss. BEP = Fixed Costs ÷ (Price − Variable Cost Per Unit).</li>
+<li><strong>Cash Flow:</strong> The timing of money coming in and going out. A business can be profitable on paper but fail because it runs out of cash to pay bills. Managing cash flow is as important as managing profit.</li>
+</ul>
+
+<div class="highlight-box">💡 According to NCFE-FLDGE (2019), only 27% of Indian adults are financially literate. This gap begins in school. Entrepreneurs who do not understand basic financial concepts are significantly more likely to fail, regardless of how good their product or service is.</div>
+
+<h3>Financial Literacy in the Kashmiri Context</h3>
+<p>In Kashmir, many families are involved in small businesses — orchards, handicraft production, retail shops, and tourism services. Yet financial management practices are often informal and intuitive rather than systematic. Students who learn basic financial literacy can immediately apply it to their family enterprises, potentially transforming generational business practices.</p>
+
+<h3>The Danger of Debt</h3>
+<p>One of the most important financial literacy lessons for student entrepreneurs is understanding debt. Borrowing money to start a business carries risk — if the business fails, the debt remains. Students must learn to calculate whether expected profits can service loan repayments before borrowing.</p>
+
+<div class="activity-box">
+<strong>🏫 Classroom Activity</strong>
+"The Lemonade Stand": Students are given ₹100 (simulated money) to run a lemonade stand for one week. They must buy lemons, sugar, and cups; set a price; sell to classmates; and calculate profit. At the end, they calculate Revenue, Costs, and Profit, and identify what they would do differently. This hands-on simulation makes abstract financial concepts viscerally real.
+</div>
+    `
+  },
+  {
+    title: "Risk and Decision-Making",
+    content: `
+<span class="page-badge">Page 9 of 13</span>
+<h2>Risk and Decision-Making</h2>
+<p>Entrepreneurship is fundamentally about making decisions under uncertainty. Unlike most school subjects, where there are right and wrong answers, entrepreneurial decision-making happens in conditions of incomplete information, changing circumstances, and unpredictable outcomes. Developing students' ability to assess, manage, and communicate about risk is therefore central to entrepreneurship education.</p>
+
+<h3>Understanding Risk</h3>
+<p>Risk is not simply "the chance of something bad happening." In entrepreneurship, risk is more precisely understood as the variability of outcomes — the degree to which actual results may differ from expected results. A business with highly predictable revenues has low risk; one with wildly fluctuating revenues has high risk, even if the expected average revenue is the same.</p>
+
+<h3>Types of Business Risk</h3>
+<ul>
+<li><strong>Market Risk:</strong> Demand for your product may be lower than expected. Competitors may emerge. Customer preferences may change.</li>
+<li><strong>Financial Risk:</strong> You may run out of cash. Costs may exceed estimates. Loans may become unmanageable.</li>
+<li><strong>Operational Risk:</strong> Your supplier may fail to deliver. Key team members may leave. Equipment may break down.</li>
+<li><strong>Regulatory Risk:</strong> Laws or regulations may change in ways that affect your business.</li>
+</ul>
+
+<h3>Risk Management Strategies</h3>
+<p>Smart entrepreneurs do not eliminate risk — they manage it. Key strategies include:</p>
+<ul>
+<li><strong>Diversification:</strong> Not putting all eggs in one basket — multiple products, customers, or markets.</li>
+<li><strong>Minimum Viable Product (MVP):</strong> Testing ideas cheaply before making large investments.</li>
+<li><strong>Contingency Planning:</strong> Asking "What if this goes wrong?" and having a Plan B.</li>
+<li><strong>Insurance and Contracts:</strong> Legal protection against specific risks.</li>
+</ul>
+
+<div class="highlight-box">💡 Research by Sarasvathy (2001) on expert entrepreneurs found that they use "effectuation" — working with what they have, limiting losses rather than maximising gains, and treating uncertainty as opportunity rather than threat. This mindset can be explicitly taught and developed.</div>
+
+<div class="activity-box">
+<strong>🏫 Classroom Activity</strong>
+"Risk Matrix": Present students with a new business idea (e.g., a food truck serving local Kashmiri cuisine at tourist spots). In groups, they brainstorm all possible risks, then plot each risk on a 2×2 matrix (Low/High Probability vs. Low/High Impact). For the top 3 highest-priority risks, they develop mitigation strategies. This develops systematic risk thinking.
+</div>
+    `
+  },
+  {
+    title: "Ethics in Business",
+    content: `
+<span class="page-badge">Page 10 of 13</span>
+<h2>Ethics in Business</h2>
+<p>Ethics in business is not a constraint on entrepreneurial success — it is a foundation of sustainable success. Businesses built on deception, exploitation, or disregard for stakeholders may generate short-term profits but inevitably fail. The most enduring enterprises in history have been those that created genuine value, treated people with respect, and earned deep trust.</p>
+
+<h3>What Is Business Ethics?</h3>
+<p>Business ethics is the application of ethical principles — honesty, fairness, respect, responsibility, compassion — to business decisions and actions. It covers how a business treats its customers, employees, suppliers, competitors, the environment, and the communities in which it operates.</p>
+
+<h3>Core Ethical Principles for Entrepreneurs</h3>
+<ul>
+<li><strong>Honesty:</strong> Representing your product accurately. Not making false claims about benefits, quality, or origin.</li>
+<li><strong>Fairness:</strong> Paying fair wages to workers. Offering fair prices to customers. Not exploiting information asymmetries.</li>
+<li><strong>Transparency:</strong> Being open about business practices, pricing, and problems.</li>
+<li><strong>Environmental Responsibility:</strong> Minimising ecological impact. Treating the natural environment as a stakeholder.</li>
+<li><strong>Social Responsibility:</strong> Considering the impact of business decisions on communities, not just shareholders.</li>
+</ul>
+
+<div class="highlight-box">💡 In the Kashmiri context, ethical business practices are particularly important in the handicrafts sector. "GI-tagged" products (Geographical Indication) like Pashmina and Kashmiri Saffron depend on their authenticity and integrity. Unethical practices — mixing cheaper fibres with Pashmina, diluting saffron — destroy the entire value chain, harming thousands of honest artisans and farmers.</div>
+
+<h3>The Ethics of Innovation</h3>
+<p>Innovation itself raises ethical questions. When designing a solution, entrepreneurs must ask: Who benefits from this innovation? Who might be harmed? Are we solving a problem in a way that creates new problems? Does our solution respect the dignity of the people it serves?</p>
+
+<div class="activity-box">
+<strong>🏫 Classroom Activity</strong>
+"Ethical Dilemma Cards": Present students with realistic business dilemmas. Example: "A competitor's delivery driver reveals to you confidential information about their pricing strategy. Do you use this information?" or "You can source raw materials 30% cheaper from a factory that uses child labour. Do you?" Students discuss in groups and present their reasoning. This develops ethical reasoning skills that will last a lifetime.
+</div>
+    `
+  },
+  {
+    title: "Sustainable Development & Entrepreneurship",
+    content: `
+<span class="page-badge">Page 11 of 13</span>
+<h2>Sustainable Development & Entrepreneurship</h2>
+<p>The 21st century has introduced a new imperative for entrepreneurs: creating value not just for customers and shareholders, but for society and the planet. The concept of sustainable development — "development that meets the needs of the present without compromising the ability of future generations to meet their own needs" (Brundtland Commission, 1987) — is now central to business strategy, not peripheral to it.</p>
+
+<h3>The UN Sustainable Development Goals (SDGs)</h3>
+<p>The 17 United Nations SDGs, adopted in 2015 as part of the 2030 Agenda, provide a comprehensive framework for sustainable development. Each goal represents both a challenge and a business opportunity. From Zero Hunger (SDG 2) to Climate Action (SDG 13), every goal can be addressed by entrepreneurial solutions. Student entrepreneurs who design businesses aligned with SDGs are not just doing good — they are also accessing a growing market of conscious consumers and impact investors.</p>
+
+<h3>Green Entrepreneurship in Kashmir</h3>
+<p>Kashmir's exceptional natural environment creates both the urgency and the opportunity for green entrepreneurship:</p>
+<ul>
+<li><strong>Ecotourism:</strong> Low-impact tourism that generates income for local communities while preserving natural habitats.</li>
+<li><strong>Organic Agriculture:</strong> Saffron, apples, and other produce grown without synthetic chemicals command premium prices in health-conscious markets.</li>
+<li><strong>Renewable Energy:</strong> Small-scale solar and micro-hydro projects can provide clean energy to remote villages while creating local employment.</li>
+<li><strong>Waste Management:</strong> Tourism generates significant waste in Kashmir's fragile mountain ecosystems. Collection, sorting, and recycling businesses address a critical need.</li>
+</ul>
+
+<div class="highlight-box">💡 The "Triple Bottom Line" (TBL) framework, coined by John Elkington in 1994, measures business success across three dimensions: People (social impact), Planet (environmental impact), and Profit (economic value). Sustainable businesses excel on all three.</div>
+
+<div class="activity-box">
+<strong>🏫 Classroom Activity</strong>
+"SDG Business Match": Each student is randomly assigned one of the 17 SDGs. They must design a micro-enterprise that directly addresses that goal using local resources in their district. After 15 minutes of individual planning, students present their ideas in 60 seconds. This exercise reveals the extraordinary diversity of entrepreneurial opportunities aligned with sustainability goals.
+</div>
+    `
+  },
+  {
+    title: "Assessment of Entrepreneurial Skills",
+    content: `
+<span class="page-badge">Page 12 of 13</span>
+<h2>Assessment of Entrepreneurial Skills</h2>
+<p>Traditional assessment models — examinations, tests, marks — are poorly suited to evaluating entrepreneurial competencies. You cannot test creativity with a multiple-choice question, or measure resilience with a written examination. Assessing entrepreneurial skills requires different approaches: performance-based, portfolio-based, and process-oriented assessment.</p>
+
+<h3>Competency-Based Assessment Framework</h3>
+<p>NEP 2020 endorses Competency-Based Education (CBE) which assesses students on demonstrated competencies rather than memorised content. For entrepreneurship education, the key competencies to assess include:</p>
+<ul>
+<li><strong>Opportunity Recognition:</strong> Can the student identify real problems and frame them as business opportunities?</li>
+<li><strong>Creative Ideation:</strong> Can the student generate multiple, diverse solutions to a defined problem?</li>
+<li><strong>Planning & Organisation:</strong> Can the student develop a viable plan with realistic goals, timelines, and resource allocation?</li>
+<li><strong>Financial Reasoning:</strong> Can the student estimate costs, revenues, and viability of a business idea?</li>
+<li><strong>Communication:</strong> Can the student persuasively present an idea to different audiences?</li>
+<li><strong>Collaboration:</strong> Can the student work effectively in teams, manage conflict, and leverage diverse skills?</li>
+<li><strong>Resilience:</strong> How does the student respond to setbacks, criticism, and failure?</li>
+</ul>
+
+<div class="highlight-box">💡 Portfolio assessment — where students collect evidence of their entrepreneurial work over a semester — is particularly well-suited to entrepreneurship education. This app's Portfolio Manager module directly supports this approach, allowing students to document their ideas, plans, and reflections over time.</div>
+
+<h3>Rubric Design for Entrepreneurship Projects</h3>
+<p>Effective assessment rubrics for entrepreneurship projects evaluate process as well as product. A business plan rubric should not only assess whether the financial projections are correct, but whether the student can articulate assumptions, justify projections, and identify risks. A Design Thinking project rubric should assess the quality of empathy research and the iterative process, not just the final prototype.</p>
+
+<div class="activity-box">
+<strong>🏫 Classroom Activity</strong>
+"Student-Designed Rubric": Before beginning a project, have students collectively design the rubric by which they will be assessed. Ask: What does excellent work look like in this project? What distinguishes a good idea from a great one? This metacognitive exercise develops self-assessment skills and deepens engagement with the criteria of quality.
+</div>
+    `
+  },
+  {
+    title: "Project-Based Learning in Business Studies",
+    content: `
+<span class="page-badge">Page 13 of 13</span>
+<h2>Project-Based Learning in Business Studies</h2>
+<p>Project-Based Learning (PBL) is a pedagogical approach in which students learn by working on complex, real-world projects over an extended period. Unlike traditional instruction, where content is delivered and then applied to exercises, PBL begins with a challenging question or problem and allows students to develop content knowledge in service of solving it. Research consistently shows that PBL produces deeper understanding, better retention, and stronger engagement than lecture-based instruction.</p>
+
+<h3>Elements of Effective PBL</h3>
+<ul>
+<li><strong>Driving Question:</strong> A compelling, open-ended question that frames the entire project. "How might we create a profitable business from Kashmir's surplus walnuts that also benefits local farmers?"</li>
+<li><strong>Student Voice & Choice:</strong> Students make meaningful decisions about the project — what problem to address, how to research it, what solution to develop, how to present findings.</li>
+<li><strong>Inquiry & Innovation:</strong> Students conduct real research — interviews, surveys, market analysis — rather than simply reading textbooks.</li>
+<li><strong>Feedback & Revision:</strong> Projects go through multiple drafts and iterations based on feedback from teachers, peers, and real-world stakeholders.</li>
+<li><strong>Public Product:</strong> Students present their work to an authentic audience — other students, teachers, parents, community members, or potential investors.</li>
+</ul>
+
+<div class="highlight-box">💡 The Buck Institute for Education (PBLWorks) has documented hundreds of successful PBL implementations across diverse school contexts. Their research shows that PBL students consistently outperform traditionally instructed students on both content knowledge and 21st-century skills assessments.</div>
+
+<h3>PBL in Kashmir: Example Projects</h3>
+<p>Some powerful PBL projects relevant to Kashmiri secondary students:</p>
+<ul>
+<li><strong>"Kashmir Spice Exchange":</strong> Students research the saffron value chain, interview farmers and buyers, and design a cooperative model that increases farmer income by cutting out middlemen.</li>
+<li><strong>"Heritage Hotel Project":</strong> Students study a declining heritage property and develop a business plan for converting it into a boutique heritage tourism experience.</li>
+<li><strong>"Zero Waste School Campaign":</strong> Students map their school's waste streams and design a business model for converting organic waste into compost sold to local farmers.</li>
+</ul>
+
+<div class="activity-box">
+<strong>🏫 Final Project Activity</strong>
+"Innovation Expo": At the end of the semester, students present their entrepreneurship projects to an audience of teachers, parents, and local business community members. Each team has a "stall" with visuals, prototypes, and financial projections. Community members can ask questions and provide feedback. This authentic audience transforms PBL from a classroom exercise into a genuine entrepreneurial experience — and it is often the most memorable event of the school year.
+</div>
+    `
+  }
+];
+
+// ================================================================
+//  SKILL DATA
+// ================================================================
+const SKILLS = [
+  { id: 'creativity', label: 'Creativity', color: '#f4801a' },
+  { id: 'risk', label: 'Risk-Taking', color: '#e05252' },
+  { id: 'leadership', label: 'Leadership', color: '#4caf82' },
+  { id: 'decision', label: 'Decision-Making', color: '#e8c86d' },
+  { id: 'planning', label: 'Planning', color: '#5e9ef4' },
+  { id: 'communication', label: 'Communication', color: '#b45ee8' },
+];
+
+// ================================================================
+//  PAGE NAVIGATION
+// ================================================================
+function showPage(pageId) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + pageId).classList.add('active');
+  const btn = document.querySelector(`[data-page="${pageId}"]`);
+  if (btn) btn.classList.add('active');
+  window.scrollTo(0, 0);
+  if (pageId === 'portfolio') renderPortfolio();
+  if (pageId === 'skill-tracker') renderSkillSliders();
+  if (pageId === 'simulation') runSim();
+  if (pageId === 'finance') { calcPL(); calcBE(); drawRevChart(); calcBudget(); }
+}
+
+// ================================================================
+//  POLICY MODULE
+// ================================================================
+let currentPolicy = 0;
+
+function renderPolicy(idx) {
+  currentPolicy = idx;
+  const area = document.getElementById('policy-content-area');
+  area.innerHTML = POLICIES[idx].content;
+  document.querySelectorAll('.policy-tab').forEach((t, i) => {
+    t.classList.toggle('active', i === idx);
+  });
+}
+
+function buildPolicyTabs() {
+  const nav = document.getElementById('policy-tab-nav');
+  nav.innerHTML = POLICIES.map((p, i) =>
+    `<button class="policy-tab${i===0?' active':''}" onclick="renderPolicy(${i})">${i+1}</button>`
+  ).join('');
+}
+
+function policyNext() {
+  if (currentPolicy < POLICIES.length - 1) renderPolicy(currentPolicy + 1);
+}
+
+function policyPrev() {
+  if (currentPolicy > 0) renderPolicy(currentPolicy - 1);
+}
+
+// ================================================================
+//  IDEA GENERATION
+// ================================================================
+const IDEA_TEMPLATES = {
+  Education: {
+    problems: ["Lack of quality coaching for rural students", "Limited access to digital learning tools", "Low parental involvement in learning"],
+    solutions: ["Peer learning circles with trained student mentors", "Low-cost tablet library for shared digital access", "Parent engagement app with local language support"],
+    vp: "Making quality education accessible to every child regardless of geography or income."
+  },
+  Environment: {
+    problems: ["Plastic waste in mountain ecosystems", "Air pollution from burning crop stubble", "Declining forest cover from unregulated fuelwood collection"],
+    solutions: ["Community recycling cooperative with buy-back schemes", "Bio-composting training and micro-enterprise network", "Solar cooker distribution business"],
+    vp: "Building sustainable communities that protect Kashmir's natural heritage for future generations."
+  },
+  Agriculture: {
+    problems: ["Post-harvest losses due to poor storage", "Price volatility hurting farmer incomes", "Dependence on middlemen reducing margins"],
+    solutions: ["Cooperative cold storage with shared membership", "WhatsApp-based price alert network for farmers", "Direct-to-consumer online marketplace"],
+    vp: "Empowering farmers to capture more value from their hard work."
+  },
+  "Local Market": {
+    problems: ["Small businesses struggling with digital payments", "Artisans unable to reach urban customers", "Local produce competing with cheaper imported goods"],
+    solutions: ["Digital literacy training and payment setup service", "Curated online marketplace for authentic local products", "Origin-story branding consultancy for local producers"],
+    vp: "Helping Kashmiri businesses thrive in the digital economy."
+  },
+  Technology: {
+    problems: ["Tech support unavailable in rural areas", "Digital literacy gap among older residents", "Outdated software in schools and offices"],
+    solutions: ["Mobile tech repair and training van", "Simplified digital literacy curriculum for seniors", "IT support subscription service for schools"],
+    vp: "Bridging the digital divide one community at a time."
+  },
+  Tourism: {
+    problems: ["Tourism income concentrated in Srinagar", "Seasonal nature limiting year-round income", "Cultural experiences being commodified and inauthentic"],
+    solutions: ["Village tourism network connecting travellers to authentic experiences", "Winter sports micro-tourism packages for adventure travellers", "Artisan workshops as premium tourism experiences"],
+    vp: "Creating immersive, authentic Kashmiri experiences that benefit local communities."
+  },
+  Healthcare: {
+    problems: ["Limited medical facilities in remote areas", "Lack of health awareness in rural communities", "High cost of medicines for low-income families"],
+    solutions: ["Telemedicine facilitation centre in rural markets", "Community health educator training programme", "Generic medicine cooperative for bulk purchasing"],
+    vp: "Making quality healthcare accessible and affordable for all Kashmiris."
+  },
+  Handicrafts: {
+    problems: ["Fake Kashmiri products undermining authentic artisans", "Young people not learning traditional crafts", "Low prices due to unorganised selling"],
+    solutions: ["Blockchain-based authenticity certification for crafts", "Apprenticeship incentive programme connecting youth to masters", "Premium online brand for certified authentic Kashmiri crafts"],
+    vp: "Preserving and elevating Kashmiri craft heritage while creating sustainable livelihoods."
+  }
+};
+
+function generateIdea() {
+  const area = document.getElementById('idea-area').value;
+  const audience = document.getElementById('idea-audience').value;
+  const resources = document.getElementById('idea-resources').value;
+
+  if (!area || !audience || !resources) {
+    toast('Please select all three options first!');
+    return;
+  }
+
+  const tmpl = IDEA_TEMPLATES[area] || IDEA_TEMPLATES['Local Market'];
+  const problem = tmpl.problems[Math.floor(Math.random() * tmpl.problems.length)];
+  const solution = tmpl.solutions[Math.floor(Math.random() * tmpl.solutions.length)];
+
+  const output = document.getElementById('idea-output');
+  output.style.display = 'block';
+  output.innerHTML = `
+    <div class="card" style="border-color:rgba(244,128,26,0.3);">
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:20px;">
+        <span style="font-size:1.8rem;">💡</span>
+        <div>
+          <div style="font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:var(--orange); margin-bottom:2px;">Innovation Worksheet</div>
+          <div style="font-family:var(--font-display); font-size:1.3rem; color:var(--white);">${area} Innovation Idea</div>
+        </div>
+      </div>
+      <div style="display:grid; gap:14px;">
+        <div style="background:rgba(255,255,255,0.04); border-radius:12px; padding:16px;">
+          <div style="font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:var(--danger); margin-bottom:6px;">🔍 Problem Statement</div>
+          <p style="font-size:0.9rem; color:var(--white);">${problem}</p>
+        </div>
+        <div style="background:rgba(255,255,255,0.04); border-radius:12px; padding:16px;">
+          <div style="font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:var(--success); margin-bottom:6px;">✅ Proposed Solution</div>
+          <p style="font-size:0.9rem; color:var(--white);">${solution}</p>
+        </div>
+        <div style="background:rgba(255,255,255,0.04); border-radius:12px; padding:16px;">
+          <div style="font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:var(--orange); margin-bottom:6px;">💎 Value Proposition</div>
+          <p style="font-size:0.9rem; color:var(--white);">${tmpl.vp}</p>
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+          <div style="background:rgba(255,255,255,0.04); border-radius:12px; padding:16px;">
+            <div style="font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:var(--gold); margin-bottom:6px;">👥 Target Customers</div>
+            <p style="font-size:0.88rem; color:var(--white);">${audience} in the ${area} sector</p>
+          </div>
+          <div style="background:rgba(255,255,255,0.04); border-radius:12px; padding:16px;">
+            <div style="font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:var(--success); margin-bottom:6px;">🛠 Resources Available</div>
+            <p style="font-size:0.88rem; color:var(--white);">${resources}</p>
+          </div>
+        </div>
+        <div style="background:rgba(76,175,130,0.08); border:1px solid rgba(76,175,130,0.25); border-radius:12px; padding:16px;">
+          <div style="font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:var(--success); margin-bottom:6px;">🌟 Expected Impact</div>
+          <p style="font-size:0.88rem; color:var(--white-dim);">This venture could directly benefit ${audience.toLowerCase()} by addressing the challenge of "${problem.toLowerCase()}". With ${resources.toLowerCase()}, this idea is viable at small scale and can grow over time.</p>
+        </div>
+      </div>
+      <div style="display:flex; gap:10px; margin-top:20px; flex-wrap:wrap;">
+        <button class="btn-primary" onclick="saveIdeaToPortfolio('${area.replace(/'/g,"\\'")}', '${problem.replace(/'/g,"\\'")}', '${solution.replace(/'/g,"\\'")}')">💾 Save to Portfolio</button>
+        <button class="btn-secondary" onclick="generateIdea()">🔄 Generate Another</button>
+      </div>
+    </div>`;
+}
+
+function saveIdeaToPortfolio(area, problem, solution) {
+  const proj = {
+    id: Date.now(),
+    title: `${area} Innovation Idea`,
+    category: 'Innovation Idea',
+    description: `Problem: ${problem}\n\nSolution: ${solution}`,
+    date: new Date().toLocaleDateString('en-IN')
+  };
+  saveProject(proj);
+  toast('✅ Saved to Portfolio!');
+}
+
+// ================================================================
+//  DESIGN THINKING
+// ================================================================
+let dtCurrentStep = 0;
+
+function dtGoTo(step) {
+  document.querySelectorAll('.step-panel').forEach((p, i) => {
+    p.classList.toggle('active', i === step);
+  });
+  document.querySelectorAll('.step-indicator').forEach((ind, i) => {
+    ind.classList.remove('active', 'done');
+    if (i === step) ind.classList.add('active');
+    if (i < step) ind.classList.add('done');
+  });
+  dtCurrentStep = step;
+}
+
+function dtSaveAndNext(step) {
+  const dtData = JSON.parse(localStorage.getItem('dt_data') || '{}');
+  const fields = document.querySelectorAll(`#dt-step-${step} textarea, #dt-step-${step} input`);
+  fields.forEach(f => { dtData[f.id] = f.value; });
+  localStorage.setItem('dt_data', JSON.stringify(dtData));
+  toast('✅ Step saved!');
+  if (step < 4) dtGoTo(step + 1);
+}
+
+function loadDTData() {
+  const dtData = JSON.parse(localStorage.getItem('dt_data') || '{}');
+  Object.entries(dtData).forEach(([id, val]) => {
+    const el = document.getElementById(id);
+    if (el) el.value = val;
+  });
+}
+
+function saveDTToPortfolio() {
+  dtSaveAndNext(4);
+  const dtData = JSON.parse(localStorage.getItem('dt_data') || '{}');
+  const proj = {
+    id: Date.now(),
+    title: 'Design Thinking Project',
+    category: 'Design Thinking',
+    description: `User: ${dtData['dt-0-user'] || ''}\nPOV: ${dtData['dt-1-pov'] || ''}\nTop Ideas: ${dtData['dt-2-top3'] || ''}`,
+    date: new Date().toLocaleDateString('en-IN')
+  };
+  saveProject(proj);
+  toast('🎉 Design Thinking project saved to Portfolio!');
+}
+
+// ================================================================
+//  BUSINESS PLAN
+// ================================================================
+function generateBusinessPlan() {
+  const name = document.getElementById('bp-name').value || 'My Business';
+  const product = document.getElementById('bp-product').value || 'Product/Service';
+  const market = document.getElementById('bp-market').value || 'General Consumers';
+  const revenue = document.getElementById('bp-revenue').value;
+  const fixed = parseFloat(document.getElementById('bp-fixed').value) || 5000;
+  const price = parseFloat(document.getElementById('bp-price').value) || 250;
+  const cost = parseFloat(document.getElementById('bp-cost').value) || 100;
+  const units = parseFloat(document.getElementById('bp-units').value) || 100;
+  const marketing = document.getElementById('bp-marketing').value || 'Social media and word-of-mouth';
+  const uvp = document.getElementById('bp-uvp').value || 'Quality and authenticity';
+
+  const monthlyRevenue = price * units;
+  const monthlyVarCost = cost * units;
+  const monthlyProfit = monthlyRevenue - monthlyVarCost - fixed;
+  const bep = Math.ceil(fixed / (price - cost));
+  const margin = ((price - cost) / price * 100).toFixed(1);
+  const isProfit = monthlyProfit >= 0;
+
+  const output = document.getElementById('bp-output');
+  output.style.display = 'block';
+  output.innerHTML = `
+    <div class="card" style="border-color:rgba(244,128,26,0.35);">
+      <div style="text-align:center; margin-bottom:24px; padding-bottom:20px; border-bottom:1px solid rgba(255,255,255,0.08);">
+        <div style="font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:var(--orange); margin-bottom:6px;">Business Plan</div>
+        <h2 style="font-family:var(--font-display); font-size:2rem; color:var(--white); margin-bottom:4px;">${name}</h2>
+        <p style="color:var(--white-dim); font-size:0.88rem;">${product} · ${market}</p>
+        <div style="margin-top:10px; display:flex; justify-content:center; gap:8px; flex-wrap:wrap;">
+          <span class="tag">${revenue}</span>
+          <span class="tag">NEP 2020 Aligned</span>
+          <span class="tag">Skill-Based</span>
+        </div>
+      </div>
+
+      <h3 style="font-family:var(--font-display); font-size:1.2rem; color:var(--orange-light); margin-bottom:10px;">📋 Executive Summary</h3>
+      <p style="font-size:0.88rem; color:var(--white-dim); margin-bottom:20px; line-height:1.8;">
+        <strong style="color:var(--white);">${name}</strong> offers <strong style="color:var(--white);">${product}</strong> to <strong style="color:var(--white);">${market}</strong> using a <strong style="color:var(--white);">${revenue}</strong> model. Our unique value proposition: <em style="color:var(--orange-light);">${uvp}</em>. Marketing strategy: ${marketing}.
+      </p>
+
+      <h3 style="font-family:var(--font-display); font-size:1.2rem; color:var(--orange-light); margin:20px 0 10px;">💰 Financial Estimates</h3>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(160px, 1fr)); gap:12px; margin-bottom:20px;">
+        ${[
+          ['Monthly Revenue', '₹'+monthlyRevenue.toLocaleString(), 'neutral'],
+          ['Variable Costs', '₹'+monthlyVarCost.toLocaleString(), 'negative'],
+          ['Fixed Costs', '₹'+fixed.toLocaleString(), 'negative'],
+          ['Net Profit/Loss', (isProfit?'₹':'−₹')+Math.abs(monthlyProfit).toLocaleString(), isProfit?'positive':'negative'],
+          ['Gross Margin', margin+'%', 'neutral'],
+          ['Break-Even (units)', bep+' units/mo', 'neutral'],
+        ].map(([label, value, cls]) => `
+          <div class="sim-result">
+            <h4>${label}</h4>
+            <div class="sim-value ${cls}" style="font-size:1.2rem;">${value}</div>
+          </div>`).join('')}
+      </div>
+
+      <h3 style="font-family:var(--font-display); font-size:1.2rem; color:var(--orange-light); margin:20px 0 10px;">🧩 SWOT Analysis</h3>
+      <div class="swot-grid">
+        <div class="swot-cell S">
+          <span class="swot-label">S — Strengths</span>
+          <p style="font-size:0.82rem; color:var(--white-dim);">Unique product offering, local authenticity, ${uvp.split(' ').slice(0,4).join(' ')}.</p>
+        </div>
+        <div class="swot-cell W">
+          <span class="swot-label">W — Weaknesses</span>
+          <p style="font-size:0.82rem; color:var(--white-dim);">Limited initial capital, small team, low brand awareness at launch.</p>
+        </div>
+        <div class="swot-cell O">
+          <span class="swot-label">O — Opportunities</span>
+          <p style="font-size:0.82rem; color:var(--white-dim);">Growing demand in ${market}, digital reach via social media, government MSME support schemes.</p>
+        </div>
+        <div class="swot-cell T">
+          <span class="swot-label">T — Threats</span>
+          <p style="font-size:0.82rem; color:var(--white-dim);">Competition from established players, seasonal demand fluctuations, supply chain disruptions.</p>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:10px; margin-top:24px; flex-wrap:wrap;">
+        <button class="btn-primary" onclick="saveBPToPortfolio('${name.replace(/'/g,"\\'")}')" >💾 Save to Portfolio</button>
+        <button class="btn-secondary" onclick="window.print()">🖨 Print Plan</button>
+      </div>
+    </div>`;
+}
+
+function saveBPToPortfolio(name) {
+  const proj = {
+    id: Date.now(),
+    title: name + ' — Business Plan',
+    category: 'Business Plan',
+    description: 'Complete business plan with financial estimates and SWOT analysis.',
+    date: new Date().toLocaleDateString('en-IN')
+  };
+  saveProject(proj);
+  toast('✅ Business Plan saved to Portfolio!');
+}
+
+// ================================================================
+//  FINANCIAL CALCULATORS
+// ================================================================
+function calcPL() {
+  const rev = parseFloat(document.getElementById('pl-revenue').value) || 0;
+  const varC = parseFloat(document.getElementById('pl-variable').value) || 0;
+  const fixC = parseFloat(document.getElementById('pl-fixed').value) || 0;
+  const profit = rev - varC - fixC;
+  const res = document.getElementById('pl-result');
+  res.innerHTML = `
+    <div class="calc-result">
+      <div class="label">${profit >= 0 ? 'Net Profit' : 'Net Loss'}</div>
+      <div class="amount ${profit >= 0 ? 'profit' : 'loss'}">₹${Math.abs(profit).toLocaleString()}</div>
+      <div style="font-size:0.78rem; color:var(--white-dim); margin-top:8px;">
+        Revenue ₹${rev.toLocaleString()} − Costs ₹${(varC+fixC).toLocaleString()} = ${profit >= 0 ? 'Profit' : 'Loss'} ₹${Math.abs(profit).toLocaleString()}
+      </div>
+    </div>`;
+}
+
+function calcBE() {
+  const fixC = parseFloat(document.getElementById('be-fixed').value) || 0;
+  const price = parseFloat(document.getElementById('be-price').value) || 1;
+  const varC = parseFloat(document.getElementById('be-varcost').value) || 0;
+  const contrib = price - varC;
+  if (contrib <= 0) {
+    document.getElementById('be-result').innerHTML = '<div class="calc-result"><div class="label">Error</div><div class="amount loss">Price must be higher than variable cost</div></div>';
+    return;
+  }
+  const bep = Math.ceil(fixC / contrib);
+  document.getElementById('be-result').innerHTML = `
+    <div class="calc-result">
+      <div class="label">Break-Even Point</div>
+      <div class="amount breakeven">${bep} units</div>
+      <div style="font-size:0.78rem; color:var(--white-dim); margin-top:8px;">
+        Sell ${bep} units/month to cover all costs. Contribution per unit: ₹${contrib.toFixed(2)}
+      </div>
+    </div>`;
+}
+
+function drawRevChart() {
+  const canvas = document.getElementById('rev-chart');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const units = parseFloat(document.getElementById('rp-units').value) || 50;
+  const price = parseFloat(document.getElementById('rp-price').value) || 200;
+  const growth = (parseFloat(document.getElementById('rp-growth').value) || 10) / 100;
+
+  const months = 12;
+  const labels = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const revenues = [];
+  let current = units * price;
+  for (let i = 0; i < months; i++) {
+    revenues.push(Math.round(current));
+    current *= (1 + growth);
+  }
+
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+
+  const pad = { l: 70, r: 20, t: 20, b: 40 };
+  const chartW = W - pad.l - pad.r;
+  const chartH = H - pad.t - pad.b;
+  const maxVal = Math.max(...revenues) * 1.1;
+
+  // Grid
+  ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+  ctx.lineWidth = 1;
+  for (let i = 0; i <= 4; i++) {
+    const y = pad.t + chartH - (i / 4) * chartH;
+    ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(pad.l + chartW, y); ctx.stroke();
+    ctx.fillStyle = 'rgba(184,196,224,0.5)';
+    ctx.font = '11px DM Sans, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('₹' + ((maxVal * i / 4) / 1000).toFixed(0) + 'k', pad.l - 8, y + 4);
+  }
+
+  // Area fill
+  const grad = ctx.createLinearGradient(0, pad.t, 0, pad.t + chartH);
+  grad.addColorStop(0, 'rgba(244,128,26,0.4)');
+  grad.addColorStop(1, 'rgba(244,128,26,0.02)');
+  ctx.beginPath();
+  revenues.forEach((v, i) => {
+    const x = pad.l + (i / (months - 1)) * chartW;
+    const y = pad.t + chartH - (v / maxVal) * chartH;
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  });
+  ctx.lineTo(pad.l + chartW, pad.t + chartH);
+  ctx.lineTo(pad.l, pad.t + chartH);
+  ctx.closePath();
+  ctx.fillStyle = grad;
+  ctx.fill();
+
+  // Line
+  ctx.beginPath();
+  ctx.strokeStyle = '#f4801a';
+  ctx.lineWidth = 2.5;
+  ctx.lineJoin = 'round';
+  revenues.forEach((v, i) => {
+    const x = pad.l + (i / (months - 1)) * chartW;
+    const y = pad.t + chartH - (v / maxVal) * chartH;
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  });
+  ctx.stroke();
+
+  // Dots + labels
+  revenues.forEach((v, i) => {
+    const x = pad.l + (i / (months - 1)) * chartW;
+    const y = pad.t + chartH - (v / maxVal) * chartH;
+    ctx.beginPath();
+    ctx.arc(x, y, 4, 0, Math.PI * 2);
+    ctx.fillStyle = '#f4801a';
+    ctx.fill();
+    ctx.strokeStyle = '#0a1628';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+    ctx.fillStyle = 'rgba(184,196,224,0.7)';
+    ctx.font = '10px DM Sans, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(labels[i], x, H - 8);
+  });
+}
+
+function addBudgetRow() {
+  const row = document.createElement('div');
+  row.className = 'budget-row';
+  row.style.cssText = 'display:grid; grid-template-columns:1fr 1fr 80px; gap:10px; margin-bottom:10px;';
+  row.innerHTML = `
+    <input type="text" placeholder="Category" class="budget-cat">
+    <input type="text" placeholder="Amount (₹)" class="budget-amt" oninput="calcBudget()">
+    <select class="budget-type" onchange="calcBudget()">
+      <option value="expense">Expense</option>
+      <option value="income">Income</option>
+    </select>`;
+  document.getElementById('budget-rows').appendChild(row);
+}
+
+function calcBudget() {
+  let income = 0, expense = 0;
+  document.querySelectorAll('.budget-row').forEach(row => {
+    const amt = parseFloat(row.querySelector('.budget-amt').value) || 0;
+    const type = row.querySelector('.budget-type').value;
+    if (type === 'income') income += amt;
+    else expense += amt;
+  });
+  const net = income - expense;
+  document.getElementById('budget-result').innerHTML = `
+    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-top:12px;">
+      <div class="sim-result"><h4>Total Income</h4><div class="sim-value positive" style="font-size:1.2rem;">₹${income.toLocaleString()}</div></div>
+      <div class="sim-result"><h4>Total Expenses</h4><div class="sim-value negative" style="font-size:1.2rem;">₹${expense.toLocaleString()}</div></div>
+      <div class="sim-result"><h4>Net Balance</h4><div class="sim-value ${net>=0?'positive':'negative'}" style="font-size:1.2rem;">₹${Math.abs(net).toLocaleString()}</div></div>
+    </div>`;
+}
+
+// ================================================================
+//  MARKET SIMULATION
+// ================================================================
+function runSim() {
+  const price = parseInt(document.getElementById('sim-price').value);
+  const mktcost = parseInt(document.getElementById('sim-mktcost').value);
+  const prodcost = parseInt(document.getElementById('sim-prodcost').value);
+  const demand = parseInt(document.getElementById('sim-demand').value);
+
+  document.getElementById('sim-price-val').textContent = price;
+  document.getElementById('sim-mktcost-val').textContent = mktcost;
+  document.getElementById('sim-prodcost-val').textContent = prodcost;
+  document.getElementById('sim-demand-val').textContent = demand;
+
+  const revenue = price * demand;
+  const totalCost = (prodcost * demand) + mktcost;
+  const profit = revenue - totalCost;
+  const margin = revenue > 0 ? (profit / revenue) * 100 : 0;
+
+  document.getElementById('sim-revenue').textContent = '₹' + revenue.toLocaleString();
+  document.getElementById('sim-profit').textContent = (profit >= 0 ? '₹' : '−₹') + Math.abs(profit).toLocaleString();
+  document.getElementById('sim-profit').className = 'sim-value ' + (profit >= 0 ? 'positive' : 'negative');
+
+  const risk = margin < 0 ? '🔴 High' : margin < 15 ? '🟡 Medium' : '🟢 Low';
+  const sustain = margin < 0 ? '☆☆☆☆' : margin < 15 ? '⭐⭐☆☆' : margin < 30 ? '⭐⭐⭐☆' : '⭐⭐⭐⭐';
+  document.getElementById('sim-risk').textContent = risk;
+  document.getElementById('sim-sustain').textContent = sustain;
+
+  const score = Math.max(0, Math.min(100, Math.round(margin)));
+  document.getElementById('sim-score').textContent = score + '%';
+  document.getElementById('sim-bar').style.width = score + '%';
+
+  drawSimChart(revenue, totalCost, profit);
+}
+
+function drawSimChart(revenue, totalCost, profit) {
+  const canvas = document.getElementById('sim-chart');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+
+  const bars = [
+    { label: 'Revenue', value: revenue, color: '#e8c86d' },
+    { label: 'Total Cost', value: totalCost, color: '#e05252' },
+    { label: 'Profit', value: Math.abs(profit), color: profit >= 0 ? '#4caf82' : '#e05252' },
+  ];
+
+  const maxVal = Math.max(...bars.map(b => b.value)) * 1.15 || 1;
+  const pad = { l: 40, r: 20, t: 20, b: 40 };
+  const chartW = W - pad.l - pad.r;
+  const chartH = H - pad.t - pad.b;
+  const barW = chartW / bars.length * 0.5;
+  const spacing = chartW / bars.length;
+
+  // Gridlines
+  ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+  for (let i = 0; i <= 4; i++) {
+    const y = pad.t + chartH - (i / 4) * chartH;
+    ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(pad.l + chartW, y); ctx.stroke();
+    ctx.fillStyle = 'rgba(184,196,224,0.5)';
+    ctx.font = '11px DM Sans';
+    ctx.textAlign = 'right';
+    ctx.fillText('₹' + ((maxVal * i / 4) / 1000).toFixed(0) + 'k', pad.l - 5, y + 4);
+  }
+
+  bars.forEach((bar, i) => {
+    const bH = (bar.value / maxVal) * chartH;
+    const x = pad.l + spacing * i + (spacing - barW) / 2;
+    const y = pad.t + chartH - bH;
+    const grad = ctx.createLinearGradient(0, y, 0, y + bH);
+    grad.addColorStop(0, bar.color + 'cc');
+    grad.addColorStop(1, bar.color + '44');
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.roundRect ? ctx.roundRect(x, y, barW, bH, [6, 6, 0, 0]) : ctx.rect(x, y, barW, bH);
+    ctx.fill();
+    ctx.fillStyle = bar.color;
+    ctx.font = 'bold 11px DM Sans';
+    ctx.textAlign = 'center';
+    ctx.fillText(bar.label, x + barW / 2, H - 10);
+    ctx.fillStyle = 'rgba(240,244,255,0.8)';
+    ctx.font = '10px DM Sans';
+    ctx.fillText('₹' + (bar.value / 1000).toFixed(1) + 'k', x + barW / 2, y - 6);
+  });
+}
+
+// ================================================================
+//  SKILL TRACKER
+// ================================================================
+let skillValues = {};
+
+function renderSkillSliders() {
+  const saved = JSON.parse(localStorage.getItem('skillRatings') || '{}');
+  SKILLS.forEach(s => {
+    skillValues[s.id] = saved[s.id] || 5;
+  });
+
+  const container = document.getElementById('skill-sliders');
+  container.innerHTML = SKILLS.map(s => `
+    <div class="skill-slider-row">
+      <label>${s.label}</label>
+      <input type="range" min="1" max="10" value="${skillValues[s.id]}"
+        oninput="skillValues['${s.id}']=parseInt(this.value); document.getElementById('sv-${s.id}').textContent=this.value; drawRadar();">
+      <span class="skill-val" id="sv-${s.id}">${skillValues[s.id]}</span>
+    </div>`).join('');
+
+  drawRadar();
+}
+
+function drawRadar() {
+  const svg = document.getElementById('radar-svg');
+  const cx = 190, cy = 190, r = 140;
+  const n = SKILLS.length;
+  const levels = 5;
+
+  let html = '';
+
+  // Level circles
+  for (let l = 1; l <= levels; l++) {
+    const lr = (r * l) / levels;
+    const pts = SKILLS.map((_, i) => {
+      const angle = (Math.PI * 2 * i / n) - Math.PI / 2;
+      return `${cx + lr * Math.cos(angle)},${cy + lr * Math.sin(angle)}`;
+    }).join(' ');
+    html += `<polygon points="${pts}" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>`;
+  }
+
+  // Axes
+  SKILLS.forEach((s, i) => {
+    const angle = (Math.PI * 2 * i / n) - Math.PI / 2;
+    const x2 = cx + r * Math.cos(angle);
+    const y2 = cy + r * Math.sin(angle);
+    html += `<line x1="${cx}" y1="${cy}" x2="${x2}" y2="${y2}" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>`;
+    const lx = cx + (r + 22) * Math.cos(angle);
+    const ly = cy + (r + 22) * Math.sin(angle);
+    html += `<text x="${lx}" y="${ly}" text-anchor="middle" dominant-baseline="middle" 
+      font-size="11" font-family="DM Sans" fill="rgba(184,196,224,0.8)">${s.label}</text>`;
+  });
+
+  // Data polygon
+  const pts = SKILLS.map((s, i) => {
+    const val = (skillValues[s.id] || 5) / 10;
+    const angle = (Math.PI * 2 * i / n) - Math.PI / 2;
+    return `${cx + r * val * Math.cos(angle)},${cy + r * val * Math.sin(angle)}`;
+  }).join(' ');
+
+  html += `<polygon points="${pts}" fill="rgba(244,128,26,0.2)" stroke="#f4801a" stroke-width="2.5" stroke-linejoin="round"/>`;
+
+  // Dots
+  SKILLS.forEach((s, i) => {
+    const val = (skillValues[s.id] || 5) / 10;
+    const angle = (Math.PI * 2 * i / n) - Math.PI / 2;
+    const dx = cx + r * val * Math.cos(angle);
+    const dy = cy + r * val * Math.sin(angle);
+    html += `<circle cx="${dx}" cy="${dy}" r="5" fill="${s.color}" stroke="#0a1628" stroke-width="2"/>`;
+  });
+
+  svg.innerHTML = html;
+}
+
+function saveSkills() {
+  localStorage.setItem('skillRatings', JSON.stringify(skillValues));
+  toast('✅ Skills saved locally!');
+}
+
+function resetSkills() {
+  SKILLS.forEach(s => { skillValues[s.id] = 5; });
+  renderSkillSliders();
+}
+
+// ================================================================
+//  PORTFOLIO
+// ================================================================
+function getProjects() {
+  return JSON.parse(localStorage.getItem('studentProjects') || '[]');
+}
+
+function saveProject(proj) {
+  const projects = getProjects();
+  projects.unshift(proj);
+  localStorage.setItem('studentProjects', JSON.stringify(projects));
+  renderPortfolio();
+}
+
+function deleteProject(id) {
+  const projects = getProjects().filter(p => p.id !== id);
+  localStorage.setItem('studentProjects', JSON.stringify(projects));
+  renderPortfolio();
+}
+
+function renderPortfolio() {
+  const list = document.getElementById('portfolio-list');
+  if (!list) return;
+  const projects = getProjects();
+  if (projects.length === 0) {
+    list.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:48px 20px; color:var(--white-dim);">
+      <div style="font-size:3rem; margin-bottom:12px;">🗂️</div>
+      <div style="font-size:1rem; margin-bottom:6px; color:var(--white);">No projects yet</div>
+      <div style="font-size:0.85rem;">Use the Idea Lab, Design Thinking, or Business Plan modules to create your first project.</div>
+    </div>`;
+    return;
+  }
+  list.innerHTML = projects.map(p => `
+    <div class="portfolio-item">
+      <div class="p-title">${p.title}</div>
+      <div class="p-meta">📅 ${p.date} &nbsp;·&nbsp; <span class="tag">${p.category}</span></div>
+      <div class="p-body">${(p.description || '').substring(0, 140)}${(p.description||'').length > 140 ? '…' : ''}</div>
+      <div style="display:flex; gap:8px;">
+        <button class="btn-secondary" style="font-size:0.78rem; padding:6px 12px;" onclick="deleteProject(${p.id})">🗑 Delete</button>
+      </div>
+    </div>`).join('');
+}
+
+function showNewProjectForm() {
+  const form = document.getElementById('new-project-form');
+  form.style.display = form.style.display === 'none' ? 'block' : 'none';
+}
+
+function saveNewProject() {
+  const title = document.getElementById('np-title').value.trim();
+  const category = document.getElementById('np-category').value;
+  const desc = document.getElementById('np-desc').value.trim();
+  if (!title) { toast('Please enter a project title!'); return; }
+  saveProject({ id: Date.now(), title, category, description: desc, date: new Date().toLocaleDateString('en-IN') });
+  document.getElementById('np-title').value = '';
+  document.getElementById('np-desc').value = '';
+  document.getElementById('new-project-form').style.display = 'none';
+  toast('✅ Project saved!');
+}
+
+function exportPortfolioJSON() {
+  const data = JSON.stringify(getProjects(), null, 2);
+  const blob = new Blob([data], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'portfolio_backup.json';
+  a.click();
+}
+
+function printPortfolio() { window.print(); }
+
+// ================================================================
+//  TOAST
+// ================================================================
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ================================================================
+//  INIT
+// ================================================================
+document.addEventListener('DOMContentLoaded', () => {
+  buildPolicyTabs();
+  renderPolicy(0);
+  loadDTData();
+  renderPortfolio();
+  calcPL();
+  calcBE();
+  calcBudget();
+
+  // Register SW
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('service-worker.js').catch(() => {});
+  }
+});
+
+</script>
+</body>
+</html>

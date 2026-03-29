@@ -1,0 +1,1311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0a0f1e">
+<meta name="description" content="Smart Stream Selector - AI-powered academic stream guidance">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.json">
+<title>Smart Stream Selector</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap');
+
+:root {
+  --ink: #0a0f1e;
+  --paper: #f5f0e8;
+  --cream: #faf7f2;
+  --gold: #c9a84c;
+  --gold-light: #e8c96a;
+  --science: #1a6b8a;
+  --science-light: #4ab8d8;
+  --commerce: #7b3b8f;
+  --commerce-light: #b96dd4;
+  --arts: #8f4b1a;
+  --arts-light: #d4854e;
+  --success: #1a7a4e;
+  --border: rgba(201,168,76,0.3);
+  --shadow: 0 20px 60px rgba(10,15,30,0.15);
+  --r: 16px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+html, body {
+  height: 100%;
+  font-family: 'DM Sans', sans-serif;
+  background: var(--ink);
+  color: var(--ink);
+  overflow: hidden;
+}
+
+/* ── SCREEN SYSTEM ── */
+.screen {
+  position: fixed; inset: 0;
+  display: flex; flex-direction: column;
+  opacity: 0; pointer-events: none;
+  transform: translateY(30px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  overflow-y: auto;
+  background: var(--cream);
+}
+.screen.active {
+  opacity: 1; pointer-events: all; transform: translateY(0);
+}
+.screen.exit {
+  opacity: 0; transform: translateY(-30px);
+}
+
+/* ── SPLASH / AUTHOR SCREEN ── */
+#screen-author {
+  background: var(--ink);
+  color: var(--paper);
+  align-items: center;
+  justify-content: center;
+  padding: 32px 24px;
+  position: relative;
+  overflow: hidden;
+}
+.author-bg {
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 30% 0%, rgba(201,168,76,0.12) 0%, transparent 60%),
+              radial-gradient(ellipse at 70% 100%, rgba(26,107,138,0.15) 0%, transparent 60%);
+  pointer-events: none;
+}
+.author-grid {
+  position: absolute; inset: 0; opacity: 0.04;
+  background-image: linear-gradient(var(--paper) 1px, transparent 1px),
+                    linear-gradient(90deg, var(--paper) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+.app-badge {
+  background: var(--gold);
+  color: var(--ink);
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  padding: 5px 14px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  margin-bottom: 32px;
+  animation: fadeDown 0.8s ease 0.2s both;
+}
+.author-photo-ring {
+  position: relative;
+  width: 180px; height: 180px;
+  margin-bottom: 24px;
+  animation: fadeDown 0.8s ease 0.4s both;
+}
+.author-photo-ring::before {
+  content: '';
+  position: absolute; inset: -4px;
+  border-radius: 50%;
+  background: conic-gradient(var(--gold), var(--science-light), var(--commerce-light), var(--arts-light), var(--gold));
+  animation: spin 6s linear infinite;
+}
+.author-photo-ring::after {
+  content: '';
+  position: absolute; inset: -2px;
+  border-radius: 50%;
+  background: var(--ink);
+}
+.author-photo {
+  position: relative; z-index: 1;
+  width: 100%; height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: top center;
+}
+.author-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 28px; font-weight: 900;
+  letter-spacing: -0.5px;
+  line-height: 1.1;
+  text-align: center;
+  margin-bottom: 6px;
+  animation: fadeDown 0.8s ease 0.5s both;
+}
+.author-name span { color: var(--gold); }
+.author-title {
+  font-size: 13px;
+  color: rgba(245,240,232,0.6);
+  text-align: center;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+  animation: fadeDown 0.8s ease 0.6s both;
+}
+.author-quals {
+  display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;
+  margin-bottom: 28px;
+  animation: fadeDown 0.8s ease 0.65s both;
+}
+.qual-tag {
+  background: rgba(201,168,76,0.15);
+  border: 1px solid rgba(201,168,76,0.3);
+  color: var(--gold-light);
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-family: 'Space Mono', monospace;
+}
+.author-divider {
+  width: 60px; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  margin: 0 auto 20px;
+  animation: fadeDown 0.8s ease 0.7s both;
+}
+.author-bio {
+  font-size: 13px;
+  color: rgba(245,240,232,0.65);
+  text-align: center;
+  line-height: 1.7;
+  max-width: 320px;
+  margin-bottom: 36px;
+  animation: fadeDown 0.8s ease 0.75s both;
+}
+.btn-start {
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  color: var(--ink);
+  border: none; cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px; font-weight: 700;
+  padding: 16px 52px;
+  border-radius: 50px;
+  letter-spacing: 0.5px;
+  box-shadow: 0 8px 32px rgba(201,168,76,0.4);
+  transition: transform 0.2s, box-shadow 0.2s;
+  animation: fadeDown 0.8s ease 0.9s both;
+}
+.btn-start:active { transform: scale(0.96); }
+.btn-start:hover { box-shadow: 0 12px 40px rgba(201,168,76,0.5); }
+
+/* ── TOP NAV BAR ── */
+.topbar {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(10,15,30,0.95);
+  backdrop-filter: blur(20px);
+  padding: 14px 20px;
+  display: flex; align-items: center; gap: 12px;
+  border-bottom: 1px solid rgba(201,168,76,0.2);
+}
+.btn-back {
+  background: rgba(201,168,76,0.1);
+  border: 1px solid rgba(201,168,76,0.3);
+  color: var(--gold);
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 18px;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+.btn-back:hover { background: rgba(201,168,76,0.2); }
+.topbar-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 16px; font-weight: 700;
+  color: var(--paper);
+}
+.topbar-step {
+  margin-left: auto;
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  color: rgba(245,240,232,0.4);
+}
+
+/* ── PROGRESS DOTS ── */
+.progress-dots {
+  display: flex; gap: 6px; justify-content: center;
+  padding: 16px;
+  background: var(--cream);
+}
+.dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: rgba(10,15,30,0.15);
+  transition: all 0.3s;
+}
+.dot.active { width: 24px; border-radius: 4px; background: var(--gold); }
+.dot.done { background: var(--success); }
+
+/* ── SECTION HEADERS ── */
+.section-header {
+  padding: 24px 24px 8px;
+  background: var(--cream);
+}
+.section-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 24px; font-weight: 700;
+  color: var(--ink);
+  line-height: 1.2;
+}
+
+/* ── INPUT SCREEN ── */
+#screen-input {
+  background: var(--cream);
+}
+.input-body { padding: 8px 20px 100px; }
+
+.marks-card {
+  background: white;
+  border-radius: var(--r);
+  border: 1px solid rgba(10,15,30,0.08);
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 20px rgba(10,15,30,0.06);
+}
+.marks-card-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 16px; font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 16px;
+  display: flex; align-items: center; gap: 8px;
+}
+.marks-card-title .icon {
+  width: 32px; height: 32px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+}
+
+.mark-row {
+  display: grid; grid-template-columns: 1fr auto;
+  align-items: center; gap: 12px;
+  margin-bottom: 14px;
+}
+.mark-row:last-child { margin-bottom: 0; }
+.mark-label {
+  font-size: 13px; font-weight: 500; color: var(--ink);
+  margin-bottom: 6px;
+}
+.mark-input-wrap { position: relative; }
+.mark-input-wrap input[type=range] {
+  width: 100%;
+  -webkit-appearance: none;
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(10,15,30,0.1);
+  outline: none;
+}
+.mark-input-wrap input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: var(--gold);
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(201,168,76,0.4);
+}
+.mark-val {
+  font-family: 'Space Mono', monospace;
+  font-size: 18px; font-weight: 700;
+  color: var(--ink);
+  min-width: 40px;
+  text-align: right;
+}
+
+.interest-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 10px; margin-bottom: 4px;
+}
+.interest-chip {
+  background: white;
+  border: 2px solid rgba(10,15,30,0.1);
+  border-radius: 12px;
+  padding: 12px 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+.interest-chip .chip-icon { font-size: 22px; margin-bottom: 4px; }
+.interest-chip .chip-label { font-size: 12px; font-weight: 500; color: var(--ink); }
+.interest-chip.selected-sci { border-color: var(--science); background: rgba(26,107,138,0.07); }
+.interest-chip.selected-com { border-color: var(--commerce); background: rgba(123,59,143,0.07); }
+.interest-chip.selected-art { border-color: var(--arts); background: rgba(143,75,26,0.07); }
+
+.skill-row {
+  margin-bottom: 16px;
+}
+.skill-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.skill-name { font-size: 13px; font-weight: 500; }
+.skill-score {
+  font-family: 'Space Mono', monospace;
+  font-size: 12px; color: var(--gold);
+}
+.stars { display: flex; gap: 4px; }
+.star {
+  width: 32px; height: 32px; border-radius: 8px;
+  background: rgba(10,15,30,0.06);
+  border: none; cursor: pointer; font-size: 16px;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+}
+.star.lit { background: rgba(201,168,76,0.15); }
+.star:active { transform: scale(0.88); }
+
+.btn-analyze {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+  background: linear-gradient(135deg, var(--ink), #1a2540);
+  color: var(--gold);
+  border: 1px solid rgba(201,168,76,0.3);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px; font-weight: 700;
+  padding: 16px 48px;
+  border-radius: 50px;
+  cursor: pointer;
+  box-shadow: 0 8px 32px rgba(10,15,30,0.3);
+  transition: transform 0.2s;
+  white-space: nowrap;
+}
+.btn-analyze:active { transform: translateX(-50%) scale(0.96); }
+
+/* ── RESULT SCREEN ── */
+#screen-result { background: var(--ink); color: var(--paper); }
+.result-hero {
+  padding: 28px 24px 20px;
+  background: var(--ink);
+  position: relative; overflow: hidden;
+}
+.result-hero-bg {
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 50% 120%, rgba(201,168,76,0.15) 0%, transparent 70%);
+}
+.result-tag {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px; letter-spacing: 2px;
+  color: rgba(245,240,232,0.5);
+  margin-bottom: 8px;
+}
+.result-stream-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 40px; font-weight: 900;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.result-stream-name.sci { color: var(--science-light); }
+.result-stream-name.com { color: var(--commerce-light); }
+.result-stream-name.art { color: var(--arts-light); }
+.result-match {
+  font-size: 14px; color: rgba(245,240,232,0.6);
+}
+.result-match span {
+  font-family: 'Space Mono', monospace;
+  font-size: 22px; font-weight: 700;
+  color: var(--gold);
+}
+
+/* SVG Chart */
+.chart-container {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: var(--r);
+  margin: 0 20px 16px;
+  padding: 20px;
+}
+.chart-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 14px; font-weight: 700;
+  color: rgba(245,240,232,0.8);
+  margin-bottom: 16px;
+}
+#chart-svg { width: 100%; height: 200px; overflow: visible; }
+
+/* Stream score cards */
+.stream-cards { padding: 0 20px; display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px; }
+.stream-card {
+  border-radius: 14px;
+  padding: 16px;
+  border: 1px solid rgba(255,255,255,0.06);
+  position: relative; overflow: hidden;
+}
+.stream-card.sci { background: rgba(26,107,138,0.15); border-color: rgba(74,184,216,0.2); }
+.stream-card.com { background: rgba(123,59,143,0.15); border-color: rgba(185,109,212,0.2); }
+.stream-card.art { background: rgba(143,75,26,0.15); border-color: rgba(212,133,78,0.2); }
+.stream-card.winner::before {
+  content: '★ TOP MATCH';
+  position: absolute; top: 10px; right: 12px;
+  font-family: 'Space Mono', monospace;
+  font-size: 9px; letter-spacing: 1px;
+  color: var(--gold);
+}
+.sc-name { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; color: var(--paper); margin-bottom: 8px; }
+.sc-bar-wrap { height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; margin-bottom: 8px; overflow: hidden; }
+.sc-bar { height: 100%; border-radius: 3px; transition: width 1s cubic-bezier(0.34,1.56,0.64,1); width: 0%; }
+.sci .sc-bar { background: linear-gradient(90deg, var(--science), var(--science-light)); }
+.com .sc-bar { background: linear-gradient(90deg, var(--commerce), var(--commerce-light)); }
+.art .sc-bar { background: linear-gradient(90deg, var(--arts), var(--arts-light)); }
+.sc-details { display: flex; justify-content: space-between; align-items: center; }
+.sc-pct { font-family: 'Space Mono', monospace; font-size: 16px; font-weight: 700; }
+.sci .sc-pct { color: var(--science-light); }
+.com .sc-pct { color: var(--commerce-light); }
+.art .sc-pct { color: var(--arts-light); }
+.sc-reason { font-size: 11px; color: rgba(245,240,232,0.5); max-width: 65%; text-align: right; line-height: 1.4; }
+
+/* Career suggestions */
+.careers-panel {
+  margin: 0 20px 16px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: var(--r);
+  padding: 18px;
+}
+.careers-title { font-family: 'Playfair Display', serif; font-size: 14px; font-weight: 700; color: rgba(245,240,232,0.8); margin-bottom: 12px; }
+.career-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.career-chip {
+  font-size: 12px; padding: 6px 12px; border-radius: 20px;
+  font-weight: 500;
+}
+.career-chip.sci { background: rgba(26,107,138,0.25); color: var(--science-light); border: 1px solid rgba(74,184,216,0.2); }
+.career-chip.com { background: rgba(123,59,143,0.25); color: var(--commerce-light); border: 1px solid rgba(185,109,212,0.2); }
+.career-chip.art { background: rgba(143,75,26,0.25); color: var(--arts-light); border: 1px solid rgba(212,133,78,0.2); }
+
+/* WHATIF screen */
+#screen-whatif { background: var(--cream); }
+.whatif-body { padding: 12px 20px 100px; }
+.whatif-note {
+  background: rgba(201,168,76,0.1);
+  border: 1px solid rgba(201,168,76,0.25);
+  border-radius: 12px;
+  padding: 14px 16px;
+  font-size: 13px;
+  color: var(--ink);
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+.whatif-note strong { color: #8b6200; }
+
+.whatif-result-bar {
+  height: 12px; border-radius: 6px;
+  background: rgba(10,15,30,0.08);
+  margin-bottom: 6px;
+  overflow: hidden;
+}
+.wi-fill { height: 100%; border-radius: 6px; transition: width 0.6s ease; }
+.wi-sci { background: linear-gradient(90deg, var(--science), var(--science-light)); }
+.wi-com { background: linear-gradient(90deg, var(--commerce), var(--commerce-light)); }
+.wi-art { background: linear-gradient(90deg, var(--arts), var(--arts-light)); }
+.wi-row { margin-bottom: 14px; }
+.wi-label { display: flex; justify-content: space-between; font-size: 12px; font-weight: 500; margin-bottom: 4px; }
+.wi-pct { font-family: 'Space Mono', monospace; font-size: 12px; }
+
+/* History screen */
+#screen-history { background: var(--cream); }
+.history-body { padding: 12px 20px 80px; }
+.history-empty {
+  text-align: center; padding: 60px 20px;
+  color: rgba(10,15,30,0.35);
+}
+.history-empty .icon { font-size: 48px; margin-bottom: 12px; }
+.history-card {
+  background: white;
+  border: 1px solid rgba(10,15,30,0.08);
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 12px rgba(10,15,30,0.05);
+}
+.hc-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.hc-stream {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px; font-weight: 700;
+}
+.hc-stream.sci { color: var(--science); }
+.hc-stream.com { color: var(--commerce); }
+.hc-stream.art { color: var(--arts); }
+.hc-date { font-family: 'Space Mono', monospace; font-size: 10px; color: rgba(10,15,30,0.4); }
+.hc-bars { display: flex; flex-direction: column; gap: 5px; }
+.hc-bar-row { display: flex; align-items: center; gap: 8px; }
+.hc-bar-label { font-size: 11px; width: 70px; color: rgba(10,15,30,0.6); }
+.hc-bar-track { flex: 1; height: 5px; background: rgba(10,15,30,0.08); border-radius: 3px; overflow: hidden; }
+.hc-bar-fill { height: 100%; border-radius: 3px; }
+.hc-pct { font-family: 'Space Mono', monospace; font-size: 10px; width: 30px; text-align: right; color: rgba(10,15,30,0.5); }
+.btn-clear-history {
+  width: 100%;
+  background: rgba(220,50,50,0.08);
+  border: 1px solid rgba(220,50,50,0.2);
+  color: #c53030;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px; font-weight: 600;
+  padding: 13px;
+  border-radius: 12px;
+  cursor: pointer;
+  margin-top: 8px;
+}
+
+/* BOTTOM NAV */
+.bottom-nav {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: rgba(10,15,30,0.97);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(201,168,76,0.15);
+  display: flex;
+  padding: 8px 0 env(safe-area-inset-bottom, 8px);
+  z-index: 200;
+  display: none;
+}
+.bottom-nav.visible { display: flex; }
+.nav-item {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; gap: 3px;
+  padding: 6px 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.nav-icon { font-size: 20px; }
+.nav-label { font-size: 10px; color: rgba(245,240,232,0.4); font-weight: 500; }
+.nav-item.active .nav-label { color: var(--gold); }
+.nav-item.active .nav-icon { transform: translateY(-2px); filter: drop-shadow(0 0 6px rgba(201,168,76,0.5)); }
+
+/* Result action btns */
+.result-actions {
+  display: flex; gap: 10px;
+  padding: 0 20px 20px;
+  padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px) + 64px);
+}
+.btn-action {
+  flex: 1;
+  padding: 13px 16px;
+  border-radius: 12px;
+  border: none; cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px; font-weight: 600;
+  transition: transform 0.2s, opacity 0.2s;
+}
+.btn-action:active { transform: scale(0.96); }
+.btn-whatif { background: rgba(201,168,76,0.15); color: var(--gold); border: 1px solid rgba(201,168,76,0.3); }
+.btn-retry { background: rgba(245,240,232,0.1); color: rgba(245,240,232,0.7); border: 1px solid rgba(255,255,255,0.1); }
+
+/* ANIMATIONS */
+@keyframes fadeDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+.loading-indicator {
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; height: 200px; gap: 12px;
+}
+.loader-ring {
+  width: 48px; height: 48px;
+  border: 3px solid rgba(201,168,76,0.2);
+  border-top-color: var(--gold);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+.loader-text {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px; letter-spacing: 2px;
+  color: rgba(245,240,232,0.5);
+  animation: pulse 1.5s ease infinite;
+}
+
+/* Toast */
+.toast {
+  position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%) translateY(20px);
+  background: rgba(10,15,30,0.95);
+  border: 1px solid rgba(201,168,76,0.3);
+  color: var(--paper);
+  padding: 10px 20px;
+  border-radius: 50px;
+  font-size: 13px;
+  white-space: nowrap;
+  opacity: 0; pointer-events: none;
+  transition: all 0.3s;
+  z-index: 999;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* Install banner */
+.install-banner {
+  background: linear-gradient(135deg, rgba(201,168,76,0.15), rgba(201,168,76,0.05));
+  border: 1px solid rgba(201,168,76,0.2);
+  border-radius: 12px;
+  padding: 12px 16px;
+  margin: 0 20px 16px;
+  display: flex; align-items: center; gap: 12px;
+  cursor: pointer;
+}
+.ib-icon { font-size: 24px; }
+.ib-text { flex: 1; }
+.ib-title { font-size: 13px; font-weight: 600; color: var(--gold); }
+.ib-sub { font-size: 11px; color: rgba(245,240,232,0.5); }
+</style>
+</head>
+<body>
+
+<!-- ═══════════ SCREEN 1: AUTHOR ═══════════ -->
+<div id="screen-author" class="screen active">
+  <div class="author-bg"></div>
+  <div class="author-grid"></div>
+  <div class="app-badge">📱 Smart Stream Selector · PWA v1.0</div>
+  <div class="author-photo-ring">
+    <img src="author.jpg" alt="Dr Mateen Yousuf" class="author-photo">
+  </div>
+  <div class="author-name">Dr. <span>Mateen</span> Yousuf</div>
+  <div class="author-title">EDUCATIONAL COUNSELLOR &amp; AUTHOR</div>
+  <div class="author-quals">
+    <span class="qual-tag">M.Ed</span>
+    <span class="qual-tag">Career Guidance</span>
+    <span class="qual-tag">Stream Advisor</span>
+  </div>
+  <div class="author-divider"></div>
+  <div class="author-bio">
+    Empowering students to choose the right academic stream through data-driven self-assessment and personalized guidance.
+  </div>
+  <button class="btn-start" onclick="goTo('input')">Begin Assessment →</button>
+</div>
+
+<!-- ═══════════ SCREEN 2: INPUT ═══════════ -->
+<div id="screen-input" class="screen">
+  <div class="topbar">
+    <button class="btn-back" onclick="goTo('author')">‹</button>
+    <div class="topbar-title">Stream Assessment</div>
+    <div class="topbar-step">STEP 1/3</div>
+  </div>
+  <div class="progress-dots">
+    <div class="dot active" id="dot1"></div>
+    <div class="dot" id="dot2"></div>
+    <div class="dot" id="dot3"></div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-label">Module 1</div>
+    <div class="section-title">Your Academic Profile</div>
+  </div>
+
+  <div class="input-body">
+    <!-- Marks Card -->
+    <div class="marks-card">
+      <div class="marks-card-title">
+        <div class="icon" style="background:rgba(26,107,138,0.12)">📊</div>
+        Class 10 Marks (out of 100)
+      </div>
+      <div class="mark-row">
+        <div>
+          <div class="mark-label">Mathematics</div>
+          <div class="mark-input-wrap"><input type="range" id="mark-math" min="0" max="100" value="70" oninput="updateMark('math',this.value)" style="accent-color:#1a6b8a"></div>
+        </div>
+        <div class="mark-val" id="val-math">70</div>
+      </div>
+      <div class="mark-row">
+        <div>
+          <div class="mark-label">Science</div>
+          <div class="mark-input-wrap"><input type="range" id="mark-sci" min="0" max="100" value="65" oninput="updateMark('sci',this.value)" style="accent-color:#1a6b8a"></div>
+        </div>
+        <div class="mark-val" id="val-sci">65</div>
+      </div>
+      <div class="mark-row">
+        <div>
+          <div class="mark-label">English</div>
+          <div class="mark-input-wrap"><input type="range" id="mark-eng" min="0" max="100" value="72" oninput="updateMark('eng',this.value)" style="accent-color:#7b3b8f"></div>
+        </div>
+        <div class="mark-val" id="val-eng">72</div>
+      </div>
+      <div class="mark-row">
+        <div>
+          <div class="mark-label">Social Science</div>
+          <div class="mark-input-wrap"><input type="range" id="mark-soc" min="0" max="100" value="68" oninput="updateMark('soc',this.value)" style="accent-color:#8f4b1a"></div>
+        </div>
+        <div class="mark-val" id="val-soc">68</div>
+      </div>
+    </div>
+
+    <!-- Interests Card -->
+    <div class="marks-card">
+      <div class="marks-card-title">
+        <div class="icon" style="background:rgba(201,168,76,0.12)">💡</div>
+        Areas of Interest <small style="font-size:11px;font-weight:400;color:#888">(select all that apply)</small>
+      </div>
+      <div class="interest-grid" id="interest-grid">
+        <div class="interest-chip" data-stream="sci" data-id="0" onclick="toggleInterest(this)"><div class="chip-icon">🔬</div><div class="chip-label">Laboratory / Experiments</div></div>
+        <div class="interest-chip" data-stream="sci" data-id="1" onclick="toggleInterest(this)"><div class="chip-icon">🧮</div><div class="chip-label">Problem Solving / Math</div></div>
+        <div class="interest-chip" data-stream="com" data-id="2" onclick="toggleInterest(this)"><div class="chip-icon">📈</div><div class="chip-label">Finance / Business</div></div>
+        <div class="interest-chip" data-stream="com" data-id="3" onclick="toggleInterest(this)"><div class="chip-icon">🗣️</div><div class="chip-label">Management / Leadership</div></div>
+        <div class="interest-chip" data-stream="art" data-id="4" onclick="toggleInterest(this)"><div class="chip-icon">🎨</div><div class="chip-label">Art / Design / Media</div></div>
+        <div class="interest-chip" data-stream="art" data-id="5" onclick="toggleInterest(this)"><div class="chip-icon">📚</div><div class="chip-label">Literature / History</div></div>
+        <div class="interest-chip" data-stream="sci" data-id="6" onclick="toggleInterest(this)"><div class="chip-icon">💻</div><div class="chip-label">Technology / Coding</div></div>
+        <div class="interest-chip" data-stream="com" data-id="7" onclick="toggleInterest(this)"><div class="chip-icon">🏆</div><div class="chip-label">Competitions / Events</div></div>
+      </div>
+    </div>
+
+    <!-- Aptitude / Skills -->
+    <div class="marks-card">
+      <div class="marks-card-title">
+        <div class="icon" style="background:rgba(143,75,26,0.12)">⭐</div>
+        Self-Rate Your Skills
+      </div>
+      <div class="skill-row" id="skill-logical">
+        <div class="skill-header"><span class="skill-name">🧠 Logical Thinking</span><span class="skill-score" id="ss-logical">3/5</span></div>
+        <div class="stars" id="stars-logical"></div>
+      </div>
+      <div class="skill-row" id="skill-creative">
+        <div class="skill-header"><span class="skill-name">🎭 Creativity</span><span class="skill-score" id="ss-creative">3/5</span></div>
+        <div class="stars" id="stars-creative"></div>
+      </div>
+      <div class="skill-row" id="skill-communication">
+        <div class="skill-header"><span class="skill-name">💬 Communication</span><span class="skill-score" id="ss-communication">3/5</span></div>
+        <div class="stars" id="stars-communication"></div>
+      </div>
+      <div class="skill-row" id="skill-memory">
+        <div class="skill-header"><span class="skill-name">📝 Memory / Retention</span><span class="skill-score" id="ss-memory">3/5</span></div>
+        <div class="stars" id="stars-memory"></div>
+      </div>
+      <div class="skill-row" id="skill-numerical">
+        <div class="skill-header"><span class="skill-name">🔢 Numerical Ability</span><span class="skill-score" id="ss-numerical">3/5</span></div>
+        <div class="stars" id="stars-numerical"></div>
+      </div>
+    </div>
+  </div>
+  <button class="btn-analyze" onclick="runAnalysis()">🧬 Analyse My Profile</button>
+</div>
+
+<!-- ═══════════ SCREEN 3: RESULT ═══════════ -->
+<div id="screen-result" class="screen">
+  <div class="topbar" style="background:rgba(10,15,30,0.98)">
+    <button class="btn-back" onclick="goTo('input')">‹</button>
+    <div class="topbar-title">Your Results</div>
+    <div class="topbar-step">STEP 2/3</div>
+  </div>
+
+  <div id="install-banner" class="install-banner" style="display:none;margin-top:16px">
+    <div class="ib-icon">📲</div>
+    <div class="ib-text">
+      <div class="ib-title">Install App</div>
+      <div class="ib-sub">Add to home screen for offline access</div>
+    </div>
+    <div style="color:var(--gold);font-size:20px">›</div>
+  </div>
+
+  <div class="result-hero">
+    <div class="result-hero-bg"></div>
+    <div class="result-tag">RECOMMENDED STREAM</div>
+    <div class="result-stream-name" id="result-name">Science</div>
+    <div class="result-match">Compatibility: <span id="result-pct">--</span>%</div>
+  </div>
+
+  <div class="chart-container">
+    <div class="chart-title">📊 Compatibility Analysis</div>
+    <svg id="chart-svg" viewBox="0 0 300 180"></svg>
+  </div>
+
+  <div class="stream-cards" id="stream-cards">
+    <div class="stream-card sci winner" id="card-sci">
+      <div class="sc-name">🔬 Science</div>
+      <div class="sc-bar-wrap"><div class="sc-bar" id="bar-sci"></div></div>
+      <div class="sc-details">
+        <div class="sc-pct" id="pct-sci">--</div>
+        <div class="sc-reason" id="reason-sci"></div>
+      </div>
+    </div>
+    <div class="stream-card com" id="card-com">
+      <div class="sc-name">📈 Commerce</div>
+      <div class="sc-bar-wrap"><div class="sc-bar" id="bar-com"></div></div>
+      <div class="sc-details">
+        <div class="sc-pct" id="pct-com">--</div>
+        <div class="sc-reason" id="reason-com"></div>
+      </div>
+    </div>
+    <div class="stream-card art" id="card-art">
+      <div class="sc-name">🎨 Arts / Humanities</div>
+      <div class="sc-bar-wrap"><div class="sc-bar" id="bar-art"></div></div>
+      <div class="sc-details">
+        <div class="sc-pct" id="pct-art">--</div>
+        <div class="sc-reason" id="reason-art"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="careers-panel">
+    <div class="careers-title">🚀 Potential Career Paths</div>
+    <div class="career-chips" id="career-chips"></div>
+  </div>
+
+  <div class="result-actions">
+    <button class="btn-action btn-whatif" onclick="goTo('whatif')">🔀 What If?</button>
+    <button class="btn-action btn-retry" onclick="goTo('input')">↺ Retry</button>
+  </div>
+</div>
+
+<!-- ═══════════ SCREEN 4: WHAT IF ═══════════ -->
+<div id="screen-whatif" class="screen">
+  <div class="topbar" style="background:rgba(250,247,242,0.95);border-bottom:1px solid rgba(10,15,30,0.1)">
+    <button class="btn-back" style="background:rgba(10,15,30,0.06);border-color:rgba(10,15,30,0.15);color:var(--ink)" onclick="goTo('result')">‹</button>
+    <div class="topbar-title" style="color:var(--ink)">Scenario Simulator</div>
+    <div class="topbar-step" style="color:rgba(10,15,30,0.4)">WHAT IF?</div>
+  </div>
+
+  <div class="whatif-body">
+    <div class="whatif-note">
+      <strong>💡 Simulation Mode</strong><br>
+      Adjust marks below to see how different scores would change your stream compatibility in real-time.
+    </div>
+
+    <div class="marks-card">
+      <div class="marks-card-title">
+        <div class="icon" style="background:rgba(201,168,76,0.12)">🎯</div>
+        Adjust Target Marks
+      </div>
+      <div class="mark-row">
+        <div>
+          <div class="mark-label">Mathematics</div>
+          <div class="mark-input-wrap"><input type="range" id="wi-math" min="0" max="100" value="70" oninput="updateWhatIf()" style="accent-color:#1a6b8a"></div>
+        </div>
+        <div class="mark-val" id="wi-val-math">70</div>
+      </div>
+      <div class="mark-row">
+        <div>
+          <div class="mark-label">Science</div>
+          <div class="mark-input-wrap"><input type="range" id="wi-sci" min="0" max="100" value="65" oninput="updateWhatIf()" style="accent-color:#1a6b8a"></div>
+        </div>
+        <div class="mark-val" id="wi-val-sci">65</div>
+      </div>
+      <div class="mark-row">
+        <div>
+          <div class="mark-label">English</div>
+          <div class="mark-input-wrap"><input type="range" id="wi-eng" min="0" max="100" value="72" oninput="updateWhatIf()" style="accent-color:#7b3b8f"></div>
+        </div>
+        <div class="mark-val" id="wi-val-eng">72</div>
+      </div>
+      <div class="mark-row">
+        <div>
+          <div class="mark-label">Social Science</div>
+          <div class="mark-input-wrap"><input type="range" id="wi-soc" min="0" max="100" value="68" oninput="updateWhatIf()" style="accent-color:#8f4b1a"></div>
+        </div>
+        <div class="mark-val" id="wi-val-soc">68</div>
+      </div>
+    </div>
+
+    <div class="marks-card">
+      <div class="marks-card-title">
+        <div class="icon" style="background:rgba(26,107,138,0.12)">📊</div>
+        Simulated Compatibility
+      </div>
+      <div class="wi-row">
+        <div class="wi-label"><span style="color:var(--science)">🔬 Science</span><span class="wi-pct" id="wi-pct-sci" style="color:var(--science)">--</span></div>
+        <div class="whatif-result-bar"><div class="wi-fill wi-sci" id="wi-bar-sci" style="width:0%"></div></div>
+      </div>
+      <div class="wi-row">
+        <div class="wi-label"><span style="color:var(--commerce)">📈 Commerce</span><span class="wi-pct" id="wi-pct-com" style="color:var(--commerce)">--</span></div>
+        <div class="whatif-result-bar"><div class="wi-fill wi-com" id="wi-bar-com" style="width:0%"></div></div>
+      </div>
+      <div class="wi-row">
+        <div class="wi-label"><span style="color:var(--arts)">🎨 Arts</span><span class="wi-pct" id="wi-pct-art" style="color:var(--arts)">--</span></div>
+        <div class="whatif-result-bar"><div class="wi-fill wi-art" id="wi-bar-art" style="width:0%"></div></div>
+      </div>
+      <div style="margin-top:10px;padding:12px;background:rgba(201,168,76,0.08);border-radius:10px;border:1px solid rgba(201,168,76,0.2)">
+        <div style="font-size:11px;color:#8b6200;font-weight:600;margin-bottom:2px">SIMULATION RESULT</div>
+        <div style="font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--ink)" id="wi-winner">—</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SCREEN 5: HISTORY ═══════════ -->
+<div id="screen-history" class="screen">
+  <div class="topbar" style="background:rgba(250,247,242,0.95);border-bottom:1px solid rgba(10,15,30,0.1)">
+    <button class="btn-back" style="background:rgba(10,15,30,0.06);border-color:rgba(10,15,30,0.15);color:var(--ink)" onclick="goTo('input')">‹</button>
+    <div class="topbar-title" style="color:var(--ink)">Past Assessments</div>
+    <div class="topbar-step" style="color:rgba(10,15,30,0.4)">HISTORY</div>
+  </div>
+
+  <div class="history-body" id="history-body">
+    <div class="history-empty">
+      <div class="icon">📭</div>
+      <div>No assessments yet</div>
+      <div style="font-size:12px;margin-top:6px">Complete your first analysis to see results here</div>
+    </div>
+  </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav" id="bottom-nav">
+  <div class="nav-item active" id="nav-assess" onclick="navTo('input')">
+    <div class="nav-icon">🧬</div>
+    <div class="nav-label">Assess</div>
+  </div>
+  <div class="nav-item" id="nav-result" onclick="navTo('result')">
+    <div class="nav-icon">📊</div>
+    <div class="nav-label">Results</div>
+  </div>
+  <div class="nav-item" id="nav-sim" onclick="navTo('whatif')">
+    <div class="nav-icon">🔀</div>
+    <div class="nav-label">Simulate</div>
+  </div>
+  <div class="nav-item" id="nav-hist" onclick="navTo('history');loadHistory()">
+    <div class="nav-icon">📂</div>
+    <div class="nav-label">History</div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ── STATE ──
+let state = {
+  marks: { math:70, sci:65, eng:72, soc:68 },
+  interests: new Set(),
+  skills: { logical:3, creative:3, communication:3, memory:3, numerical:3 },
+  scores: { sci:0, com:0, art:0 },
+  currentScreen: 'author',
+  hasResults: false,
+  deferredPrompt: null
+};
+
+// ── NAVIGATION ──
+function goTo(id) {
+  const cur = document.getElementById('screen-' + state.currentScreen);
+  const next = document.getElementById('screen-' + id);
+  if (!next) return;
+  cur.classList.add('exit');
+  setTimeout(() => { cur.classList.remove('active','exit'); }, 500);
+  next.classList.add('active');
+  state.currentScreen = id;
+  const navScreens = ['input','result','whatif','history'];
+  const nav = document.getElementById('bottom-nav');
+  nav.classList.toggle('visible', navScreens.includes(id));
+  updateNavHighlight(id);
+}
+
+function navTo(id) {
+  if (id === 'result' && !state.hasResults) { showToast('Complete assessment first'); return; }
+  if (id === 'whatif' && !state.hasResults) { showToast('Complete assessment first'); return; }
+  goTo(id);
+  if (id === 'history') loadHistory();
+}
+
+function updateNavHighlight(id) {
+  const map = { input:'assess', result:'result', whatif:'sim', history:'hist' };
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  if (map[id]) document.getElementById('nav-'+map[id])?.classList.add('active');
+}
+
+// ── MARKS ──
+function updateMark(k, v) {
+  state.marks[k] = +v;
+  document.getElementById('val-' + k).textContent = v;
+}
+
+// ── INTERESTS ──
+function toggleInterest(el) {
+  const id = el.dataset.id;
+  const stream = el.dataset.stream;
+  if (state.interests.has(id)) {
+    state.interests.delete(id);
+    el.className = 'interest-chip';
+  } else {
+    state.interests.add(id);
+    el.classList.add('selected-' + stream);
+  }
+}
+
+// ── STARS ──
+const skillDefs = ['logical','creative','communication','memory','numerical'];
+skillDefs.forEach(skill => {
+  const container = document.getElementById('stars-' + skill);
+  for (let i = 1; i <= 5; i++) {
+    const btn = document.createElement('button');
+    btn.className = 'star' + (i <= state.skills[skill] ? ' lit' : '');
+    btn.textContent = i <= state.skills[skill] ? '★' : '☆';
+    btn.onclick = () => setSkill(skill, i);
+    container.appendChild(btn);
+  }
+});
+
+function setSkill(skill, val) {
+  state.skills[skill] = val;
+  document.getElementById('ss-' + skill).textContent = val + '/5';
+  const stars = document.getElementById('stars-' + skill).children;
+  for (let i = 0; i < 5; i++) {
+    stars[i].className = 'star' + (i < val ? ' lit' : '');
+    stars[i].textContent = i < val ? '★' : '☆';
+  }
+}
+
+// ── ANALYSIS ENGINE ──
+function calcScores(marks, interests, skills) {
+  // SCIENCE score
+  let sci = 0;
+  sci += marks.math * 0.35;
+  sci += marks.sci * 0.35;
+  sci += marks.eng * 0.15;
+  sci += marks.soc * 0.15;
+  // Interest boost
+  ['0','1','6'].forEach(id => { if (interests.has(id)) sci += 6; });
+  // Skill boost
+  sci += skills.logical * 2.5;
+  sci += skills.numerical * 2.0;
+  sci = Math.min(100, sci * 0.72);
+
+  // COMMERCE score
+  let com = 0;
+  com += marks.math * 0.30;
+  com += marks.sci * 0.15;
+  com += marks.eng * 0.25;
+  com += marks.soc * 0.30;
+  ['2','3','7'].forEach(id => { if (interests.has(id)) com += 6; });
+  com += skills.logical * 1.5;
+  com += skills.communication * 2.5;
+  com += skills.numerical * 2.0;
+  com = Math.min(100, com * 0.72);
+
+  // ARTS score
+  let art = 0;
+  art += marks.math * 0.10;
+  art += marks.sci * 0.10;
+  art += marks.eng * 0.45;
+  art += marks.soc * 0.35;
+  ['4','5'].forEach(id => { if (interests.has(id)) art += 7; });
+  art += skills.creative * 3.0;
+  art += skills.communication * 2.5;
+  art += skills.memory * 1.5;
+  art = Math.min(100, art * 0.72);
+
+  // Normalize to nice range
+  const max = Math.max(sci, com, art);
+  const scale = max > 0 ? 95 / max : 1;
+  return {
+    sci: Math.round(sci * scale),
+    com: Math.round(com * scale),
+    art: Math.round(art * scale)
+  };
+}
+
+function runAnalysis() {
+  const scores = calcScores(state.marks, state.interests, state.skills);
+  state.scores = scores;
+  state.hasResults = true;
+  
+  // Sync what-if sliders
+  document.getElementById('wi-math').value = state.marks.math;
+  document.getElementById('wi-sci').value = state.marks.sci;
+  document.getElementById('wi-eng').value = state.marks.eng;
+  document.getElementById('wi-soc').value = state.marks.soc;
+  ['math','sci','eng','soc'].forEach(k => {
+    document.getElementById('wi-val-' + k).textContent = state.marks[k];
+  });
+
+  goTo('result');
+  setTimeout(() => renderResults(scores), 300);
+  saveAttempt(scores);
+  showToast('✅ Analysis complete!');
+}
+
+// ── RENDER RESULTS ──
+const careerMap = {
+  sci: ['👨‍⚕️ Doctor','🔭 Scientist','💻 Engineer','✈️ Pilot','🏗️ Architect','🧬 Researcher'],
+  com: ['🏦 CA / Finance','📊 MBA / Manager','📣 Marketing','🏢 Entrepreneur','📑 Accountant','🛒 E-Commerce'],
+  art: ['⚖️ Lawyer','📰 Journalist','🎓 Educator','🎭 Designer','🌍 Civil Services','📸 Media & Arts']
+};
+const reasonMap = {
+  sci: 'Strong math-science base',
+  com: 'Numeracy & social aptitude',
+  art: 'Language & creative strength'
+};
+
+function renderResults(scores) {
+  const winner = scores.sci >= scores.com && scores.sci >= scores.art ? 'sci'
+               : scores.com >= scores.art ? 'com' : 'art';
+  const nameMap = { sci:'Science', com:'Commerce', art:'Arts & Humanities' };
+
+  // Hero
+  const rn = document.getElementById('result-name');
+  rn.textContent = nameMap[winner];
+  rn.className = 'result-stream-name ' + winner;
+  document.getElementById('result-pct').textContent = scores[winner];
+
+  // Cards
+  ['sci','com','art'].forEach(s => {
+    setTimeout(() => {
+      document.getElementById('bar-' + s).style.width = scores[s] + '%';
+    }, 400);
+    document.getElementById('pct-' + s).textContent = scores[s] + '%';
+    document.getElementById('reason-' + s).textContent = reasonMap[s];
+  });
+
+  // Winner card
+  ['sci','com','art'].forEach(s => {
+    const c = document.getElementById('card-' + s);
+    c.className = 'stream-card ' + s + (s === winner ? ' winner' : '');
+  });
+
+  // Careers
+  const chips = document.getElementById('career-chips');
+  chips.innerHTML = '';
+  careerMap[winner].forEach(c => {
+    const el = document.createElement('div');
+    el.className = 'career-chip ' + winner;
+    el.textContent = c;
+    chips.appendChild(el);
+  });
+
+  // SVG Chart
+  drawRadarChart(scores);
+
+  // Whatif initial
+  updateWhatIfDisplay(scores);
+}
+
+// ── RADAR CHART ──
+function drawRadarChart(scores) {
+  const svg = document.getElementById('chart-svg');
+  const cx = 150, cy = 100, r = 75;
+  const labels = ['Science','Commerce','Arts'];
+  const vals = [scores.sci, scores.com, scores.art];
+  const colors = ['#4ab8d8','#b96dd4','#d4854e'];
+  const angles = [-90, 30, 150].map(d => d * Math.PI / 180);
+
+  let html = '';
+  // Grid rings
+  [25,50,75,100].forEach(ring => {
+    const pts = angles.map(a => {
+      const rr = r * ring / 100;
+      return `${cx + rr * Math.cos(a)},${cy + rr * Math.sin(a)}`;
+    }).join(' ');
+    html += `<polygon points="${pts}" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>`;
+  });
+  // Axes
+  angles.forEach(a => {
+    html += `<line x1="${cx}" y1="${cy}" x2="${cx + r * Math.cos(a)}" y2="${cy + r * Math.sin(a)}" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>`;
+  });
+  // Data polygon
+  const pts = angles.map((a, i) => {
+    const rv = r * vals[i] / 100;
+    return `${cx + rv * Math.cos(a)},${cy + rv * Math.sin(a)}`;
+  }).join(' ');
+  html += `<polygon points="${pts}" fill="rgba(201,168,76,0.18)" stroke="rgba(201,168,76,0.7)" stroke-width="2"/>`;
+  // Dots
+  angles.forEach((a, i) => {
+    const rv = r * vals[i] / 100;
+    html += `<circle cx="${cx + rv * Math.cos(a)}" cy="${cy + rv * Math.sin(a)}" r="5" fill="${colors[i]}"/>`;
+  });
+  // Labels
+  const labelOffset = 18;
+  angles.forEach((a, i) => {
+    const lx = cx + (r + labelOffset) * Math.cos(a);
+    const ly = cy + (r + labelOffset) * Math.sin(a);
+    html += `<text x="${lx}" y="${ly}" text-anchor="middle" dominant-baseline="middle" fill="rgba(245,240,232,0.7)" font-size="11" font-family="DM Sans">${labels[i]}</text>`;
+    html += `<text x="${lx}" y="${ly + 14}" text-anchor="middle" dominant-baseline="middle" fill="${colors[i]}" font-size="10" font-family="Space Mono" font-weight="700">${vals[i]}%</text>`;
+  });
+
+  svg.innerHTML = html;
+}
+
+// ── WHAT IF ──
+function updateWhatIf() {
+  const marks = {
+    math: +document.getElementById('wi-math').value,
+    sci: +document.getElementById('wi-sci').value,
+    eng: +document.getElementById('wi-eng').value,
+    soc: +document.getElementById('wi-soc').value
+  };
+  ['math','sci','eng','soc'].forEach(k => {
+    document.getElementById('wi-val-' + k).textContent = marks[k];
+  });
+  const scores = calcScores(marks, state.interests, state.skills);
+  updateWhatIfDisplay(scores);
+}
+
+function updateWhatIfDisplay(scores) {
+  ['sci','com','art'].forEach(s => {
+    document.getElementById('wi-pct-' + s).textContent = scores[s] + '%';
+    document.getElementById('wi-bar-' + s).style.width = scores[s] + '%';
+  });
+  const winner = scores.sci >= scores.com && scores.sci >= scores.art ? 'Science'
+               : scores.com >= scores.art ? 'Commerce' : 'Arts & Humanities';
+  document.getElementById('wi-winner').textContent = '→ ' + winner + ' recommended';
+}
+
+// ── STORAGE ──
+function saveAttempt(scores) {
+  try {
+    const history = JSON.parse(localStorage.getItem('sss_history') || '[]');
+    const winner = scores.sci >= scores.com && scores.sci >= scores.art ? 'sci'
+                 : scores.com >= scores.art ? 'com' : 'art';
+    history.unshift({
+      date: new Date().toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' }),
+      scores,
+      winner,
+      marks: { ...state.marks }
+    });
+    if (history.length > 10) history.pop();
+    localStorage.setItem('sss_history', JSON.stringify(history));
+  } catch(e) {}
+}
+
+function loadHistory() {
+  try {
+    const history = JSON.parse(localStorage.getItem('sss_history') || '[]');
+    const body = document.getElementById('history-body');
+    if (!history.length) {
+      body.innerHTML = `<div class="history-empty"><div class="icon">📭</div><div>No assessments yet</div><div style="font-size:12px;margin-top:6px">Complete your first analysis to see results here</div></div>`;
+      return;
+    }
+    const nameMap = { sci:'Science', com:'Commerce', art:'Arts' };
+    let html = '';
+    history.forEach(h => {
+      html += `<div class="history-card">
+        <div class="hc-top">
+          <div class="hc-stream ${h.winner}">${nameMap[h.winner]}</div>
+          <div class="hc-date">${h.date}</div>
+        </div>
+        <div class="hc-bars">
+          ${['sci','com','art'].map(s => `
+            <div class="hc-bar-row">
+              <div class="hc-bar-label">${nameMap[s]}</div>
+              <div class="hc-bar-track"><div class="hc-bar-fill" style="width:${h.scores[s]}%;background:${s==='sci'?'#4ab8d8':s==='com'?'#b96dd4':'#d4854e'}"></div></div>
+              <div class="hc-pct">${h.scores[s]}%</div>
+            </div>`).join('')}
+        </div>
+      </div>`;
+    });
+    html += `<button class="btn-clear-history" onclick="clearHistory()">🗑️ Clear All History</button>`;
+    body.innerHTML = html;
+  } catch(e) {}
+}
+
+function clearHistory() {
+  localStorage.removeItem('sss_history');
+  loadHistory();
+  showToast('History cleared');
+}
+
+// ── TOAST ──
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ── PWA INSTALL ──
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  state.deferredPrompt = e;
+  const banner = document.getElementById('install-banner');
+  banner.style.display = 'flex';
+  banner.onclick = async () => {
+    state.deferredPrompt.prompt();
+    const { outcome } = await state.deferredPrompt.userChoice;
+    if (outcome === 'accepted') banner.style.display = 'none';
+  };
+});
+
+// ── SERVICE WORKER ──
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('service-worker.js')
+    .catch(() => {});
+}
+
+// ── INIT ──
+document.addEventListener('DOMContentLoaded', () => {
+  updateWhatIfDisplay({ sci: 0, com: 0, art: 0 });
+});
+</script>
+</body>
+</html>

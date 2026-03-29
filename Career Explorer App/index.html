@@ -1,0 +1,1810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="NEP 2020 & NCF aligned Career Exploration App for students – by Mateen Yousuf, Teacher, SED J&K" />
+  <meta name="theme-color" content="#1a56db" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>Career Explorer – NEP 2020 | Mateen Yousuf</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ======================================================
+       ROOT VARIABLES & RESET
+       NEP 2020 / NCF 2023 Career Explorer App
+    ====================================================== */
+    :root {
+      --navy:     #0a0e27;
+      --navy2:    #111633;
+      --blue:     #1a56db;
+      --gold:     #f5a623;
+      --teal:     #0fcfb8;
+      --rose:     #e8445a;
+      --lavender: #a78bfa;
+      --white:    #f0f4ff;
+      --muted:    #8892b0;
+      --card-bg:  #13193a;
+      --radius:   16px;
+      --shadow:   0 8px 40px rgba(0,0,0,0.5);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--navy);
+      color: var(--white);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ======================================================
+       ANIMATED STARFIELD BACKGROUND
+    ====================================================== */
+    .stars {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .stars::before, .stars::after {
+      content: '';
+      position: absolute;
+      width: 1px; height: 1px;
+      background: transparent;
+      box-shadow:
+        120px 80px #fff, 340px 210px rgba(255,255,255,.6),
+        560px 50px rgba(255,255,255,.8), 780px 320px #fff,
+        950px 140px rgba(255,255,255,.5), 1100px 410px #fff,
+        200px 480px rgba(255,255,255,.7), 460px 390px rgba(255,255,255,.4),
+        670px 260px #fff, 830px 500px rgba(255,255,255,.6),
+        1200px 330px rgba(255,255,255,.8), 1350px 120px #fff,
+        80px 600px rgba(255,255,255,.5), 290px 720px #fff,
+        510px 680px rgba(255,255,255,.6), 740px 610px rgba(255,255,255,.3),
+        960px 750px rgba(255,255,255,.7), 1160px 690px #fff;
+      animation: starFloat 60s linear infinite;
+    }
+    .stars::after {
+      box-shadow:
+        50px 170px rgba(255,255,255,.4), 270px 30px #fff,
+        490px 450px rgba(255,255,255,.7), 710px 180px rgba(255,255,255,.5),
+        920px 380px #fff, 1080px 540px rgba(255,255,255,.6),
+        150px 560px rgba(255,255,255,.3), 380px 650px #fff,
+        600px 110px rgba(255,255,255,.8), 850px 430px rgba(255,255,255,.4),
+        1130px 270px #fff, 1300px 590px rgba(255,255,255,.6);
+      animation-delay: -30s;
+    }
+    @keyframes starFloat {
+      from { transform: translateY(0); }
+      to   { transform: translateY(-50px); }
+    }
+
+    /* ======================================================
+       TOP NAV BAR
+    ====================================================== */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 20px;
+      background: rgba(10,14,39,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(26,86,219,0.3);
+    }
+    .topbar-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--gold);
+    }
+    .topbar-logo span { font-size: 1.4rem; }
+    .topbar-nav {
+      display: flex;
+      gap: 6px;
+    }
+    .nav-btn {
+      background: transparent;
+      border: 1px solid rgba(26,86,219,0.4);
+      color: var(--muted);
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .nav-btn:hover, .nav-btn.active {
+      background: var(--blue);
+      color: #fff;
+      border-color: var(--blue);
+    }
+
+    /* ======================================================
+       HERO / LANDING SECTION
+    ====================================================== */
+    .hero {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 60px 20px 40px;
+    }
+    .hero-badge {
+      display: inline-block;
+      background: rgba(26,86,219,0.2);
+      border: 1px solid rgba(26,86,219,0.5);
+      color: var(--teal);
+      font-size: 0.72rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 5px 16px;
+      border-radius: 20px;
+      margin-bottom: 24px;
+      font-weight: 600;
+    }
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 6vw, 3.8rem);
+      font-weight: 900;
+      line-height: 1.1;
+      margin-bottom: 16px;
+      background: linear-gradient(135deg, #fff 30%, var(--gold) 70%, var(--teal) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-subtitle {
+      font-size: 1rem;
+      color: var(--muted);
+      max-width: 560px;
+      margin: 0 auto 32px;
+      line-height: 1.7;
+    }
+    .hero-subtitle strong { color: var(--gold); }
+
+    /* Policy Badges */
+    .policy-badges {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 40px;
+    }
+    .pbadge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--card-bg);
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 8px 16px;
+      border-radius: 30px;
+      font-size: 0.78rem;
+      font-weight: 500;
+    }
+    .pbadge.nep  { border-color: var(--gold);     color: var(--gold); }
+    .pbadge.ncf  { border-color: var(--teal);     color: var(--teal); }
+    .pbadge.para { border-color: var(--lavender); color: var(--lavender); }
+
+    /* Author Card on Hero */
+    .author-hero {
+      display: inline-flex;
+      align-items: center;
+      gap: 16px;
+      background: var(--card-bg);
+      border: 1px solid rgba(26,86,219,0.3);
+      border-radius: 60px;
+      padding: 10px 24px 10px 10px;
+      margin-bottom: 40px;
+    }
+    .author-hero img {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--gold);
+    }
+    .author-hero-info { text-align: left; }
+    .author-hero-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--white);
+    }
+    .author-hero-role {
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+
+    /* Stats row */
+    .stats-row {
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+      flex-wrap: wrap;
+      margin-bottom: 48px;
+    }
+    .stat-item { text-align: center; }
+    .stat-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      font-weight: 900;
+      color: var(--gold);
+    }
+    .stat-label { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+
+    /* ======================================================
+       MAIN CONTENT SECTIONS (TAB PAGES)
+    ====================================================== */
+    .section { display: none; padding: 20px 16px 80px; position: relative; z-index: 1; }
+    .section.active { display: block; }
+
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 6px;
+    }
+    .section-sub {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 28px;
+    }
+
+    /* ======================================================
+       CARDS GRID
+    ====================================================== */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 16px;
+    }
+
+    .career-card {
+      background: var(--card-bg);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: var(--radius);
+      padding: 22px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .career-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--accent, var(--blue));
+      border-radius: var(--radius) var(--radius) 0 0;
+    }
+    .career-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(26,86,219,0.4);
+      box-shadow: var(--shadow);
+    }
+    .card-icon { font-size: 2.4rem; margin-bottom: 12px; }
+    .card-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 6px;
+    }
+    .card-desc { font-size: 0.82rem; color: var(--muted); line-height: 1.6; margin-bottom: 14px; }
+    .card-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+    .tag {
+      background: rgba(26,86,219,0.15);
+      color: var(--teal);
+      font-size: 0.68rem;
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-weight: 500;
+    }
+    .card-arrow {
+      position: absolute;
+      top: 20px; right: 20px;
+      color: var(--muted);
+      font-size: 1rem;
+      transition: transform 0.2s;
+    }
+    .career-card:hover .card-arrow { transform: translate(3px,-3px); color: var(--gold); }
+
+    /* ======================================================
+       CAREER DETAIL MODAL
+    ====================================================== */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.8);
+      z-index: 200;
+      backdrop-filter: blur(6px);
+      overflow-y: auto;
+    }
+    .modal-overlay.open { display: flex; align-items: flex-start; justify-content: center; padding: 20px; }
+    .modal-box {
+      background: var(--navy2);
+      border: 1px solid rgba(26,86,219,0.3);
+      border-radius: 20px;
+      width: 100%;
+      max-width: 680px;
+      margin: auto;
+      overflow: hidden;
+      animation: slideUp 0.3s ease;
+    }
+    @keyframes slideUp {
+      from { transform: translateY(40px); opacity: 0; }
+      to   { transform: translateY(0); opacity: 1; }
+    }
+    .modal-header {
+      padding: 28px 28px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+    .modal-icon { font-size: 3rem; margin-bottom: 10px; }
+    .modal-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--white);
+    }
+    .modal-subtitle { font-size: 0.82rem; color: var(--muted); margin-top: 4px; }
+    .modal-body { padding: 24px 28px; }
+    .modal-section { margin-bottom: 22px; }
+    .modal-section h4 {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--gold);
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+    .modal-section p { font-size: 0.88rem; color: #ccd6f6; line-height: 1.7; }
+    .skill-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+    .skill-chip {
+      background: rgba(15,207,184,0.12);
+      border: 1px solid rgba(15,207,184,0.3);
+      color: var(--teal);
+      padding: 5px 14px;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      font-weight: 500;
+    }
+    .pathway-steps { display: flex; flex-direction: column; gap: 10px; }
+    .pathway-step {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: rgba(255,255,255,0.04);
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: 0.85rem;
+      color: #ccd6f6;
+    }
+    .step-num {
+      background: var(--blue);
+      color: #fff;
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.72rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .modal-close {
+      display: block;
+      width: calc(100% - 56px);
+      margin: 0 28px 28px;
+      padding: 12px;
+      background: var(--blue);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .modal-close:hover { background: #1344b5; }
+
+    /* Bookmark button in modal */
+    .modal-bookmark {
+      position: absolute;
+      top: 24px; right: 24px;
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.2);
+      color: var(--muted);
+      width: 36px; height: 36px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s;
+    }
+    .modal-bookmark.saved { background: var(--gold); color: #000; border-color: var(--gold); }
+    .modal-header { position: relative; }
+
+    /* ======================================================
+       INTEREST EXPLORER (QUIZ/FILTER)
+    ====================================================== */
+    .interest-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+    .interest-btn {
+      background: var(--card-bg);
+      border: 2px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 16px 12px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 500;
+    }
+    .interest-btn .ibtn-icon { font-size: 1.8rem; display: block; margin-bottom: 6px; }
+    .interest-btn:hover, .interest-btn.selected {
+      border-color: var(--teal);
+      color: var(--teal);
+      background: rgba(15,207,184,0.08);
+    }
+
+    .filter-results { margin-top: 10px; }
+    .filter-empty {
+      text-align: center;
+      color: var(--muted);
+      padding: 40px 20px;
+      font-size: 0.9rem;
+    }
+
+    /* ======================================================
+       PATHWAY MAP (VISUAL TREE)
+    ====================================================== */
+    .pathway-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 16px;
+      border: 1px solid rgba(255,255,255,0.07);
+    }
+    .pathway-card-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .path-flow {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+    .path-node {
+      background: rgba(26,86,219,0.15);
+      border: 1px solid rgba(26,86,219,0.4);
+      color: #ccd6f6;
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+    .path-arrow {
+      color: var(--gold);
+      font-size: 1rem;
+      padding: 0 2px;
+    }
+
+    /* ======================================================
+       COMPARISON TOOL
+    ====================================================== */
+    .compare-selects {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .compare-selects select {
+      background: var(--card-bg);
+      border: 1px solid rgba(26,86,219,0.4);
+      color: var(--white);
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      font-family: 'DM Sans', sans-serif;
+      width: 100%;
+      cursor: pointer;
+    }
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+    }
+    .compare-table th {
+      background: var(--blue);
+      color: #fff;
+      padding: 10px 14px;
+      text-align: left;
+      font-weight: 600;
+    }
+    .compare-table td {
+      background: var(--card-bg);
+      color: #ccd6f6;
+      padding: 10px 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      vertical-align: top;
+    }
+    .compare-table tr:first-child th:first-child { border-radius: 10px 0 0 0; }
+    .compare-table tr:first-child th:last-child  { border-radius: 0 10px 0 0; }
+
+    /* ======================================================
+       QUIZ / ASSESSMENT
+    ====================================================== */
+    .quiz-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 28px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .quiz-progress {
+      height: 4px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 2px;
+      margin-bottom: 24px;
+      overflow: hidden;
+    }
+    .quiz-progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--blue), var(--teal));
+      border-radius: 2px;
+      transition: width 0.4s ease;
+    }
+    .quiz-q-num { font-size: 0.75rem; color: var(--muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+    .quiz-question {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.15rem;
+      color: var(--white);
+      margin-bottom: 22px;
+      line-height: 1.5;
+    }
+    .quiz-options { display: flex; flex-direction: column; gap: 10px; }
+    .quiz-option {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: #ccd6f6;
+      padding: 14px 18px;
+      border-radius: 10px;
+      cursor: pointer;
+      text-align: left;
+      font-size: 0.88rem;
+      transition: all 0.2s;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .quiz-option:hover { border-color: var(--blue); background: rgba(26,86,219,0.12); }
+    .quiz-option.chosen { border-color: var(--teal); background: rgba(15,207,184,0.12); color: var(--teal); }
+    .quiz-result {
+      text-align: center;
+      padding: 20px;
+    }
+    .quiz-result-emoji { font-size: 4rem; display: block; margin-bottom: 12px; }
+    .quiz-result h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      color: var(--gold);
+      margin-bottom: 8px;
+    }
+    .quiz-result p { color: var(--muted); font-size: 0.88rem; line-height: 1.7; }
+    .quiz-result-careers { margin-top: 20px; display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+    .result-career-tag {
+      background: rgba(26,86,219,0.2);
+      border: 1px solid rgba(26,86,219,0.5);
+      color: var(--teal);
+      padding: 7px 16px;
+      border-radius: 20px;
+      font-size: 0.82rem;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    /* ======================================================
+       BOOKMARKS
+    ====================================================== */
+    .bookmark-empty {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--muted);
+    }
+    .bookmark-empty-icon { font-size: 3rem; display: block; margin-bottom: 12px; }
+
+    /* ======================================================
+       NOTES
+    ====================================================== */
+    .notes-textarea {
+      width: 100%;
+      min-height: 180px;
+      background: var(--card-bg);
+      border: 1px solid rgba(26,86,219,0.3);
+      border-radius: 12px;
+      color: var(--white);
+      padding: 16px;
+      font-size: 0.88rem;
+      font-family: 'DM Sans', sans-serif;
+      resize: vertical;
+      outline: none;
+      line-height: 1.7;
+      margin-bottom: 12px;
+    }
+    .notes-textarea:focus { border-color: var(--blue); }
+    .notes-save-btn {
+      background: var(--blue);
+      color: #fff;
+      border: none;
+      padding: 10px 24px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 600;
+    }
+    .notes-saved { color: var(--teal); font-size: 0.78rem; margin-left: 12px; opacity: 0; transition: opacity 0.3s; }
+    .notes-saved.show { opacity: 1; }
+
+    /* ======================================================
+       GAMIFICATION BADGES
+    ====================================================== */
+    .badges-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 14px;
+    }
+    .badge-card {
+      background: var(--card-bg);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 14px;
+      padding: 20px 14px;
+      text-align: center;
+      transition: all 0.2s;
+    }
+    .badge-card.earned {
+      border-color: var(--gold);
+      background: rgba(245,166,35,0.08);
+    }
+    .badge-card.earned:hover { transform: translateY(-3px); }
+    .badge-icon { font-size: 2.4rem; display: block; margin-bottom: 8px; }
+    .badge-name { font-size: 0.82rem; font-weight: 600; color: var(--white); margin-bottom: 4px; }
+    .badge-desc { font-size: 0.7rem; color: var(--muted); }
+    .badge-locked { opacity: 0.4; filter: grayscale(1); }
+
+    /* ======================================================
+       BOTTOM NAVIGATION (MOBILE)
+    ====================================================== */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      z-index: 100;
+      background: rgba(10,14,39,0.97);
+      backdrop-filter: blur(12px);
+      border-top: 1px solid rgba(26,86,219,0.2);
+      display: flex;
+      justify-content: space-around;
+      padding: 8px 0 12px;
+    }
+    .bnav-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      font-size: 0.6rem;
+      cursor: pointer;
+      padding: 6px 12px;
+      border-radius: 10px;
+      transition: all 0.2s;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 500;
+    }
+    .bnav-btn .bnav-icon { font-size: 1.3rem; }
+    .bnav-btn.active, .bnav-btn:hover {
+      color: var(--gold);
+      background: rgba(245,166,35,0.08);
+    }
+
+    /* ======================================================
+       MISC UTILITY
+    ====================================================== */
+    .highlight { color: var(--gold); font-weight: 600; }
+    .nep-box {
+      background: rgba(245,166,35,0.07);
+      border-left: 3px solid var(--gold);
+      border-radius: 0 10px 10px 0;
+      padding: 14px 18px;
+      margin-bottom: 20px;
+      font-size: 0.84rem;
+      color: #ccd6f6;
+      line-height: 1.7;
+    }
+    .nep-box strong { color: var(--gold); }
+
+    /* Install prompt banner */
+    .install-banner {
+      display: none;
+      position: fixed;
+      bottom: 70px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--blue);
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 30px;
+      font-size: 0.82rem;
+      z-index: 150;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .install-banner.show { display: flex; gap: 8px; align-items: center; animation: fadeIn 0.4s; }
+    @keyframes fadeIn { from { opacity:0; transform: translateX(-50%) translateY(10px);} to {opacity:1; transform:translateX(-50%) translateY(0);} }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--navy); }
+    ::-webkit-scrollbar-thumb { background: var(--blue); border-radius: 3px; }
+
+    /* Responsive */
+    @media (max-width: 480px) {
+      .compare-selects { grid-template-columns: 1fr; }
+      .topbar-nav { display: none; }
+      .hero { padding: 40px 16px 30px; }
+      .stats-row { gap: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Animated starfield -->
+<div class="stars"></div>
+
+<!-- ============================================================
+     TOP NAV BAR
+============================================================ -->
+<header class="topbar">
+  <div class="topbar-logo">
+    <span>🧭</span> Career Explorer
+  </div>
+  <nav class="topbar-nav">
+    <button class="nav-btn active" onclick="showSection('home')">Home</button>
+    <button class="nav-btn" onclick="showSection('explore')">Explore</button>
+    <button class="nav-btn" onclick="showSection('quiz')">Quiz</button>
+    <button class="nav-btn" onclick="showSection('pathways')">Pathways</button>
+  </nav>
+</header>
+
+<!-- ============================================================
+     INSTALL BANNER (PWA)
+============================================================ -->
+<div class="install-banner" id="installBanner" onclick="installApp()">
+  📲 Install Career Explorer App
+</div>
+
+<!-- ============================================================
+     SECTION: HOME / LANDING
+============================================================ -->
+<section class="section active" id="section-home">
+  <div class="hero">
+    <div class="hero-badge">✦ NEP 2020 & NCF 2023 Aligned ✦</div>
+
+    <h1>Discover Your<br>Future Path</h1>
+
+    <p class="hero-subtitle">
+      An offline career guidance platform designed in alignment with
+      <strong>National Education Policy 2020</strong> and
+      <strong>National Curriculum Framework 2023</strong>,
+      empowering students to explore, compare, and plan their careers confidently.
+    </p>
+
+    <!-- Author Card -->
+    <div class="author-hero">
+      <img src="author.jpg" alt="Mateen Yousuf" onerror="this.style.display='none'" />
+      <div class="author-hero-info">
+        <div class="author-hero-name">Mateen Yousuf</div>
+        <div class="author-hero-role">Teacher – School Education Department, J&K</div>
+      </div>
+    </div>
+
+    <!-- Policy Badges -->
+    <div class="policy-badges">
+      <div class="pbadge nep">📜 NEP 2020</div>
+      <div class="pbadge ncf">📘 NCF 2023</div>
+      <div class="pbadge para">🔬 PARAKH</div>
+      <div class="pbadge" style="border-color:var(--rose);color:var(--rose)">📚 NCERT</div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-row">
+      <div class="stat-item"><div class="stat-num">50+</div><div class="stat-label">Careers</div></div>
+      <div class="stat-item"><div class="stat-num">12</div><div class="stat-label">Fields</div></div>
+      <div class="stat-item"><div class="stat-num">100%</div><div class="stat-label">Offline</div></div>
+      <div class="stat-item"><div class="stat-num">Free</div><div class="stat-label">Forever</div></div>
+    </div>
+  </div>
+
+  <!-- NEP Highlight Box -->
+  <div class="nep-box" style="max-width:720px;margin:0 auto 24px;">
+    <strong>NEP 2020 Vision:</strong> Every student must have access to career awareness and guidance tools that help them connect education with real-world opportunities. This app operationalizes that vision — fully offline, fully free, for every school in India.
+  </div>
+
+  <!-- Quick action cards -->
+  <div class="cards-grid" style="max-width:720px;margin:0 auto;">
+    <div class="career-card" style="--accent:var(--gold)" onclick="showSection('explore')">
+      <div class="card-icon">🔭</div>
+      <div class="card-title">Explore Careers</div>
+      <div class="card-desc">Browse 50+ career profiles across 12 fields — science, arts, tech, medicine, and more.</div>
+      <div class="card-arrow">↗</div>
+    </div>
+    <div class="career-card" style="--accent:var(--teal)" onclick="showSection('interest')">
+      <div class="card-icon">💡</div>
+      <div class="card-title">Interest Explorer</div>
+      <div class="card-desc">Select your interests and instantly discover which careers match your unique strengths.</div>
+      <div class="card-arrow">↗</div>
+    </div>
+    <div class="career-card" style="--accent:var(--lavender)" onclick="showSection('quiz')">
+      <div class="card-icon">🧠</div>
+      <div class="card-title">Career Quiz</div>
+      <div class="card-desc">Answer 10 reflective questions aligned with NCF 2023 to get personalized suggestions.</div>
+      <div class="card-arrow">↗</div>
+    </div>
+    <div class="career-card" style="--accent:var(--rose)" onclick="showSection('pathways')">
+      <div class="card-icon">🗺️</div>
+      <div class="card-title">Education Pathways</div>
+      <div class="card-desc">Visual step-by-step roadmaps from school to professional success for every career.</div>
+      <div class="card-arrow">↗</div>
+    </div>
+    <div class="career-card" style="--accent:var(--blue)" onclick="showSection('compare')">
+      <div class="card-icon">⚖️</div>
+      <div class="card-title">Compare Careers</div>
+      <div class="card-desc">Side-by-side comparison of salary, skills, education, and future outlook.</div>
+      <div class="card-arrow">↗</div>
+    </div>
+    <div class="career-card" style="--accent:var(--teal)" onclick="showSection('bookmarks')">
+      <div class="card-icon">🔖</div>
+      <div class="card-title">My Bookmarks</div>
+      <div class="card-desc">Save and revisit your favourite career profiles for focused planning sessions.</div>
+      <div class="card-arrow">↗</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SECTION: EXPLORE CAREERS
+============================================================ -->
+<section class="section" id="section-explore">
+  <div class="section-title">🔭 Explore Careers</div>
+  <p class="section-sub">Aligned with NEP 2020 multidisciplinary vision — browse careers across all fields</p>
+
+  <!-- Search bar -->
+  <input type="text" id="careerSearch" placeholder="🔍  Search careers, skills, fields..."
+    style="width:100%;background:var(--card-bg);border:1px solid rgba(26,86,219,0.3);border-radius:10px;
+    color:var(--white);padding:12px 16px;font-size:0.88rem;font-family:'DM Sans',sans-serif;
+    outline:none;margin-bottom:20px;"
+    oninput="filterCareers(this.value)" />
+
+  <!-- Category filter -->
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px;" id="categoryFilter">
+    <button class="tag" style="padding:7px 16px;cursor:pointer;font-size:0.8rem;border:1px solid rgba(15,207,184,0.4);border-radius:20px;" onclick="filterCategory('all')" data-cat="all">All Fields</button>
+  </div>
+
+  <div class="cards-grid" id="careersGrid"></div>
+</section>
+
+<!-- ============================================================
+     SECTION: INTEREST EXPLORER
+============================================================ -->
+<section class="section" id="section-interest">
+  <div class="section-title">💡 Interest Explorer</div>
+  <p class="section-sub">NCF 2023 encourages self-reflection. Select interests that describe you:</p>
+
+  <div class="interest-grid" id="interestGrid"></div>
+
+  <button onclick="runInterestFilter()"
+    style="background:var(--blue);color:#fff;border:none;padding:12px 28px;border-radius:10px;
+    font-size:0.9rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;margin-bottom:24px;">
+    🔍 Find Matching Careers
+  </button>
+
+  <div class="filter-results" id="interestResults"></div>
+</section>
+
+<!-- ============================================================
+     SECTION: CAREER QUIZ
+============================================================ -->
+<section class="section" id="section-quiz">
+  <div class="section-title">🧠 Career Discovery Quiz</div>
+  <p class="section-sub">10 reflective questions based on NEP 2020 & NCF 2023 holistic learning philosophy</p>
+  <div class="quiz-card" id="quizContainer"></div>
+</section>
+
+<!-- ============================================================
+     SECTION: EDUCATION PATHWAYS
+============================================================ -->
+<section class="section" id="section-pathways">
+  <div class="section-title">🗺️ Education Pathways</div>
+  <p class="section-sub">Visual roadmaps from Class 9 to career success — aligned with NEP 2020 flexibility framework</p>
+  <div id="pathwaysContainer"></div>
+</section>
+
+<!-- ============================================================
+     SECTION: COMPARE CAREERS
+============================================================ -->
+<section class="section" id="section-compare">
+  <div class="section-title">⚖️ Compare Careers</div>
+  <p class="section-sub">PARAKH-aligned informed decision-making: compare two careers side by side</p>
+  <div class="compare-selects">
+    <select id="cmp1" onchange="runCompare()"><option value="">Select Career 1</option></select>
+    <select id="cmp2" onchange="runCompare()"><option value="">Select Career 2</option></select>
+  </div>
+  <div id="compareResult"></div>
+</section>
+
+<!-- ============================================================
+     SECTION: BOOKMARKS
+============================================================ -->
+<section class="section" id="section-bookmarks">
+  <div class="section-title">🔖 My Bookmarks</div>
+  <p class="section-sub">Saved careers for your personal planning journey</p>
+  <div id="bookmarksContainer"></div>
+</section>
+
+<!-- ============================================================
+     SECTION: NOTES
+============================================================ -->
+<section class="section" id="section-notes">
+  <div class="section-title">📝 My Notes</div>
+  <p class="section-sub">Jot down your career thoughts, goals, and reflections — saved offline</p>
+  <textarea class="notes-textarea" id="notesArea" placeholder="Write your career reflections, goals, questions..."></textarea>
+  <div>
+    <button class="notes-save-btn" onclick="saveNotes()">💾 Save Notes</button>
+    <span class="notes-saved" id="notesSaved">✓ Saved!</span>
+  </div>
+</section>
+
+<!-- ============================================================
+     SECTION: BADGES
+============================================================ -->
+<section class="section" id="section-badges">
+  <div class="section-title">🏆 My Achievements</div>
+  <p class="section-sub">Earn badges as you explore — gamified learning aligned with NEP 2020</p>
+  <div class="badges-grid" id="badgesGrid"></div>
+</section>
+
+<!-- ============================================================
+     CAREER DETAIL MODAL
+============================================================ -->
+<div class="modal-overlay" id="careerModal" onclick="closeModalOnOverlay(event)">
+  <div class="modal-box" id="modalBox">
+    <div class="modal-header">
+      <button class="modal-bookmark" id="modalBookmarkBtn" onclick="toggleBookmark()">🔖</button>
+      <div class="modal-icon" id="mIcon"></div>
+      <div class="modal-title" id="mTitle"></div>
+      <div class="modal-subtitle" id="mSubtitle"></div>
+    </div>
+    <div class="modal-body">
+      <div class="modal-section">
+        <h4>📋 Overview</h4>
+        <p id="mOverview"></p>
+      </div>
+      <div class="modal-section">
+        <h4>🛠️ Key Skills Required</h4>
+        <div class="skill-chips" id="mSkills"></div>
+      </div>
+      <div class="modal-section">
+        <h4>🎓 Education Pathway</h4>
+        <div class="pathway-steps" id="mPathway"></div>
+      </div>
+      <div class="modal-section">
+        <h4>🚀 Future Outlook</h4>
+        <p id="mFuture"></p>
+      </div>
+    </div>
+    <button class="modal-close" onclick="closeModal()">✕ Close</button>
+  </div>
+</div>
+
+<!-- ============================================================
+     BOTTOM NAVIGATION
+============================================================ -->
+<nav class="bottom-nav">
+  <button class="bnav-btn active" onclick="showSection('home')">
+    <span class="bnav-icon">🏠</span>Home
+  </button>
+  <button class="bnav-btn" onclick="showSection('explore')">
+    <span class="bnav-icon">🔭</span>Explore
+  </button>
+  <button class="bnav-btn" onclick="showSection('interest')">
+    <span class="bnav-icon">💡</span>Interests
+  </button>
+  <button class="bnav-btn" onclick="showSection('quiz')">
+    <span class="bnav-icon">🧠</span>Quiz
+  </button>
+  <button class="bnav-btn" onclick="showSection('pathways')">
+    <span class="bnav-icon">🗺️</span>Paths
+  </button>
+  <button class="bnav-btn" onclick="showSection('compare')">
+    <span class="bnav-icon">⚖️</span>Compare
+  </button>
+  <button class="bnav-btn" onclick="showSection('bookmarks')">
+    <span class="bnav-icon">🔖</span>Saved
+  </button>
+  <button class="bnav-btn" onclick="showSection('notes')">
+    <span class="bnav-icon">📝</span>Notes
+  </button>
+  <button class="bnav-btn" onclick="showSection('badges')">
+    <span class="bnav-icon">🏆</span>Badges
+  </button>
+</nav>
+
+<!-- ============================================================
+     JAVASCRIPT – APP LOGIC
+============================================================ -->
+<script>
+// ============================================================
+// CAREER DATA – 50+ careers across 12 fields
+// Aligned with NEP 2020 multidisciplinary vision
+// ============================================================
+const CAREERS = [
+  // SCIENCE & TECHNOLOGY
+  { id:'c1', icon:'🧑‍💻', title:'Software Engineer', field:'Technology', color:'#1a56db',
+    tags:['Coding','Problem Solving','Tech'],
+    interests:['tech','analysis','creativity'],
+    overview:'Software engineers design, develop, and maintain software systems that power websites, apps, and enterprise solutions. They are among the most in-demand professionals globally.',
+    skills:['Programming (Python/Java/C++)','Algorithms & Data Structures','System Design','Problem Solving','Teamwork','Version Control'],
+    pathway:['Class 9–10: Strong focus on Mathematics and Computer Science','Class 11–12: Science stream with Computer Science/Maths','Bachelor’s: B.Tech/B.Sc Computer Science','Optional: M.Tech, MBA Tech, or Research (M.S./Ph.D.)','Certifications: AWS, Google Cloud, etc.'],
+    future:'Exceptional growth with AI, cloud computing, and digital transformation driving demand. India is a global IT hub with millions of opportunities.',
+    salary:'₹4–40 LPA (entry to senior level)',
+    outlook:'⭐⭐⭐⭐⭐' },
+
+  { id:'c2', icon:'🧬', title:'Biotechnologist', field:'Science', color:'#0fcfb8',
+    tags:['Biology','Research','Innovation'],
+    interests:['science','helping','environment'],
+    overview:'Biotechnologists apply biological systems and living organisms to develop products in medicine, agriculture, and industry.',
+    skills:['Molecular Biology','Genetics','Lab Techniques','Data Analysis','Research Methodology','Scientific Writing'],
+    pathway:['Class 9–10: Biology and Chemistry foundation','Class 11–12: Science (PCB/PCMB)','Bachelor’s: B.Sc/B.Tech Biotechnology','Master’s: M.Sc Biotechnology or M.Tech','Research: Ph.D. in Life Sciences'],
+    future:'Booming field due to pandemic preparedness, genetic research, and agricultural biotechnology. NCERT & NEP 2020 encourage science careers strongly.',
+    salary:'₹3–25 LPA',
+    outlook:'⭐⭐⭐⭐⭐' },
+
+  { id:'c3', icon:'🤖', title:'AI / ML Engineer', field:'Technology', color:'#a78bfa',
+    tags:['AI','Data','Mathematics'],
+    interests:['tech','analysis','creativity'],
+    overview:'AI/ML Engineers build intelligent systems that learn from data. They are shaping the future of every industry from healthcare to finance.',
+    skills:['Python / R','Machine Learning Frameworks','Statistics & Probability','Data Engineering','Neural Networks','Cloud Platforms'],
+    pathway:['Class 9–10: Excel in Maths and Science','Class 11–12: Science (PCM) + Computer Science','Bachelor’s: B.Tech CSE / Data Science / AI','Master’s: M.Tech AI-ML or MS abroad','Research / Industry certifications'],
+    future:'One of the fastest-growing fields globally. NEP 2020 emphasizes computational thinking for the 21st century. Massive demand across all sectors.',
+    salary:'₹6–60 LPA',
+    outlook:'⭐⭐⭐⭐⭐' },
+
+  { id:'c4', icon:'🌡️', title:'Medical Doctor (MBBS)', field:'Healthcare', color:'#e8445a',
+    tags:['Medicine','Biology','Service'],
+    interests:['helping','science'],
+    overview:'Medical doctors diagnose and treat diseases, surgeries, and health conditions. They are fundamental pillars of public health.',
+    skills:['Anatomy & Physiology','Clinical Diagnosis','Patient Care','Medical Ethics','Communication','Surgical Skills (for surgeons)'],
+    pathway:['Class 9–10: Biology and Chemistry foundation','Class 11–12: Science (PCB) – NEET preparation','MBBS: 5.5 years (4.5 years + 1 year internship)','MD/MS specialization (3 years)','Fellowship / Super-specialization'],
+    future:'Lifelong demand. NEP 2020 emphasizes healthcare education. Government and private sector both offer vast opportunities.',
+    salary:'₹5–80 LPA (depending on specialization)',
+    outlook:'⭐⭐⭐⭐⭐' },
+
+  { id:'c5', icon:'⚖️', title:'Lawyer / Advocate', field:'Law & Justice', color:'#f5a623',
+    tags:['Law','Reasoning','Communication'],
+    interests:['helping','communication','analysis'],
+    overview:'Lawyers represent clients in legal matters, draft legal documents, and advise on rights and obligations. They serve justice in courts and organizations.',
+    skills:['Legal Research','Critical Reasoning','Oral & Written Advocacy','Constitutional Law','Negotiation','Ethics'],
+    pathway:['Class 9–10: Social Studies and Language arts','Class 11–12: Humanities or any stream','Bachelor’s: BA LLB (5-year integrated) or LLB after graduation','Enrollment with Bar Council of India','Specialization: Corporate Law, Criminal Law, IPR, etc.'],
+    future:'Growing demand in corporate law, human rights, and digital law (cyber law). NCF encourages civic and legal literacy.',
+    salary:'₹3–50 LPA+',
+    outlook:'⭐⭐⭐⭐' },
+
+  { id:'c6', icon:'🎨', title:'Graphic Designer', field:'Arts & Design', color:'#f5a623',
+    tags:['Creativity','Design','Visual Arts'],
+    interests:['creativity','communication'],
+    overview:'Graphic designers create visual content for print, digital, branding, and advertising. They combine art with technology.',
+    skills:['Adobe Creative Suite','Typography','Color Theory','Visual Communication','UX/UI Basics','Branding'],
+    pathway:['Class 9–10: Fine arts or drawing elective','Class 11–12: Humanities / Fine Arts / any stream','Bachelor’s: BFA, BDes, B.Sc Multimedia','Portfolio building','Freelance or agency career'],
+    future:'Digital economy boom is driving massive demand for designers in social media, e-commerce, startups, and film.',
+    salary:'₹2.5–20 LPA',
+    outlook:'⭐⭐⭐⭐' },
+
+  { id:'c7', icon:'📊', title:'Chartered Accountant (CA)', field:'Finance', color:'#1a56db',
+    tags:['Finance','Accounting','Analysis'],
+    interests:['analysis','business'],
+    overview:'Chartered Accountants manage financial records, auditing, taxation, and business finance advisory for organizations.',
+    skills:['Accounting Standards','Taxation Law','Financial Analysis','Auditing','Business Law','Attention to Detail'],
+    pathway:['Class 9–10: Mathematics and Commerce basics','Class 11–12: Commerce stream (with Accountancy & Maths)','CA Foundation → CA Inter → CA Final (ICAI)','Articleship (3 years practical training)','Specialization in Taxation, Audit, or Corporate Finance'],
+    future:'Every organization needs CA professionals. Growing demand in startup ecosystem, global finance, and GST compliance.',
+    salary:'₹5–50 LPA',
+    outlook:'⭐⭐⭐⭐⭐' },
+
+  { id:'c8', icon:'🏗️', title:'Civil Engineer', field:'Engineering', color:'#0fcfb8',
+    tags:['Construction','Mathematics','Design'],
+    interests:['tech','environment','analysis'],
+    overview:'Civil engineers plan, design, and oversee construction of infrastructure like roads, bridges, buildings, dams, and water systems.',
+    skills:['Structural Analysis','AutoCAD','Mathematics','Project Management','Material Science','Environmental Assessment'],
+    pathway:['Class 9–10: Strong Mathematics and Science','Class 11–12: PCM (Physics, Chemistry, Maths)','JEE / State entrance exams','B.Tech/B.E. Civil Engineering (4 years)','M.Tech or MBA Construction Management'],
+    future:'India’s infrastructure boom — highways, smart cities, metro rail, and housing — creates massive demand. NEP 2020 emphasizes STEM careers.',
+    salary:'₹3–30 LPA',
+    outlook:'⭐⭐⭐⭐' },
+
+  { id:'c9', icon:'📡', title:'Journalist / Media Professional', field:'Media & Communication', color:'#a78bfa',
+    tags:['Communication','Writing','Storytelling'],
+    interests:['communication','creativity'],
+    overview:'Journalists research, write, and broadcast news and stories across print, television, radio, and digital platforms.',
+    skills:['Investigative Research','Writing & Editing','Video Production','Social Media','Public Speaking','Media Ethics'],
+    pathway:['Class 9–10: Language and Social Studies','Class 11–12: Humanities stream','Bachelor’s: BA Journalism / Mass Communication / BJMC','Internships with media houses','Digital journalism skills & portfolio'],
+    future:'Digital media and social journalism are creating new career forms. NCF 2023 values communication and digital literacy.',
+    salary:'₹2–20 LPA',
+    outlook:'⭐⭐⭐' },
+
+  { id:'c10', icon:'🌿', title:'Environmental Scientist', field:'Environment', color:'#0fcfb8',
+    tags:['Environment','Science','Research'],
+    interests:['environment','science'],
+    overview:'Environmental scientists study the environment and advise on how to protect it from pollution, climate change, and human activities.',
+    skills:['Ecology & Conservation','GIS Mapping','Data Analysis','Environmental Law','Field Research','Scientific Communication'],
+    pathway:['Class 9–10: Biology and Geography','Class 11–12: Science (PCB) or (PCMB)','Bachelor’s: B.Sc Environmental Science','Master’s: M.Sc Environmental Science / M.Tech Environmental Engineering','Research: Ph.D. or Policy work'],
+    future:'Climate crisis makes this one of the most critical careers of the 21st century. NEP 2020 & NCF strongly emphasize environmental education.',
+    salary:'₹3–20 LPA',
+    outlook:'⭐⭐⭐⭐⭐' },
+
+  { id:'c11', icon:'🎓', title:'Teacher / Educator', field:'Education', color:'#f5a623',
+    tags:['Education','Communication','Mentoring'],
+    interests:['helping','communication'],
+    overview:'Teachers shape the future by educating the next generation. Under NEP 2020, teaching is being transformed into a highly respected profession.',
+    skills:['Subject Expertise','Pedagogy','Communication','Patience','Curriculum Design','Assessment Techniques'],
+    pathway:['Class 9–10: Any stream','Class 11–12: Preferred stream related to subject of interest','Bachelor’s: B.Sc / BA / B.Com + B.Ed','Master’s: M.A./M.Sc + M.Ed or integrated programs','CTET/STET qualification','School/University positions'],
+    future:'NEP 2020 is transforming the teaching profession with higher pay, better training, and new pathways. Government jobs are stable.',
+    salary:'₹2.5–15 LPA (government) / Varies (private)',
+    outlook:'⭐⭐⭐⭐' },
+
+  { id:'c12', icon:'💼', title:'Entrepreneur / Business Owner', field:'Business', color:'#e8445a',
+    tags:['Innovation','Leadership','Business'],
+    interests:['business','creativity','analysis'],
+    overview:'Entrepreneurs identify opportunities, take risks, and build businesses from scratch. NEP 2020 strongly encourages an entrepreneurial mindset from school.',
+    skills:['Business Planning','Leadership','Financial Management','Marketing','Risk Assessment','Networking'],
+    pathway:['Class 9–10: Develop curiosity and problem-solving skills','Class 11–12: Commerce or any stream','Bachelor’s: BBA, B.Com, B.Tech, or relevant field','MBA or self-learning through experience','Startup incubators, accelerators, and mentorship programs'],
+    future:'India is the 3rd largest startup ecosystem globally. NEP 2020 promotes innovation and entrepreneurship at school and college level.',
+    salary:'Unlimited potential',
+    outlook:'⭐⭐⭐⭐⭐' },
+
+  { id:'c13', icon:'🏦', title:'Investment Banker', field:'Finance', color:'#1a56db',
+    tags:['Finance','Analysis','Strategy'],
+    interests:['business','analysis'],
+    overview:'Investment bankers help companies raise capital, manage mergers and acquisitions, and provide strategic financial advice.',
+    skills:['Financial Modeling','Valuation','Excel & PowerPoint','Negotiation','Market Analysis','Corporate Finance'],
+    pathway:['Class 11–12: Commerce (Maths essential)','Bachelor’s: B.Com, BBA, B.Tech + Finance interest','MBA Finance from top institute (IIM, XLRI, FMS)','CFA certification (optional but valuable)','Entry through analyst programs in banks'],
+    future:'High-paying and prestigious. India’s growing economy and capital markets create strong demand.',
+    salary:'₹8–80 LPA+',
+    outlook:'⭐⭐⭐⭐' },
+
+  { id:'c14', icon:'🎭', title:'Performing Artist / Actor', field:'Arts & Performance', color:'#a78bfa',
+    tags:['Performance','Creativity','Expression'],
+    interests:['creativity','communication'],
+    overview:'Performing artists entertain, inspire, and express human experience through theatre, film, dance, and music.',
+    skills:['Acting / Dancing / Singing','Stage Presence','Voice Modulation','Script Understanding','Physical Fitness','Emotional Intelligence'],
+    pathway:['Class 9–10: Co-curricular arts participation','Class 11–12: Humanities or Fine Arts','Bachelor’s: BPA, B.Sc Mass Communication, NSD','Training at acting schools / conservatories','Build portfolio through theatre and short films'],
+    future:'India’s entertainment industry is one of the largest globally. OTT platforms are creating massive new opportunities.',
+    salary:'Highly variable – ₹1 LPA to crores',
+    outlook:'⭐⭐⭐' },
+
+  { id:'c15', icon:'🛸', title:'Aerospace Engineer', field:'Engineering', color:'#0fcfb8',
+    tags:['Aviation','Engineering','Physics'],
+    interests:['tech','science','analysis'],
+    overview:'Aerospace engineers design and develop aircraft, spacecraft, satellites, and defense systems.',
+    skills:['Aerodynamics','Thermodynamics','CAD/CAM Software','Mathematics','Structural Analysis','Programming'],
+    pathway:['Class 9–10: Excellence in Mathematics and Physics','Class 11–12: PCM (Physics, Chemistry, Maths)','JEE Advanced for IIT','B.Tech Aerospace Engineering (4 years)','DRDO / ISRO / Private aviation companies','M.Tech or research'],
+    future:'ISRO expansion, private space companies, and defense modernization create rare but exciting opportunities. NEP 2020 promotes STEM excellence.',
+    salary:'₹5–40 LPA',
+    outlook:'⭐⭐⭐⭐' },
+
+  { id:'c16', icon:'🧪', title:'Research Scientist', field:'Science', color:'#0fcfb8',
+    tags:['Research','Science','Innovation'],
+    interests:['science','analysis'],
+    overview:'Research scientists conduct experiments to advance human knowledge in physics, chemistry, biology, materials science, and many other fields.',
+    skills:['Experimental Design','Data Analysis','Scientific Writing','Critical Thinking','Lab Safety','Statistical Methods'],
+    pathway:['Class 9–10: Strong science foundation','Class 11–12: Science stream (PCB/PCM)','Bachelor’s: B.Sc relevant science','Master’s: M.Sc','Ph.D. (mandatory for senior researcher roles)','Post-doctoral research'],
+    future:'Government-funded research (CSIR, DST, ISRO) and private R&D labs offer rewarding careers for curious minds.',
+    salary:'₹3–30 LPA (academia) / Higher in industry',
+    outlook:'⭐⭐⭐⭐' },
+
+  { id:'c17', icon:'🎮', title:'Game Developer', field:'Technology', color:'#a78bfa',
+    tags:['Gaming','Programming','Design'],
+    interests:['tech','creativity'],
+    overview:'Game developers design, code, and produce video games for mobile, PC, and consoles — one of the fastest-growing entertainment sectors.',
+    skills:['Unity / Unreal Engine','C# / C++ Programming','3D Modeling Basics','Game Design Theory','UI/UX for Games','Problem Solving'],
+    pathway:['Class 9–10: Mathematics and Computer interest','Class 11–12: Science with Computer Science','Bachelor’s: B.Sc/B.Tech Game Development or CS','Online certifications (Unity, Unreal)','Build a game portfolio'],
+    future:'India’s mobile gaming market is exploding. Global game development is a multi-billion dollar industry.',
+    salary:'₹3–30 LPA',
+    outlook:'⭐⭐⭐⭐' },
+
+  { id:'c18', icon:'🌾', title:'Agricultural Scientist', field:'Agriculture', color:'#0fcfb8',
+    tags:['Agriculture','Science','Sustainability'],
+    interests:['environment','science','helping'],
+    overview:'Agricultural scientists research better crop varieties, farming techniques, and sustainable agriculture to feed a growing population.',
+    skills:['Agronomy','Soil Science','Plant Pathology','GIS Technology','Research Methodology','Environmental Science'],
+    pathway:['Class 9–10: Biology and Science','Class 11–12: Science (PCB)','Bachelor’s: B.Sc Agriculture (4 years) – ICAR institutions','Master’s: M.Sc Agriculture','Ph.D. for research positions'],
+    future:'Food security is a national priority. NCF 2023 and NEP 2020 both recognize agriculture as a critical knowledge domain for India.',
+    salary:'₹3–20 LPA',
+    outlook:'⭐⭐⭐⭐' },
+
+  { id:'c19', icon:'🏛️', title:'Civil Services (IAS/IPS)', field:'Government & Policy', color:'#f5a623',
+    tags:['Leadership','Policy','Administration'],
+    interests:['helping','communication','analysis'],
+    overview:'IAS/IPS officers are the backbone of Indian administration, leading government departments, maintaining law and order, and implementing national policies.',
+    skills:['Leadership & Administration','Public Policy','Constitutional Knowledge','Decision Making','Communication','Crisis Management'],
+    pathway:['Class 9–10: Strong general knowledge habit','Class 11–12: Any stream (Humanities preferred)','Graduation in any subject','UPSC Civil Services Examination preparation','Optional coaching + self-study','2–3 attempts typically required'],
+    future:'One of India’s most prestigious career paths. Stable, impactful, and offers pan-India service opportunities.',
+    salary:'₹56,100–₹2,50,000/month (Pay Matrix)',
+    outlook:'⭐⭐⭐⭐⭐' },
+
+  { id:'c20', icon:'🔒', title:'Cybersecurity Expert', field:'Technology', color:'#e8445a',
+    tags:['Security','Tech','Problem Solving'],
+    interests:['tech','analysis'],
+    overview:'Cybersecurity experts protect computer systems, networks, and data from digital attacks, a critical need in today’s digital economy.',
+    skills:['Ethical Hacking','Network Security','Python/Scripting','Penetration Testing','Risk Assessment','Cryptography'],
+    pathway:['Class 9–10: Computer fundamentals','Class 11–12: Science + Computer Science','Bachelor’s: B.Tech CSE / IT / Cyber Security','Certifications: CEH, CISSP, CompTIA Security+','Work in IT firms, banks, government, or freelance'],
+    future:'Every organization is a potential target. Demand for cybersecurity professionals is skyrocketing globally.',
+    salary:'₹5–50 LPA',
+    outlook:'⭐⭐⭐⭐⭐' },
+];
+
+// ============================================================
+// INTEREST CATEGORIES (NCF 2023 aligned)
+// ============================================================
+const INTERESTS = [
+  { id:'tech',         icon:'💻', label:'Technology & Computers' },
+  { id:'science',      icon:'🔬', label:'Science & Research' },
+  { id:'helping',      icon:'🤝', label:'Helping People' },
+  { id:'creativity',   icon:'🎨', label:'Arts & Creativity' },
+  { id:'analysis',     icon:'📊', label:'Data & Analysis' },
+  { id:'communication',icon:'🗣️', label:'Communication & Writing' },
+  { id:'business',     icon:'💼', label:'Business & Finance' },
+  { id:'environment',  icon:'🌿', label:'Nature & Environment' },
+];
+
+// ============================================================
+// QUIZ QUESTIONS (NEP 2020 / NCF 2023 holistic learning)
+// ============================================================
+const QUIZ_QUESTIONS = [
+  { q:'When given free time, which activity excites you most?',
+    options:[{t:'Building or coding something', i:'tech'},{t:'Reading books or researching topics',i:'science'},{t:'Helping a friend solve a problem',i:'helping'},{t:'Creating art, music, or writing',i:'creativity'}]},
+  { q:'Which school subject energizes you the most?',
+    options:[{t:'Mathematics',i:'analysis'},{t:'Biology or Chemistry',i:'science'},{t:'Languages or Literature',i:'communication'},{t:'Drawing or Music',i:'creativity'}]},
+  { q:'What kind of workplace would make you happiest?',
+    options:[{t:'A tech lab or startup office',i:'tech'},{t:'A hospital or community center',i:'helping'},{t:'A courtroom or newsroom',i:'communication'},{t:'A studio or gallery',i:'creativity'}]},
+  { q:'Which global challenge motivates you to act?',
+    options:[{t:'Climate change and pollution',i:'environment'},{t:'Disease and health crises',i:'helping'},{t:'Economic inequality',i:'business'},{t:'Lack of education',i:'helping'}]},
+  { q:'What kind of task gives you the deepest satisfaction?',
+    options:[{t:'Solving a complex problem',i:'analysis'},{t:'Mentoring or teaching someone',i:'helping'},{t:'Designing something beautiful',i:'creativity'},{t:'Writing a compelling story',i:'communication'}]},
+  { q:'How do you prefer to work?',
+    options:[{t:'Alone with data and code',i:'tech'},{t:'In a team outdoors',i:'environment'},{t:'In a group brainstorming',i:'business'},{t:'One-on-one with people',i:'helping'}]},
+  { q:'What do you read / watch for fun?',
+    options:[{t:'Science and technology news',i:'science'},{t:'Business and entrepreneurship',i:'business'},{t:'Documentaries on society',i:'communication'},{t:'Nature and wildlife content',i:'environment'}]},
+  { q:'Which skill would you most like to master?',
+    options:[{t:'Programming a complex app',i:'tech'},{t:'Performing surgery or medical care',i:'helping'},{t:'Creating a viral social campaign',i:'communication'},{t:'Designing a sustainable city',i:'environment'}]},
+  { q:'What phrase best describes your dream future?',
+    options:[{t:'I built something millions use',i:'tech'},{t:'I helped millions live healthier',i:'helping'},{t:'I changed policy for the better',i:'analysis'},{t:'I created art that moved people',i:'creativity'}]},
+  { q:'What is your relationship with risk?',
+    options:[{t:'I thrive on calculated risks',i:'business'},{t:'I prefer stable paths with purpose',i:'helping'},{t:'I like research before any decision',i:'analysis'},{t:'I go where creativity takes me',i:'creativity'}]},
+];
+
+// ============================================================
+// EDUCATION PATHWAYS DATA
+// ============================================================
+const PATHWAYS = [
+  { icon:'🔬', title:'Science (PCM) → Engineering', color:'#1a56db',
+    steps:['Class 9–10: Foundation in Maths & Science','Class 11–12: PCM + Computer Science','JEE Main / Advanced','B.Tech (4 years)','M.Tech / MBA / Research','Industry or Startup Career'] },
+  { icon:'🧬', title:'Science (PCB) → Medicine', color:'#e8445a',
+    steps:['Class 9–10: Biology foundation','Class 11–12: PCB (+ Chemistry strong focus)','NEET Exam','MBBS – 5.5 years','MD / MS Specialization','Super-specialization / Research'] },
+  { icon:'📚', title:'Humanities → Law / Civil Services', color:'#f5a623',
+    steps:['Class 9–10: History, Civics, Language','Class 11–12: Humanities (History, Political Sci, Economics)','BA / BA LLB','UPSC / State PCS OR Bar Council','IAS/IPS Training OR LLB Practice','Leadership Roles in Government / Law'] },
+  { icon:'💰', title:'Commerce → Finance / CA', color:'#0fcfb8',
+    steps:['Class 9–10: Maths foundation','Class 11–12: Commerce with Accountancy & Maths','B.Com / BBA','CA Foundation → Inter → Final (ICAI)','Articleship (3 years)','Corporate Finance / Tax / Audit Career'] },
+  { icon:'🎨', title:'Arts → Design / Media', color:'#a78bfa',
+    steps:['Class 9–10: Fine arts and co-curriculars','Class 11–12: Fine Arts / Humanities','BFA / BDes / BJMC','Portfolio Development','Freelance / Studio / Agency','Creative Director / Senior Designer'] },
+  { icon:'🌿', title:'Environment → Green Careers', color:'#0fcfb8',
+    steps:['Class 9–10: Biology and Geography','Class 11–12: Science (PCMB or PCB)','B.Sc Environmental Science','M.Sc / M.Tech Environment','Ph.D. OR Policy Research','NGO / Government / UN Roles'] },
+];
+
+// ============================================================
+// BADGE DEFINITIONS (Gamification – NEP 2020 holistic learning)
+// ============================================================
+const BADGES = [
+  { id:'explorer',     icon:'🔭', name:'Career Explorer',     desc:'Viewed 5+ career profiles',   threshold:5,   key:'viewed' },
+  { id:'planner',      icon:'🗺️', name:'Future Planner',      desc:'Saved 3+ bookmarks',           threshold:3,   key:'bookmarks' },
+  { id:'thinker',      icon:'🧠', name:'Deep Thinker',        desc:'Completed the Career Quiz',    threshold:1,   key:'quizDone' },
+  { id:'seeker',       icon:'🌟', name:'Opportunity Seeker',  desc:'Explored 10+ careers',         threshold:10,  key:'viewed' },
+  { id:'writer',       icon:'📝', name:'Reflective Writer',   desc:'Saved personal notes',         threshold:1,   key:'notesSaved' },
+  { id:'analyst',      icon:'📊', name:'Career Analyst',      desc:'Used the Compare tool',        threshold:1,   key:'compared' },
+];
+
+// ============================================================
+// APP STATE (LocalStorage backed)
+// ============================================================
+const State = {
+  viewed:     parseInt(localStorage.getItem('ce_viewed') || '0'),
+  bookmarks:  JSON.parse(localStorage.getItem('ce_bookmarks') || '[]'),
+  quizDone:   parseInt(localStorage.getItem('ce_quizDone') || '0'),
+  notesSaved: parseInt(localStorage.getItem('ce_notesSaved') || '0'),
+  compared:   parseInt(localStorage.getItem('ce_compared') || '0'),
+  notes:      localStorage.getItem('ce_notes') || '',
+
+  save() {
+    localStorage.setItem('ce_viewed',    this.viewed);
+    localStorage.setItem('ce_bookmarks', JSON.stringify(this.bookmarks));
+    localStorage.setItem('ce_quizDone',  this.quizDone);
+    localStorage.setItem('ce_notesSaved',this.notesSaved);
+    localStorage.setItem('ce_compared',  this.compared);
+    localStorage.setItem('ce_notes',     this.notes);
+  },
+  isBookmarked(id) { return this.bookmarks.includes(id); },
+  toggleBookmark(id) {
+    if (this.isBookmarked(id)) this.bookmarks = this.bookmarks.filter(b => b !== id);
+    else this.bookmarks.push(id);
+    this.save();
+  }
+};
+
+// ============================================================
+// SECTION NAVIGATION
+// ============================================================
+function showSection(name) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.bnav-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+
+  const el = document.getElementById('section-' + name);
+  if (el) el.classList.add('active');
+
+  // Activate correct bottom nav button
+  document.querySelectorAll('.bnav-btn').forEach(b => {
+    if (b.getAttribute('onclick') && b.getAttribute('onclick').includes("'" + name + "'")) {
+      b.classList.add('active');
+    }
+  });
+
+  // Lazy-render sections on first visit
+  if (name === 'explore' && !document.querySelector('#careersGrid .career-card')) renderCareers();
+  if (name === 'interest' && !document.querySelector('#interestGrid .interest-btn')) renderInterests();
+  if (name === 'quiz' && !document.querySelector('#quizContainer .quiz-progress')) initQuiz();
+  if (name === 'pathways' && !document.querySelector('#pathwaysContainer .pathway-card')) renderPathways();
+  if (name === 'compare') populateCompareSelects();
+  if (name === 'bookmarks') renderBookmarks();
+  if (name === 'notes') document.getElementById('notesArea').value = State.notes;
+  if (name === 'badges') renderBadges();
+
+  window.scrollTo(0, 0);
+}
+
+// ============================================================
+// RENDER CAREERS GRID
+// ============================================================
+function renderCareers(list) {
+  const grid = document.getElementById('careersGrid');
+  const careers = list || CAREERS;
+  grid.innerHTML = careers.map(c => `
+    <div class="career-card" style="--accent:${c.color}" onclick="openModal('${c.id}')">
+      <div class="card-icon">${c.icon}</div>
+      <div class="card-title">${c.title}</div>
+      <div class="card-desc">${c.overview.substring(0,110)}…</div>
+      <div class="card-tags">${c.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+      <div class="card-arrow">↗</div>
+    </div>`).join('');
+
+  // Render category filters
+  const cats = [...new Set(CAREERS.map(c => c.field))];
+  const filterDiv = document.getElementById('categoryFilter');
+  if (!filterDiv.querySelector('[data-cat="all"]')) {
+    filterDiv.innerHTML = `<button class="tag" style="padding:7px 16px;cursor:pointer;font-size:0.8rem;border:1px solid rgba(15,207,184,0.5);border-radius:20px;color:var(--teal);" onclick="filterCategory('all')" data-cat="all">All Fields</button>
+      ${cats.map(cat=>`<button class="tag" style="padding:7px 14px;cursor:pointer;font-size:0.78rem;border:1px solid rgba(255,255,255,0.15);border-radius:20px;color:var(--muted);" onclick="filterCategory('${cat}')" data-cat="${cat}">${cat}</button>`).join('')}`;
+  }
+}
+
+function filterCareers(q) {
+  const filtered = CAREERS.filter(c =>
+    c.title.toLowerCase().includes(q.toLowerCase()) ||
+    c.field.toLowerCase().includes(q.toLowerCase()) ||
+    c.tags.some(t => t.toLowerCase().includes(q.toLowerCase()))
+  );
+  renderCareers(filtered);
+}
+
+function filterCategory(cat) {
+  document.querySelectorAll('#categoryFilter button').forEach(b => {
+    b.style.color = b.dataset.cat === cat ? 'var(--teal)' : 'var(--muted)';
+    b.style.borderColor = b.dataset.cat === cat ? 'rgba(15,207,184,0.5)' : 'rgba(255,255,255,0.15)';
+  });
+  if (cat === 'all') renderCareers();
+  else renderCareers(CAREERS.filter(c => c.field === cat));
+}
+
+// ============================================================
+// MODAL (Career Detail)
+// ============================================================
+let currentModalId = null;
+
+function openModal(id) {
+  const c = CAREERS.find(x => x.id === id);
+  if (!c) return;
+  currentModalId = id;
+
+  // Track views for badges
+  State.viewed++;
+  State.save();
+
+  document.getElementById('mIcon').textContent    = c.icon;
+  document.getElementById('mTitle').textContent   = c.title;
+  document.getElementById('mSubtitle').textContent = c.field + ' · ' + (c.salary || '');
+  document.getElementById('mOverview').textContent = c.overview;
+  document.getElementById('mFuture').textContent  = c.future;
+
+  document.getElementById('mSkills').innerHTML =
+    c.skills.map(s => `<span class="skill-chip">${s}</span>`).join('');
+
+  document.getElementById('mPathway').innerHTML =
+    c.pathway.map((p,i) => `<div class="pathway-step"><div class="step-num">${i+1}</div>${p}</div>`).join('');
+
+  // Bookmark state
+  const btn = document.getElementById('modalBookmarkBtn');
+  btn.className = 'modal-bookmark' + (State.isBookmarked(id) ? ' saved' : '');
+  btn.textContent = State.isBookmarked(id) ? '★' : '🔖';
+
+  document.getElementById('careerModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('careerModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function closeModalOnOverlay(e) {
+  if (e.target === document.getElementById('careerModal')) closeModal();
+}
+
+function toggleBookmark() {
+  if (!currentModalId) return;
+  State.toggleBookmark(currentModalId);
+  const btn = document.getElementById('modalBookmarkBtn');
+  const isNow = State.isBookmarked(currentModalId);
+  btn.className = 'modal-bookmark' + (isNow ? ' saved' : '');
+  btn.textContent = isNow ? '★' : '🔖';
+}
+
+// ============================================================
+// INTEREST EXPLORER
+// ============================================================
+let selectedInterests = [];
+
+function renderInterests() {
+  document.getElementById('interestGrid').innerHTML =
+    INTERESTS.map(i => `
+      <div class="interest-btn" onclick="toggleInterest('${i.id}',this)" id="ibtn-${i.id}">
+        <span class="ibtn-icon">${i.icon}</span>${i.label}
+      </div>`).join('');
+}
+
+function toggleInterest(id, el) {
+  if (selectedInterests.includes(id)) {
+    selectedInterests = selectedInterests.filter(x => x !== id);
+    el.classList.remove('selected');
+  } else {
+    selectedInterests.push(id);
+    el.classList.add('selected');
+  }
+}
+
+function runInterestFilter() {
+  const results = document.getElementById('interestResults');
+  if (!selectedInterests.length) {
+    results.innerHTML = '<div class="filter-empty">Please select at least one interest above to see matching careers.</div>';
+    return;
+  }
+  const matched = CAREERS.filter(c =>
+    c.interests && c.interests.some(i => selectedInterests.includes(i))
+  );
+  if (!matched.length) {
+    results.innerHTML = '<div class="filter-empty">No exact matches. Try selecting more interests.</div>';
+    return;
+  }
+  results.innerHTML = `
+    <p style="color:var(--teal);font-size:0.82rem;margin-bottom:16px;">✓ Found ${matched.length} careers matching your interests</p>
+    <div class="cards-grid">
+      ${matched.map(c=>`
+        <div class="career-card" style="--accent:${c.color}" onclick="openModal('${c.id}')">
+          <div class="card-icon">${c.icon}</div>
+          <div class="card-title">${c.title}</div>
+          <div class="card-desc">${c.overview.substring(0,110)}…</div>
+          <div class="card-tags">${c.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+          <div class="card-arrow">↗</div>
+        </div>`).join('')}
+    </div>`;
+}
+
+// ============================================================
+// CAREER QUIZ
+// ============================================================
+let quizIndex = 0;
+let quizScores = {};
+
+function initQuiz() {
+  quizIndex = 0;
+  quizScores = {};
+  renderQuizQuestion();
+}
+
+function renderQuizQuestion() {
+  const container = document.getElementById('quizContainer');
+  if (quizIndex >= QUIZ_QUESTIONS.length) {
+    showQuizResult();
+    return;
+  }
+  const q = QUIZ_QUESTIONS[quizIndex];
+  const progress = ((quizIndex / QUIZ_QUESTIONS.length) * 100).toFixed(0);
+  container.innerHTML = `
+    <div class="quiz-progress"><div class="quiz-progress-bar" style="width:${progress}%"></div></div>
+    <div class="quiz-q-num">Question ${quizIndex + 1} of ${QUIZ_QUESTIONS.length}</div>
+    <div class="quiz-question">${q.q}</div>
+    <div class="quiz-options">
+      ${q.options.map((opt,i) => `
+        <button class="quiz-option" onclick="selectQuizOption('${opt.i}', this)">
+          ${['A','B','C','D'][i]}. ${opt.t}
+        </button>`).join('')}
+    </div>`;
+}
+
+function selectQuizOption(interest, btn) {
+  document.querySelectorAll('.quiz-option').forEach(b => b.classList.remove('chosen'));
+  btn.classList.add('chosen');
+  quizScores[interest] = (quizScores[interest] || 0) + 1;
+  setTimeout(() => { quizIndex++; renderQuizQuestion(); }, 600);
+}
+
+function showQuizResult() {
+  // Find top interests
+  const sorted = Object.entries(quizScores).sort((a,b) => b[1]-a[1]);
+  const topInterests = sorted.slice(0,2).map(x => x[0]);
+  const matched = CAREERS.filter(c => c.interests && c.interests.some(i => topInterests.includes(i))).slice(0,5);
+
+  const interestLabels = { tech:'Technology', science:'Science', helping:'Healthcare & Service',
+    creativity:'Arts & Design', analysis:'Analytics & Finance', communication:'Media & Law',
+    business:'Business & Entrepreneurship', environment:'Environmental Sciences' };
+  const topLabel = interestLabels[sorted[0]?.[0]] || 'multiple fields';
+
+  // Mark quiz done
+  State.quizDone = 1;
+  State.save();
+
+  document.getElementById('quizContainer').innerHTML = `
+    <div class="quiz-result">
+      <span class="quiz-result-emoji">🎯</span>
+      <h3>Your Career Match: ${topLabel}</h3>
+      <p>Based on your answers, you have strong inclinations towards <strong>${topLabel}</strong>. 
+      According to <strong>NCF 2023</strong>, self-awareness is the first step to career clarity. 
+      Below are careers aligned with your responses:</p>
+      <div class="quiz-result-careers">
+        ${matched.map(c=>`<span class="result-career-tag" onclick="openModal('${c.id}')">${c.icon} ${c.title}</span>`).join('')}
+      </div>
+      <button onclick="initQuiz()" style="margin-top:24px;background:transparent;border:1px solid rgba(255,255,255,0.2);
+        color:var(--muted);padding:10px 20px;border-radius:8px;cursor:pointer;font-size:0.82rem;
+        font-family:'DM Sans',sans-serif;">
+        🔄 Retake Quiz
+      </button>
+    </div>`;
+}
+
+// ============================================================
+// EDUCATION PATHWAYS
+// ============================================================
+function renderPathways() {
+  document.getElementById('pathwaysContainer').innerHTML =
+    `<div class="nep-box">
+      <strong>NEP 2020 Flexibility:</strong> Under NEP 2020, students are no longer restricted by rigid stream boundaries. You can mix subjects from Science, Commerce, and Humanities based on your goals. Explore the pathways below as starting points — not fixed routes.
+    </div>` +
+    PATHWAYS.map(p => `
+      <div class="pathway-card">
+        <div class="pathway-card-title" style="color:${p.color}">${p.icon} ${p.title}</div>
+        <div class="path-flow">
+          ${p.steps.map((s,i) => `
+            <div class="path-node">${s}</div>
+            ${i < p.steps.length - 1 ? '<div class="path-arrow">→</div>' : ''}
+          `).join('')}
+        </div>
+      </div>`).join('');
+}
+
+// ============================================================
+// COMPARE CAREERS
+// ============================================================
+function populateCompareSelects() {
+  const html = CAREERS.map(c => `<option value="${c.id}">${c.icon} ${c.title}</option>`).join('');
+  document.getElementById('cmp1').innerHTML = '<option value="">Select Career 1</option>' + html;
+  document.getElementById('cmp2').innerHTML = '<option value="">Select Career 2</option>' + html;
+}
+
+function runCompare() {
+  const id1 = document.getElementById('cmp1').value;
+  const id2 = document.getElementById('cmp2').value;
+  const result = document.getElementById('compareResult');
+  if (!id1 || !id2) { result.innerHTML = ''; return; }
+  if (id1 === id2) { result.innerHTML = '<p style="color:var(--rose);font-size:0.85rem;margin-top:12px;">Please select two different careers to compare.</p>'; return; }
+
+  const c1 = CAREERS.find(c => c.id === id1);
+  const c2 = CAREERS.find(c => c.id === id2);
+
+  State.compared = 1; State.save();
+
+  result.innerHTML = `
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Criteria</th>
+          <th>${c1.icon} ${c1.title}</th>
+          <th>${c2.icon} ${c2.title}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Field</td><td>${c1.field}</td><td>${c2.field}</td></tr>
+        <tr><td>Salary Range</td><td>${c1.salary||'Varies'}</td><td>${c2.salary||'Varies'}</td></tr>
+        <tr><td>Future Outlook</td><td>${c1.outlook||'—'}</td><td>${c2.outlook||'—'}</td></tr>
+        <tr><td>Key Skills</td><td>${c1.skills.slice(0,3).join(', ')}</td><td>${c2.skills.slice(0,3).join(', ')}</td></tr>
+        <tr><td>Top Entry Route</td><td>${c1.pathway[0]}</td><td>${c2.pathway[0]}</td></tr>
+        <tr><td>Core Tags</td><td>${c1.tags.join(', ')}</td><td>${c2.tags.join(', ')}</td></tr>
+        <tr><td>Overview</td><td>${c1.overview.substring(0,120)}…</td><td>${c2.overview.substring(0,120)}…</td></tr>
+      </tbody>
+    </table>`;
+}
+
+// ============================================================
+// BOOKMARKS
+// ============================================================
+function renderBookmarks() {
+  const container = document.getElementById('bookmarksContainer');
+  if (!State.bookmarks.length) {
+    container.innerHTML = `
+      <div class="bookmark-empty">
+        <span class="bookmark-empty-icon">🔖</span>
+        <p>No saved careers yet.<br>Open any career and tap the bookmark icon.</p>
+      </div>`;
+    return;
+  }
+  const saved = CAREERS.filter(c => State.bookmarks.includes(c.id));
+  container.innerHTML = `
+    <div class="cards-grid">
+      ${saved.map(c=>`
+        <div class="career-card" style="--accent:${c.color}" onclick="openModal('${c.id}')">
+          <div class="card-icon">${c.icon}</div>
+          <div class="card-title">${c.title}</div>
+          <div class="card-desc">${c.overview.substring(0,110)}…</div>
+          <div class="card-tags">${c.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+          <div class="card-arrow">↗</div>
+        </div>`).join('')}
+    </div>`;
+}
+
+// ============================================================
+// NOTES
+// ============================================================
+function saveNotes() {
+  State.notes = document.getElementById('notesArea').value;
+  State.notesSaved = 1;
+  State.save();
+  const saved = document.getElementById('notesSaved');
+  saved.classList.add('show');
+  setTimeout(() => saved.classList.remove('show'), 2000);
+}
+
+// ============================================================
+// BADGES
+// ============================================================
+function renderBadges() {
+  const grid = document.getElementById('badgesGrid');
+  grid.innerHTML = BADGES.map(b => {
+    let earned = false;
+    if (b.key === 'viewed')    earned = State.viewed >= b.threshold;
+    if (b.key === 'bookmarks') earned = State.bookmarks.length >= b.threshold;
+    if (b.key === 'quizDone')  earned = State.quizDone >= b.threshold;
+    if (b.key === 'notesSaved')earned = State.notesSaved >= b.threshold;
+    if (b.key === 'compared')  earned = State.compared >= b.threshold;
+
+    return `
+      <div class="badge-card ${earned ? 'earned' : 'badge-locked'}">
+        <span class="badge-icon">${b.icon}</span>
+        <div class="badge-name">${b.name}</div>
+        <div class="badge-desc">${earned ? '✓ ' : '🔒 '}${b.desc}</div>
+      </div>`;
+  }).join('');
+}
+
+// ============================================================
+// PWA INSTALL PROMPT
+// ============================================================
+let deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  document.getElementById('installBanner').classList.add('show');
+});
+
+function installApp() {
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(() => {
+      deferredPrompt = null;
+      document.getElementById('installBanner').classList.remove('show');
+    });
+  }
+}
+
+// ============================================================
+// ============================================================
+// REGISTER SERVICE WORKER (inline blob – works in all environments)
+// Falls back silently if SW is not supported or blocked
+// ============================================================
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    try {
+      // Build the SW script as a Blob so no external file is needed
+      const swCode = `
+        const CACHE = 'career-explorer-v1';
+        const FILES = ['./index.html', './author.jpg'];
+        self.addEventListener('install', e => {
+          e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)).then(() => self.skipWaiting()));
+        });
+        self.addEventListener('activate', e => {
+          e.waitUntil(caches.keys().then(keys =>
+            Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))
+          ).then(() => self.clients.claim()));
+        });
+        self.addEventListener('fetch', e => {
+          e.respondWith(
+            caches.match(e.request).then(cached => cached || fetch(e.request).catch(() => caches.match('./index.html')))
+          );
+        });
+      `;
+      const blob = new Blob([swCode], { type: 'application/javascript' });
+      const swUrl = URL.createObjectURL(blob);
+      navigator.serviceWorker.register(swUrl)
+        .then(reg => { URL.revokeObjectURL(swUrl); })
+        .catch(() => {});
+    } catch(e) {}
+  });
+}
+
+// ============================================================
+// INIT APP
+// ============================================================
+document.addEventListener('DOMContentLoaded', () => {
+  showSection('home');
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,1765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0a0f1e">
+<meta name="description" content="Career Path Intelligence Engine - Discover your ideal career">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="CareerAI">
+<link rel="manifest" href="manifest.json">
+<title>Career Path Intelligence Engine</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+  :root {
+    --bg-deep: #050810;
+    --bg-card: #0d1526;
+    --bg-glass: rgba(13, 21, 38, 0.85);
+    --accent-gold: #d4a843;
+    --accent-teal: #00c9b1;
+    --accent-violet: #7c5cfc;
+    --accent-rose: #f06080;
+    --text-primary: #e8eaf0;
+    --text-secondary: #8892a4;
+    --text-muted: #4a5568;
+    --border: rgba(255,255,255,0.07);
+    --border-accent: rgba(212,168,67,0.3);
+    --shadow-lg: 0 25px 60px rgba(0,0,0,0.6);
+    --shadow-glow: 0 0 40px rgba(124,92,252,0.2);
+    --radius: 20px;
+    --radius-sm: 12px;
+    --transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    height: 100%;
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg-deep);
+    color: var(--text-primary);
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── STAR BACKGROUND ── */
+  #stars-canvas {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  }
+
+  /* ── APP SHELL ── */
+  #app {
+    position: relative; z-index: 1;
+    height: 100vh; width: 100vw;
+    overflow: hidden;
+  }
+
+  /* ── SCREENS ── */
+  .screen {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 24px;
+    opacity: 0; pointer-events: none;
+    transform: translateY(30px);
+    transition: opacity var(--transition), transform var(--transition);
+  }
+  .screen.active {
+    opacity: 1; pointer-events: all;
+    transform: translateY(0);
+  }
+  .screen.exit {
+    opacity: 0; transform: translateY(-30px);
+  }
+
+  /* ── AUTHOR SCREEN ── */
+  #screen-author {
+    background: radial-gradient(ellipse at 30% 20%, rgba(124,92,252,0.15) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 80%, rgba(0,201,177,0.1) 0%, transparent 50%);
+  }
+
+  .author-card {
+    background: var(--bg-glass);
+    border: 1px solid var(--border-accent);
+    border-radius: 28px;
+    padding: 48px 40px;
+    max-width: 420px;
+    width: 100%;
+    text-align: center;
+    backdrop-filter: blur(20px);
+    box-shadow: var(--shadow-lg), var(--shadow-glow);
+    animation: float 6s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-8px); }
+  }
+
+  .author-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: linear-gradient(135deg, rgba(212,168,67,0.2), rgba(212,168,67,0.05));
+    border: 1px solid var(--accent-gold);
+    border-radius: 50px;
+    padding: 6px 16px;
+    font-size: 11px; letter-spacing: 2px;
+    color: var(--accent-gold); text-transform: uppercase;
+    margin-bottom: 28px;
+  }
+
+  .author-img-wrap {
+    position: relative; display: inline-block; margin-bottom: 24px;
+  }
+  .author-img-wrap::before {
+    content: '';
+    position: absolute; inset: -4px;
+    border-radius: 50%;
+    background: conic-gradient(var(--accent-gold), var(--accent-teal), var(--accent-violet), var(--accent-gold));
+    animation: spin 4s linear infinite;
+    z-index: 0;
+  }
+  .author-img-wrap::after {
+    content: '';
+    position: absolute; inset: 2px;
+    border-radius: 50%;
+    background: var(--bg-deep);
+    z-index: 1;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .author-img {
+    width: 110px; height: 110px;
+    border-radius: 50%;
+    object-fit: cover;
+    position: relative; z-index: 2;
+    display: block;
+  }
+
+  .author-img-placeholder {
+    width: 110px; height: 110px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #1a2a4a, #2a3a6a);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 42px;
+    position: relative; z-index: 2;
+  }
+
+  .author-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px; font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+    letter-spacing: -0.3px;
+  }
+
+  .author-title {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin-bottom: 8px;
+  }
+
+  .author-dept {
+    font-size: 12px;
+    color: var(--accent-teal);
+    letter-spacing: 0.5px;
+    margin-bottom: 32px;
+  }
+
+  .app-title-block {
+    margin-bottom: 32px;
+  }
+
+  .app-logo {
+    font-size: 40px; margin-bottom: 8px;
+    filter: drop-shadow(0 0 12px rgba(0,201,177,0.5));
+  }
+
+  .app-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px; font-weight: 900;
+    background: linear-gradient(135deg, var(--accent-gold), var(--accent-teal));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.5px;
+    line-height: 1.2;
+  }
+
+  .app-tagline {
+    font-size: 12px; color: var(--text-muted);
+    margin-top: 4px; letter-spacing: 1px; text-transform: uppercase;
+  }
+
+  /* ── BUTTONS ── */
+  .btn-primary {
+    width: 100%;
+    padding: 16px 32px;
+    background: linear-gradient(135deg, var(--accent-violet), var(--accent-teal));
+    border: none; border-radius: 50px;
+    color: white; font-family: 'DM Sans', sans-serif;
+    font-size: 15px; font-weight: 600;
+    cursor: pointer; letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 30px rgba(124,92,252,0.4);
+    position: relative; overflow: hidden;
+  }
+  .btn-primary::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
+    opacity: 0; transition: opacity 0.3s;
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(124,92,252,0.5); }
+  .btn-primary:hover::before { opacity: 1; }
+  .btn-primary:active { transform: translateY(0); }
+
+  .btn-secondary {
+    padding: 12px 28px;
+    background: transparent;
+    border: 1px solid var(--border-accent);
+    border-radius: 50px;
+    color: var(--accent-gold);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px; font-weight: 500;
+    cursor: pointer; letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+  }
+  .btn-secondary:hover {
+    background: rgba(212,168,67,0.1);
+    border-color: var(--accent-gold);
+  }
+
+  /* ── QUIZ SCREEN ── */
+  #screen-quiz {
+    overflow: hidden;
+    background: radial-gradient(ellipse at 70% 30%, rgba(0,201,177,0.08) 0%, transparent 60%);
+  }
+
+  .quiz-shell {
+    width: 100%; max-width: 480px;
+    display: flex; flex-direction: column;
+    height: 100vh; padding: 20px 0;
+  }
+
+  .quiz-header {
+    padding: 0 4px 20px;
+    flex-shrink: 0;
+  }
+
+  .quiz-top {
+    display: flex; align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+
+  .quiz-step-label {
+    font-size: 11px; letter-spacing: 2px;
+    color: var(--text-muted); text-transform: uppercase;
+  }
+
+  .quiz-step-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px; font-weight: 700;
+    color: var(--accent-gold);
+  }
+
+  .quiz-category-pill {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 5px 14px;
+    border-radius: 50px;
+    font-size: 11px; font-weight: 500;
+    letter-spacing: 1px; text-transform: uppercase;
+  }
+
+  /* Progress bar */
+  .progress-track {
+    height: 4px; background: rgba(255,255,255,0.06);
+    border-radius: 2px; overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-violet), var(--accent-teal));
+    border-radius: 2px;
+    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 0 12px rgba(0,201,177,0.5);
+  }
+
+  .quiz-body {
+    flex: 1; overflow-y: auto;
+    padding: 4px 4px 20px;
+    scrollbar-width: none;
+  }
+  .quiz-body::-webkit-scrollbar { display: none; }
+
+  .question-card {
+    background: var(--bg-glass);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px 24px;
+    margin-bottom: 16px;
+    backdrop-filter: blur(20px);
+    animation: slideUp 0.4s ease forwards;
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .question-icon { font-size: 32px; margin-bottom: 12px; display: block; }
+
+  .question-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 19px; font-weight: 700;
+    line-height: 1.4; color: var(--text-primary);
+    margin-bottom: 6px;
+  }
+
+  .question-sub {
+    font-size: 12px; color: var(--text-muted); margin-bottom: 24px;
+  }
+
+  .options-grid {
+    display: flex; flex-direction: column; gap: 10px;
+  }
+
+  .option-btn {
+    display: flex; align-items: center; gap: 14px;
+    padding: 14px 18px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.25s ease;
+    text-align: left; width: 100%;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text-primary);
+    font-size: 14px;
+    position: relative; overflow: hidden;
+  }
+
+  .option-btn::before {
+    content: '';
+    position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+    background: var(--accent-teal);
+    transform: scaleY(0);
+    transition: transform 0.25s ease;
+    border-radius: 0 2px 2px 0;
+  }
+
+  .option-btn:hover {
+    background: rgba(0,201,177,0.06);
+    border-color: rgba(0,201,177,0.3);
+    transform: translateX(3px);
+  }
+  .option-btn:hover::before { transform: scaleY(1); }
+
+  .option-btn.selected {
+    background: rgba(0,201,177,0.12);
+    border-color: var(--accent-teal);
+    color: var(--accent-teal);
+  }
+  .option-btn.selected::before { transform: scaleY(1); }
+
+  .option-letter {
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700;
+    flex-shrink: 0;
+    transition: all 0.25s;
+  }
+  .option-btn.selected .option-letter {
+    background: var(--accent-teal);
+    border-color: var(--accent-teal);
+    color: var(--bg-deep);
+  }
+
+  /* Slider question */
+  .slider-wrap {
+    padding: 8px 0;
+  }
+  .slider-labels {
+    display: flex; justify-content: space-between;
+    font-size: 11px; color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+  input[type=range] {
+    width: 100%; -webkit-appearance: none;
+    height: 6px;
+    border-radius: 3px;
+    background: linear-gradient(90deg, var(--accent-violet) 0%, var(--accent-teal) 100%);
+    outline: none; cursor: pointer;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: white;
+    box-shadow: 0 2px 12px rgba(0,201,177,0.5);
+    cursor: pointer;
+  }
+  .slider-value {
+    text-align: center; margin-top: 10px;
+    font-size: 20px; font-weight: 700;
+    color: var(--accent-teal);
+  }
+
+  .quiz-footer {
+    padding: 0 4px;
+    flex-shrink: 0;
+    display: flex; gap: 10px;
+  }
+
+  /* ── NAME INPUT SCREEN ── */
+  #screen-name {
+    background: radial-gradient(ellipse at 50% 50%, rgba(212,168,67,0.1) 0%, transparent 60%);
+  }
+
+  .name-card {
+    background: var(--bg-glass);
+    border: 1px solid var(--border-accent);
+    border-radius: var(--radius);
+    padding: 44px 36px;
+    max-width: 420px; width: 100%;
+    text-align: center;
+    backdrop-filter: blur(20px);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .name-icon { font-size: 52px; margin-bottom: 20px; display: block; }
+
+  .name-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px; font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .name-sub {
+    font-size: 13px; color: var(--text-secondary);
+    margin-bottom: 32px; line-height: 1.6;
+  }
+
+  .input-group { margin-bottom: 16px; text-align: left; }
+  .input-label {
+    font-size: 11px; letter-spacing: 1.5px;
+    color: var(--text-muted); text-transform: uppercase;
+    display: block; margin-bottom: 8px;
+  }
+  .text-input {
+    width: 100%; padding: 14px 18px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text-primary);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px; outline: none;
+    transition: all 0.3s;
+  }
+  .text-input:focus {
+    border-color: var(--accent-teal);
+    background: rgba(0,201,177,0.05);
+    box-shadow: 0 0 0 3px rgba(0,201,177,0.1);
+  }
+  .text-input::placeholder { color: var(--text-muted); }
+
+  select.text-input option {
+    background: var(--bg-card);
+    color: var(--text-primary);
+  }
+
+  /* ── RESULTS SCREEN ── */
+  #screen-results {
+    overflow: hidden;
+    background: radial-gradient(ellipse at 20% 80%, rgba(124,92,252,0.12) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, rgba(212,168,67,0.08) 0%, transparent 50%);
+  }
+
+  .results-shell {
+    width: 100%; max-width: 480px;
+    height: 100vh;
+    display: flex; flex-direction: column;
+    padding: 20px 0;
+  }
+
+  .results-header {
+    padding: 0 4px 20px;
+    flex-shrink: 0;
+    text-align: center;
+  }
+
+  .results-trophy { font-size: 48px; display: block; margin-bottom: 10px;
+    animation: bounce 1s ease 0.5s both;
+  }
+  @keyframes bounce {
+    0% { transform: scale(0); opacity: 0; }
+    60% { transform: scale(1.2); }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  .results-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px; font-weight: 900;
+    background: linear-gradient(135deg, var(--accent-gold), var(--accent-teal));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 4px;
+  }
+
+  .results-name {
+    font-size: 13px; color: var(--text-secondary);
+  }
+
+  .results-body {
+    flex: 1; overflow-y: auto; padding: 4px 4px 20px;
+    scrollbar-width: none;
+  }
+  .results-body::-webkit-scrollbar { display: none; }
+
+  /* Stream category bar */
+  .stream-bars {
+    background: var(--bg-glass);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 16px;
+    backdrop-filter: blur(20px);
+  }
+
+  .stream-bars-title {
+    font-size: 11px; letter-spacing: 2px;
+    color: var(--text-muted); text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .stream-bar-item { margin-bottom: 12px; }
+  .stream-bar-label {
+    display: flex; justify-content: space-between;
+    font-size: 13px; color: var(--text-secondary);
+    margin-bottom: 6px;
+  }
+  .stream-bar-label span:last-child {
+    color: var(--accent-teal); font-weight: 600;
+  }
+  .stream-bar-track {
+    height: 8px; background: rgba(255,255,255,0.05);
+    border-radius: 4px; overflow: hidden;
+  }
+  .stream-bar-fill {
+    height: 100%; border-radius: 4px;
+    transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 0;
+  }
+
+  /* Career cards */
+  .career-card {
+    background: var(--bg-glass);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px;
+    margin-bottom: 12px;
+    backdrop-filter: blur(20px);
+    transition: all 0.3s;
+    animation: slideUp 0.5s ease forwards;
+    opacity: 0;
+  }
+  .career-card:hover { border-color: rgba(0,201,177,0.3); transform: translateY(-2px); }
+
+  .career-card.rank-1 { border-color: rgba(212,168,67,0.4); }
+  .career-card.rank-1:hover { border-color: var(--accent-gold); }
+
+  .career-top {
+    display: flex; align-items: flex-start;
+    gap: 14px; margin-bottom: 14px;
+  }
+
+  .career-rank {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 800;
+    flex-shrink: 0;
+  }
+  .rank-1 .career-rank { background: linear-gradient(135deg, #d4a843, #f0c060); color: #1a0a00; }
+  .rank-2 .career-rank { background: linear-gradient(135deg, #8892a4, #b0bcd0); color: #0a0f1e; }
+  .rank-3 .career-rank { background: linear-gradient(135deg, #c87c4a, #e8a070); color: #1a0800; }
+
+  .career-info { flex: 1; }
+  .career-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px; font-weight: 700;
+    color: var(--text-primary); margin-bottom: 3px;
+  }
+  .career-stream {
+    font-size: 11px; letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+
+  .career-score-ring {
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 800;
+    flex-shrink: 0;
+  }
+
+  .career-match-bar {
+    height: 4px; background: rgba(255,255,255,0.06);
+    border-radius: 2px; overflow: hidden;
+    margin-bottom: 14px;
+  }
+  .career-match-fill {
+    height: 100%; border-radius: 2px;
+    transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 0;
+  }
+
+  .career-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+  .career-tag {
+    padding: 4px 10px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 20px;
+    font-size: 11px; color: var(--text-secondary);
+  }
+
+  .career-detail-toggle {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 12px; color: var(--accent-teal);
+    cursor: pointer; background: none; border: none;
+    padding: 0; font-family: 'DM Sans', sans-serif;
+    transition: opacity 0.2s;
+  }
+  .career-detail-toggle:hover { opacity: 0.7; }
+
+  .career-details {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+    display: none;
+  }
+  .career-details.open { display: block; }
+
+  .detail-section { margin-bottom: 12px; }
+  .detail-section-title {
+    font-size: 10px; letter-spacing: 2px;
+    color: var(--text-muted); text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .detail-list {
+    list-style: none;
+    display: flex; flex-wrap: wrap; gap: 6px;
+  }
+  .detail-list li {
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    background: rgba(255,255,255,0.05);
+    color: var(--text-secondary);
+  }
+
+  /* History panel */
+  .history-card {
+    background: var(--bg-glass);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    margin-bottom: 12px;
+    backdrop-filter: blur(20px);
+  }
+
+  .history-title {
+    font-size: 11px; letter-spacing: 2px;
+    color: var(--text-muted); text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .history-item {
+    display: flex; align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  .history-item:last-child { border-bottom: none; padding-bottom: 0; }
+  .history-item:hover { opacity: 0.7; }
+
+  .history-item-name {
+    font-size: 13px; font-weight: 500;
+  }
+  .history-item-meta {
+    font-size: 11px; color: var(--text-muted);
+  }
+  .history-item-arrow { color: var(--text-muted); font-size: 12px; }
+
+  .results-footer {
+    padding: 0 4px;
+    flex-shrink: 0;
+    display: flex; gap: 10px;
+  }
+
+  /* ── TOAST ── */
+  #toast {
+    position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(80px);
+    background: var(--bg-card);
+    border: 1px solid var(--border-accent);
+    border-radius: 50px;
+    padding: 12px 24px;
+    font-size: 13px; color: var(--text-primary);
+    z-index: 999;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    white-space: nowrap;
+  }
+  #toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* ── INSTALL BANNER ── */
+  #install-banner {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: linear-gradient(135deg, var(--accent-violet), var(--accent-teal));
+    padding: 14px 20px;
+    display: none;
+    align-items: center; gap: 12px;
+    z-index: 100;
+  }
+  #install-banner.visible { display: flex; }
+  #install-banner-text {
+    flex: 1; font-size: 13px;
+    font-weight: 500;
+  }
+  #install-banner-btn {
+    padding: 8px 16px;
+    background: white; color: var(--accent-violet);
+    border: none; border-radius: 20px;
+    font-size: 12px; font-weight: 700;
+    cursor: pointer; white-space: nowrap;
+  }
+  #install-banner-close {
+    background: none; border: none;
+    color: white; cursor: pointer;
+    font-size: 18px; line-height: 1;
+    padding: 0;
+  }
+
+  /* ── LOADING ── */
+  .loading-dots {
+    display: flex; gap: 6px;
+    justify-content: center;
+    padding: 20px;
+  }
+  .loading-dots span {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--accent-teal);
+    animation: dot-bounce 1.4s ease-in-out infinite;
+  }
+  .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+  .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes dot-bounce {
+    0%, 80%, 100% { transform: scale(0.8); opacity: 0.5; }
+    40% { transform: scale(1.2); opacity: 1; }
+  }
+
+  /* Responsive */
+  @media (max-height: 700px) {
+    .author-card { padding: 30px 28px; }
+    .author-img { width: 90px; height: 90px; }
+    .author-img-placeholder { width: 90px; height: 90px; }
+    .author-name { font-size: 22px; }
+  }
+
+  @media (min-width: 600px) {
+    .quiz-shell, .results-shell { margin: 0 auto; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="stars-canvas"></canvas>
+
+<div id="app">
+
+  <!-- ══════════ AUTHOR SCREEN ══════════ -->
+  <div id="screen-author" class="screen active">
+    <div class="author-card">
+      <div class="app-title-block">
+        <div class="app-logo">🧠</div>
+        <div class="app-title">Career Path<br>Intelligence Engine</div>
+        <div class="app-tagline">Powered by AI Decision Logic</div>
+      </div>
+
+      <div class="author-badge">✦ Developed by</div>
+
+      <div class="author-img-wrap">
+        <img src="author.jpg" alt="Dr Mateen Yousuf" class="author-img"
+             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="author-img-placeholder" style="display:none;">👨‍🏫</div>
+      </div>
+
+      <div class="author-name">Dr. Mateen Yousuf</div>
+      <div class="author-title">Teacher & Education Innovator</div>
+      <div class="author-dept">School Education Department, J&K</div>
+
+      <button class="btn-primary" onclick="startApp()">
+        🚀 &nbsp; Start Career Discovery
+      </button>
+    </div>
+  </div>
+
+  <!-- ══════════ NAME SCREEN ══════════ -->
+  <div id="screen-name" class="screen">
+    <div class="name-card">
+      <span class="name-icon">👤</span>
+      <div class="name-title">Tell Us About You</div>
+      <div class="name-sub">This helps us personalise your career recommendations accurately.</div>
+
+      <div class="input-group">
+        <label class="input-label" for="inp-name">Your Name</label>
+        <input type="text" id="inp-name" class="text-input" placeholder="Enter your full name" maxlength="50">
+      </div>
+
+      <div class="input-group">
+        <label class="input-label" for="inp-class">Current Class</label>
+        <select id="inp-class" class="text-input">
+          <option value="">Select your class</option>
+          <option value="9">Class 9</option>
+          <option value="10">Class 10</option>
+          <option value="11">Class 11</option>
+          <option value="12">Class 12</option>
+          <option value="grad">Graduation</option>
+        </select>
+      </div>
+
+      <div class="input-group">
+        <label class="input-label" for="inp-age">Age</label>
+        <select id="inp-age" class="text-input">
+          <option value="">Select age</option>
+          <option value="13">13</option><option value="14">14</option>
+          <option value="15">15</option><option value="16">16</option>
+          <option value="17">17</option><option value="18">18</option>
+          <option value="19+">19+</option>
+        </select>
+      </div>
+
+      <button class="btn-primary" onclick="startQuiz()" style="margin-top:8px;">
+        Continue to Assessment →
+      </button>
+    </div>
+  </div>
+
+  <!-- ══════════ QUIZ SCREEN ══════════ -->
+  <div id="screen-quiz" class="screen">
+    <div class="quiz-shell">
+      <div class="quiz-header">
+        <div class="quiz-top">
+          <div>
+            <div class="quiz-step-label">Question</div>
+            <div class="quiz-step-num"><span id="q-current">1</span> / <span id="q-total">20</span></div>
+          </div>
+          <div id="q-category-pill" class="quiz-category-pill"></div>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="q-progress"></div>
+        </div>
+      </div>
+
+      <div class="quiz-body" id="quiz-body">
+        <!-- questions rendered here -->
+      </div>
+
+      <div class="quiz-footer">
+        <button class="btn-secondary" id="btn-back" onclick="prevQuestion()" style="display:none;">← Back</button>
+        <button class="btn-primary" id="btn-next" onclick="nextQuestion()">Next →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════ RESULTS SCREEN ══════════ -->
+  <div id="screen-results" class="screen">
+    <div class="results-shell">
+      <div class="results-header">
+        <span class="results-trophy">🏆</span>
+        <div class="results-title">Your Career Blueprint</div>
+        <div class="results-name" id="results-name-label"></div>
+      </div>
+
+      <div class="results-body" id="results-body">
+        <!-- results rendered here -->
+      </div>
+
+      <div class="results-footer">
+        <button class="btn-secondary" onclick="retakeQuiz()">↺ Retake</button>
+        <button class="btn-primary" onclick="shareResults()">📤 Save Results</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<!-- Install Banner -->
+<div id="install-banner">
+  <span id="install-banner-text">📲 Install Career Path App</span>
+  <button id="install-banner-btn" onclick="installApp()">Install</button>
+  <button id="install-banner-close" onclick="dismissInstall()">✕</button>
+</div>
+
+<script>
+// ══════════════════════════════════════════
+//  STARS ANIMATION
+// ══════════════════════════════════════════
+(function() {
+  const canvas = document.getElementById('stars-canvas');
+  const ctx = canvas.getContext('2d');
+  let stars = [], W, H;
+
+  function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+
+  function createStars() {
+    stars = [];
+    for (let i = 0; i < 120; i++) {
+      stars.push({
+        x: Math.random() * W, y: Math.random() * H,
+        r: Math.random() * 1.5 + 0.3,
+        o: Math.random() * 0.6 + 0.1,
+        speed: Math.random() * 0.003 + 0.001,
+        twinkle: Math.random() * Math.PI * 2
+      });
+    }
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    const t = Date.now() * 0.001;
+    stars.forEach(s => {
+      s.twinkle += s.speed;
+      const o = s.o * (0.5 + 0.5 * Math.sin(s.twinkle));
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(200,210,255,${o})`;
+      ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+
+  window.addEventListener('resize', () => { resize(); createStars(); });
+  resize(); createStars(); draw();
+})();
+
+// ══════════════════════════════════════════
+//  QUESTION BANK
+// ══════════════════════════════════════════
+const CATEGORIES = {
+  science: { label: 'Science', color: '#00c9b1', bg: 'rgba(0,201,177,0.15)' },
+  commerce: { label: 'Commerce', color: '#d4a843', bg: 'rgba(212,168,67,0.15)' },
+  arts: { label: 'Arts & Humanities', color: '#f06080', bg: 'rgba(240,96,128,0.15)' },
+  personality: { label: 'Personality', color: '#7c5cfc', bg: 'rgba(124,92,252,0.15)' },
+  vocational: { label: 'Vocational', color: '#4fc3f7', bg: 'rgba(79,195,247,0.15)' }
+};
+
+const QUESTIONS = [
+  // Science
+  {
+    id: 'q1', cat: 'science', icon: '🔬',
+    text: 'How do you feel about experiments and lab work?',
+    sub: 'Think about your experience with science classes',
+    type: 'choice',
+    options: [
+      { label: 'I love it — it\'s my favourite part of school', scores: { science: 4 } },
+      { label: 'I enjoy it when I understand the concepts', scores: { science: 3 } },
+      { label: 'It\'s okay but I prefer theory', scores: { science: 1 } },
+      { label: 'I find it boring or confusing', scores: { science: 0 } }
+    ]
+  },
+  {
+    id: 'q2', cat: 'science', icon: '🧮',
+    text: 'How comfortable are you with Mathematics?',
+    sub: 'Be honest — this helps accuracy',
+    type: 'choice',
+    options: [
+      { label: 'Very strong — I can solve complex problems', scores: { science: 4, commerce: 2 } },
+      { label: 'Good — I understand most topics', scores: { science: 3, commerce: 2 } },
+      { label: 'Average — I manage but struggle sometimes', scores: { science: 1, commerce: 1 } },
+      { label: 'Weak — maths is my least favourite subject', scores: { arts: 1, vocational: 1 } }
+    ]
+  },
+  {
+    id: 'q3', cat: 'science', icon: '💡',
+    text: 'Which science topic excites you most?',
+    sub: 'Pick the one that genuinely interests you',
+    type: 'choice',
+    options: [
+      { label: '🩺 Biology & Medicine', scores: { science: 4, career_doctor: 3, career_researcher: 2 } },
+      { label: '⚡ Physics & Engineering', scores: { science: 4, career_engineer: 3 } },
+      { label: '🧪 Chemistry & Materials', scores: { science: 3, career_researcher: 2 } },
+      { label: '💻 Computers & Technology', scores: { science: 3, career_it: 4, vocational: 2 } }
+    ]
+  },
+
+  // Personality
+  {
+    id: 'q4', cat: 'personality', icon: '🧠',
+    text: 'In a group project, which role suits you best?',
+    sub: 'Think about what you naturally do',
+    type: 'choice',
+    options: [
+      { label: '👑 I take charge and lead the team', scores: { career_entrepreneur: 3, career_govt: 2 } },
+      { label: '📊 I organise, plan and track progress', scores: { career_govt: 3, commerce: 2 } },
+      { label: '🎨 I come up with creative ideas', scores: { arts: 3, career_designer: 3 } },
+      { label: '🤝 I support others and keep peace', scores: { career_teacher: 3, arts: 2 } }
+    ]
+  },
+  {
+    id: 'q5', cat: 'personality', icon: '⏰',
+    text: 'How do you handle deadlines and pressure?',
+    sub: 'Choose the most accurate description',
+    type: 'choice',
+    options: [
+      { label: 'Thrive under pressure — I work best with urgency', scores: { career_doctor: 2, career_engineer: 2 } },
+      { label: 'Plan ahead and work systematically', scores: { career_govt: 3, career_researcher: 2 } },
+      { label: 'Sometimes procrastinate but eventually deliver', scores: { arts: 1 } },
+      { label: 'I prefer flexible, open timelines', scores: { career_designer: 2, vocational: 2 } }
+    ]
+  },
+  {
+    id: 'q6', cat: 'personality', icon: '🗣️',
+    text: 'How would you describe your communication style?',
+    sub: 'Think about how you express yourself',
+    type: 'choice',
+    options: [
+      { label: 'Very confident — I love public speaking', scores: { career_teacher: 3, career_entrepreneur: 2 } },
+      { label: 'Good one-on-one but shy in groups', scores: { career_doctor: 2, career_researcher: 2 } },
+      { label: 'I prefer writing over speaking', scores: { arts: 3, career_designer: 2 } },
+      { label: 'I express myself through doing, not talking', scores: { vocational: 3, career_engineer: 1 } }
+    ]
+  },
+
+  // Commerce
+  {
+    id: 'q7', cat: 'commerce', icon: '💰',
+    text: 'What\'s your attitude towards money and business?',
+    sub: 'Your honest relationship with finance',
+    type: 'choice',
+    options: [
+      { label: 'I love the idea of running my own business', scores: { commerce: 4, career_entrepreneur: 4 } },
+      { label: 'I prefer stable income over risk-taking', scores: { career_govt: 3, commerce: 2 } },
+      { label: 'I want to earn well but money isn\'t everything', scores: { career_teacher: 2, career_doctor: 2 } },
+      { label: 'I haven\'t thought much about it yet', scores: { arts: 1 } }
+    ]
+  },
+  {
+    id: 'q8', cat: 'commerce', icon: '📈',
+    text: 'How do you feel about economics and markets?',
+    sub: 'News, business, trading — your interest level?',
+    type: 'choice',
+    options: [
+      { label: 'Fascinated — I follow business news', scores: { commerce: 4, career_entrepreneur: 2 } },
+      { label: 'Interested but don\'t know much', scores: { commerce: 2 } },
+      { label: 'Neutral — it\'s useful to know', scores: { commerce: 1 } },
+      { label: 'Not interested at all', scores: { arts: 1, science: 1 } }
+    ]
+  },
+
+  // Arts & Humanities
+  {
+    id: 'q9', cat: 'arts', icon: '🎨',
+    text: 'Which creative activity most appeals to you?',
+    sub: 'Choose the one you enjoy or wish to explore',
+    type: 'choice',
+    options: [
+      { label: '✍️ Writing stories, essays or poetry', scores: { arts: 4, career_designer: 1 } },
+      { label: '🎭 Drama, acting or music performance', scores: { arts: 4, career_designer: 2 } },
+      { label: '🖌️ Visual art, design or photography', scores: { arts: 3, career_designer: 4 } },
+      { label: 'None — I prefer logical or practical work', scores: { science: 1, vocational: 2 } }
+    ]
+  },
+  {
+    id: 'q10', cat: 'arts', icon: '🌍',
+    text: 'How important is social impact in your career?',
+    sub: 'Making a difference vs personal success',
+    type: 'choice',
+    options: [
+      { label: 'Extremely important — I want to serve society', scores: { career_teacher: 4, career_govt: 3, arts: 2 } },
+      { label: 'Important but personal growth comes first', scores: { career_doctor: 2, career_entrepreneur: 2 } },
+      { label: 'Both equally important', scores: { career_researcher: 2, career_engineer: 1 } },
+      { label: 'Personal success is my main priority', scores: { commerce: 2, career_entrepreneur: 2 } }
+    ]
+  },
+
+  // Vocational
+  {
+    id: 'q11', cat: 'vocational', icon: '🛠️',
+    text: 'How do you feel about hands-on / practical work?',
+    sub: 'Building, fixing, creating physical things',
+    type: 'choice',
+    options: [
+      { label: 'Love it — I prefer doing over reading', scores: { vocational: 4, career_engineer: 2 } },
+      { label: 'Like it as part of a balanced role', scores: { vocational: 2, career_engineer: 2 } },
+      { label: 'Prefer desk/intellectual work', scores: { science: 2, career_researcher: 1 } },
+      { label: 'Don\'t enjoy manual work at all', scores: { arts: 1, commerce: 1 } }
+    ]
+  },
+  {
+    id: 'q12', cat: 'vocational', icon: '💻',
+    text: 'How interested are you in technology and coding?',
+    sub: 'Apps, websites, programming, AI',
+    type: 'choice',
+    options: [
+      { label: 'Very — I spend time coding or learning tech', scores: { career_it: 5, science: 2, vocational: 2 } },
+      { label: 'Somewhat — I use technology confidently', scores: { career_it: 3, science: 1 } },
+      { label: 'Basic user only — not particularly interested', scores: { arts: 1, commerce: 1 } },
+      { label: 'I actively avoid technology', scores: { vocational: 1, arts: 2 } }
+    ]
+  },
+
+  // Deeper personality
+  {
+    id: 'q13', cat: 'personality', icon: '📚',
+    text: 'Which subjects do you actually enjoy studying?',
+    sub: 'Select all that apply — choose the closest match',
+    type: 'choice',
+    options: [
+      { label: '🔬 Science subjects (Bio/Chem/Physics)', scores: { science: 4, career_doctor: 2, career_engineer: 2 } },
+      { label: '📊 Maths & Accounts & Economics', scores: { commerce: 4, career_entrepreneur: 2 } },
+      { label: '📖 History, Civics, Languages, Literature', scores: { arts: 4, career_teacher: 2, career_govt: 2 } },
+      { label: '🎨 Art, Music, Craft, Sports', scores: { arts: 3, career_designer: 3, vocational: 3 } }
+    ]
+  },
+  {
+    id: 'q14', cat: 'personality', icon: '🌟',
+    text: 'What kind of work environment do you prefer?',
+    sub: 'Imagine your ideal daily work situation',
+    type: 'choice',
+    options: [
+      { label: '🏥 Medical / social helping environment', scores: { career_doctor: 3, career_teacher: 2 } },
+      { label: '🏢 Office / corporate / government setup', scores: { career_govt: 4, commerce: 2 } },
+      { label: '🏭 Field / technical / outdoor work', scores: { career_engineer: 3, vocational: 3 } },
+      { label: '🎨 Creative studio / freelance / own space', scores: { career_designer: 4, career_entrepreneur: 3, arts: 3 } }
+    ]
+  },
+  {
+    id: 'q15', cat: 'personality', icon: '🎯',
+    text: 'What motivates you the most?',
+    sub: 'Your core driving force',
+    type: 'choice',
+    options: [
+      { label: '🏆 Recognition, awards, achieving greatness', scores: { career_entrepreneur: 3, career_researcher: 2 } },
+      { label: '❤️ Helping and making a difference to others', scores: { career_teacher: 3, career_doctor: 3 } },
+      { label: '💡 Solving complex puzzles and challenges', scores: { career_engineer: 3, science: 2 } },
+      { label: '💰 Financial freedom and security', scores: { career_entrepreneur: 3, commerce: 3 } }
+    ]
+  },
+
+  // Final targeted questions
+  {
+    id: 'q16', cat: 'science', icon: '🩺',
+    text: 'Could you see yourself helping sick people daily?',
+    sub: 'Medical career interest check',
+    type: 'choice',
+    options: [
+      { label: 'Absolutely — healing is a calling for me', scores: { career_doctor: 5, science: 3 } },
+      { label: 'Yes, but I prefer research over clinical work', scores: { career_researcher: 4, science: 3 } },
+      { label: 'I\'d prefer related but not direct patient care', scores: { science: 2, career_engineer: 1 } },
+      { label: 'No — I prefer other fields', scores: { arts: 1, commerce: 1, vocational: 1 } }
+    ]
+  },
+  {
+    id: 'q17', cat: 'commerce', icon: '🏛️',
+    text: 'How appealing is a government job / civil service?',
+    sub: 'Stability, prestige and public service',
+    type: 'choice',
+    options: [
+      { label: 'My dream — I want to serve through government', scores: { career_govt: 5, arts: 2 } },
+      { label: 'Good option — stable and respectable', scores: { career_govt: 3, commerce: 1 } },
+      { label: 'Possible backup, not my first choice', scores: { career_govt: 1 } },
+      { label: 'Not for me — too rigid / slow', scores: { career_entrepreneur: 2, career_designer: 2 } }
+    ]
+  },
+  {
+    id: 'q18', cat: 'personality', icon: '🏫',
+    text: 'How do you feel about teaching as a career?',
+    sub: 'Inspiring the next generation',
+    type: 'choice',
+    options: [
+      { label: 'I\'d love to teach — it\'s impactful and meaningful', scores: { career_teacher: 5, arts: 2 } },
+      { label: 'Could work — especially at higher levels', scores: { career_teacher: 3, career_researcher: 2 } },
+      { label: 'Only if nothing else works out', scores: { career_teacher: 1 } },
+      { label: 'Definitely not my path', scores: { career_entrepreneur: 1, career_it: 1 } }
+    ]
+  },
+  {
+    id: 'q19', cat: 'arts', icon: '✏️',
+    text: 'Rate your interest in Design (graphic, interior, fashion)?',
+    sub: 'Drag the slider to your interest level',
+    type: 'slider',
+    min: 1, max: 10, default: 5,
+    scoreMap: (v) => ({
+      career_designer: Math.round(v * 0.5),
+      arts: Math.round(v * 0.3)
+    })
+  },
+  {
+    id: 'q20', cat: 'personality', icon: '🚀',
+    text: 'If you had unlimited resources, what would you build?',
+    sub: 'This reveals your deepest career instinct',
+    type: 'choice',
+    options: [
+      { label: '🏥 A world-class hospital or health centre', scores: { career_doctor: 4, science: 2 } },
+      { label: '🏗️ An engineering firm / tech startup', scores: { career_engineer: 3, career_entrepreneur: 3, career_it: 3 } },
+      { label: '🎓 A school or university', scores: { career_teacher: 4, career_researcher: 2, arts: 2 } },
+      { label: '🎨 A creative studio / media company', scores: { career_designer: 4, career_entrepreneur: 3, arts: 3 } }
+    ]
+  }
+];
+
+// ══════════════════════════════════════════
+//  CAREER DEFINITIONS
+// ══════════════════════════════════════════
+const CAREERS = {
+  career_doctor: {
+    title: 'Doctor / Medical Professional',
+    stream: 'Science',
+    streamColor: '#00c9b1',
+    icon: '🩺',
+    skills: ['Biology', 'Empathy', 'Critical Thinking', 'Communication', 'Problem Solving'],
+    subjects: ['Biology', 'Chemistry', 'Physics', 'English', 'Psychology'],
+    paths: ['MBBS → MD/MS', 'BDS (Dentistry)', 'BAMS (Ayurveda)', 'BPharm', 'BPT (Physiotherapy)'],
+    description: 'Diagnose, treat and prevent illness. Highest impact on human lives.',
+    exams: ['NEET', 'JKBOPEE', 'AIIMS'],
+  },
+  career_engineer: {
+    title: 'Engineer / Technologist',
+    stream: 'Science',
+    streamColor: '#00c9b1',
+    icon: '⚙️',
+    skills: ['Mathematics', 'Analytical Thinking', 'Design', 'Programming', 'Problem Solving'],
+    subjects: ['Physics', 'Mathematics', 'Chemistry', 'Computer Science'],
+    paths: ['B.Tech/BE', 'Civil Engineering', 'Mechanical', 'CS/IT', 'Electronics'],
+    description: 'Design and build the systems that power the modern world.',
+    exams: ['JEE Main', 'JEE Advanced', 'JKCET'],
+  },
+  career_doctor_alt: {
+    title: 'Research Scientist',
+    stream: 'Science',
+    streamColor: '#00c9b1',
+    icon: '🔬',
+    skills: ['Analysis', 'Patience', 'Curiosity', 'Writing', 'Data Interpretation'],
+    subjects: ['Biology', 'Chemistry', 'Physics', 'Statistics', 'Computer Science'],
+    paths: ['BSc → MSc → PhD', 'Research Fellow', 'Scientist at ISRO/DRDO', 'Academia'],
+    description: 'Push the boundaries of human knowledge through rigorous research.',
+    exams: ['CSIR NET', 'JEST', 'GATE'],
+  },
+  career_researcher: {
+    title: 'Research Scientist',
+    stream: 'Science',
+    streamColor: '#00c9b1',
+    icon: '🔬',
+    skills: ['Analysis', 'Patience', 'Curiosity', 'Writing', 'Data Interpretation'],
+    subjects: ['Biology', 'Chemistry', 'Physics', 'Statistics', 'Computer Science'],
+    paths: ['BSc → MSc → PhD', 'Research Fellow', 'Scientist at ISRO/DRDO', 'Academia'],
+    description: 'Push the boundaries of human knowledge through rigorous research.',
+    exams: ['CSIR NET', 'JEST', 'GATE'],
+  },
+  career_teacher: {
+    title: 'Educator / Teacher',
+    stream: 'Arts / Humanities',
+    streamColor: '#f06080',
+    icon: '🎓',
+    skills: ['Communication', 'Patience', 'Knowledge', 'Empathy', 'Creativity'],
+    subjects: ['Any subject + B.Ed', 'Psychology', 'Sociology', 'Languages'],
+    paths: ['BA/BSc + B.Ed', 'MA + M.Ed', 'JKSSB Teacher', 'University Lecturer', 'Online Educator'],
+    description: 'Shape minds and futures. One of society\'s most impactful roles.',
+    exams: ['TET', 'JKSSB', 'NET/SET', 'KVS'],
+  },
+  career_entrepreneur: {
+    title: 'Entrepreneur / Business Owner',
+    stream: 'Commerce',
+    streamColor: '#d4a843',
+    icon: '💼',
+    skills: ['Leadership', 'Risk-taking', 'Communication', 'Financial Literacy', 'Networking'],
+    subjects: ['Business Studies', 'Economics', 'Mathematics', 'Marketing', 'Accounting'],
+    paths: ['BBA/MBA', 'Start your own business', 'Startup Incubator', 'E-commerce', 'Franchise'],
+    description: 'Create value, jobs and solutions. Build something that lasts.',
+    exams: ['CAT', 'XAT', 'CMAT (for MBA)'],
+  },
+  career_govt: {
+    title: 'Civil Servant / Govt Officer',
+    stream: 'Arts / Commerce',
+    streamColor: '#7c5cfc',
+    icon: '🏛️',
+    skills: ['Leadership', 'Communication', 'General Knowledge', 'Decision Making', 'Integrity'],
+    subjects: ['History', 'Political Science', 'Economics', 'Geography', 'Current Affairs'],
+    paths: ['IAS/IPS (UPSC)', 'KAS (JKPSC)', 'Banking', 'Defence (NDA/CDS)', 'SSC CGL'],
+    description: 'Lead public administration with authority, prestige and responsibility.',
+    exams: ['UPSC', 'JKPSC', 'SSC', 'Banking (IBPS)', 'NDA/CDS'],
+  },
+  career_designer: {
+    title: 'Designer / Creative Professional',
+    stream: 'Arts / Vocational',
+    streamColor: '#f06080',
+    icon: '🎨',
+    skills: ['Creativity', 'Visual Thinking', 'Software Tools', 'Communication', 'Trend Awareness'],
+    subjects: ['Fine Arts', 'Computer Graphics', 'Mathematics', 'Psychology', 'Media Studies'],
+    paths: ['BDes', 'Graphic Design', 'UX/UI Design', 'Fashion Design', 'Interior Design', 'Animation'],
+    description: 'Shape how the world looks, feels and communicates.',
+    exams: ['NID', 'NIFT', 'CEED', 'B.Des programs'],
+  },
+  career_it: {
+    title: 'IT Professional / Developer',
+    stream: 'Science / Vocational',
+    streamColor: '#4fc3f7',
+    icon: '💻',
+    skills: ['Programming', 'Logic', 'Problem Solving', 'Mathematics', 'Adaptability'],
+    subjects: ['Computer Science', 'Mathematics', 'Physics', 'Statistics'],
+    paths: ['BCA/B.Tech CS', 'Full Stack Developer', 'AI/ML Engineer', 'Cybersecurity', 'Data Science'],
+    description: 'Build the digital infrastructure powering every industry.',
+    exams: ['JEE', 'JKCET', 'NIMCET', 'GATE CS'],
+  }
+};
+
+// ══════════════════════════════════════════
+//  APP STATE
+// ══════════════════════════════════════════
+let state = {
+  screen: 'author',
+  userName: '',
+  userClass: '',
+  userAge: '',
+  currentQ: 0,
+  answers: {},
+  scores: {},
+  results: null,
+  history: []
+};
+
+let deferredPrompt = null;
+
+// ══════════════════════════════════════════
+//  SCREEN TRANSITIONS
+// ══════════════════════════════════════════
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => {
+    s.classList.remove('active', 'exit');
+  });
+  const current = document.querySelector('.screen.active');
+  if (current) current.classList.add('exit');
+  setTimeout(() => {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('exit'));
+  }, 400);
+  const next = document.getElementById('screen-' + id);
+  if (next) next.classList.add('active');
+  state.screen = id;
+}
+
+// ══════════════════════════════════════════
+//  APP FLOW
+// ══════════════════════════════════════════
+function startApp() {
+  loadHistory();
+  showScreen('name');
+}
+
+function startQuiz() {
+  const name = document.getElementById('inp-name').value.trim();
+  if (!name) { showToast('Please enter your name 😊'); return; }
+  state.userName = name;
+  state.userClass = document.getElementById('inp-class').value;
+  state.userAge = document.getElementById('inp-age').value;
+  state.currentQ = 0;
+  state.answers = {};
+  state.scores = {};
+  showScreen('quiz');
+  renderQuestion();
+}
+
+// ══════════════════════════════════════════
+//  QUIZ ENGINE
+// ══════════════════════════════════════════
+function renderQuestion() {
+  const q = QUESTIONS[state.currentQ];
+  const total = QUESTIONS.length;
+  const progress = ((state.currentQ) / total * 100);
+
+  document.getElementById('q-current').textContent = state.currentQ + 1;
+  document.getElementById('q-total').textContent = total;
+  document.getElementById('q-progress').style.width = progress + '%';
+
+  const cat = CATEGORIES[q.cat];
+  const pill = document.getElementById('q-category-pill');
+  pill.textContent = cat.label;
+  pill.style.color = cat.color;
+  pill.style.background = cat.bg;
+  pill.style.border = `1px solid ${cat.color}40`;
+
+  const body = document.getElementById('quiz-body');
+  const saved = state.answers[q.id];
+
+  let html = `<div class="question-card">
+    <span class="question-icon">${q.icon}</span>
+    <div class="question-text">${q.text}</div>
+    <div class="question-sub">${q.sub}</div>`;
+
+  if (q.type === 'choice') {
+    html += '<div class="options-grid">';
+    const letters = ['A', 'B', 'C', 'D'];
+    q.options.forEach((opt, i) => {
+      const sel = saved !== undefined && saved === i ? 'selected' : '';
+      html += `<button class="option-btn ${sel}" onclick="selectOption(${i})">
+        <span class="option-letter">${letters[i]}</span>
+        <span>${opt.label}</span>
+      </button>`;
+    });
+    html += '</div>';
+  } else if (q.type === 'slider') {
+    const val = saved !== undefined ? saved : q.default;
+    html += `<div class="slider-wrap">
+      <div class="slider-labels"><span>Not Interested (1)</span><span>Extremely Interested (10)</span></div>
+      <input type="range" id="slider-${q.id}" min="${q.min}" max="${q.max}" value="${val}"
+        oninput="updateSlider(this.value)">
+      <div class="slider-value" id="slider-val">${val}/10</div>
+    </div>`;
+  }
+
+  html += '</div>';
+  body.innerHTML = html;
+  body.scrollTop = 0;
+
+  document.getElementById('btn-back').style.display = state.currentQ > 0 ? 'block' : 'none';
+  document.getElementById('btn-next').textContent =
+    state.currentQ === total - 1 ? '✓ See Results' : 'Next →';
+}
+
+function selectOption(idx) {
+  const q = QUESTIONS[state.currentQ];
+  state.answers[q.id] = idx;
+  document.querySelectorAll('.option-btn').forEach((b, i) => {
+    b.classList.toggle('selected', i === idx);
+  });
+}
+
+function updateSlider(val) {
+  const q = QUESTIONS[state.currentQ];
+  state.answers[q.id] = parseInt(val);
+  document.getElementById('slider-val').textContent = val + '/10';
+}
+
+function nextQuestion() {
+  const q = QUESTIONS[state.currentQ];
+  if (q.type === 'slider') {
+    const slider = document.getElementById('slider-' + q.id);
+    if (slider) state.answers[q.id] = parseInt(slider.value);
+    else if (state.answers[q.id] === undefined) state.answers[q.id] = q.default;
+  }
+  if (state.answers[q.id] === undefined) {
+    showToast('Please select an answer to continue');
+    return;
+  }
+
+  if (state.currentQ < QUESTIONS.length - 1) {
+    state.currentQ++;
+    renderQuestion();
+  } else {
+    calculateResults();
+  }
+}
+
+function prevQuestion() {
+  if (state.currentQ > 0) {
+    state.currentQ--;
+    renderQuestion();
+  }
+}
+
+// ══════════════════════════════════════════
+//  SCORING ALGORITHM
+// ══════════════════════════════════════════
+function calculateResults() {
+  const scores = {
+    science: 0, commerce: 0, arts: 0, vocational: 0,
+    career_doctor: 0, career_engineer: 0, career_researcher: 0,
+    career_teacher: 0, career_entrepreneur: 0, career_govt: 0,
+    career_designer: 0, career_it: 0
+  };
+
+  QUESTIONS.forEach(q => {
+    const ans = state.answers[q.id];
+    if (ans === undefined) return;
+
+    if (q.type === 'choice') {
+      const opt = q.options[ans];
+      if (opt && opt.scores) {
+        Object.entries(opt.scores).forEach(([k, v]) => {
+          if (scores[k] !== undefined) scores[k] += v;
+        });
+      }
+    } else if (q.type === 'slider') {
+      if (q.scoreMap) {
+        const mapped = q.scoreMap(ans);
+        Object.entries(mapped).forEach(([k, v]) => {
+          if (scores[k] !== undefined) scores[k] += v;
+        });
+      }
+    }
+  });
+
+  state.scores = scores;
+
+  // Get top 3 careers
+  const careerKeys = Object.keys(scores).filter(k => k.startsWith('career_'));
+  const sorted = careerKeys.sort((a, b) => scores[b] - scores[a]);
+  const maxScore = scores[sorted[0]] || 1;
+
+  state.results = sorted.slice(0, 3).map((key, idx) => ({
+    key,
+    career: CAREERS[key],
+    score: scores[key],
+    pct: Math.round((scores[key] / maxScore) * 100),
+    rank: idx + 1
+  })).filter(r => r.career);
+
+  // Stream scores
+  const streamMax = Math.max(scores.science, scores.commerce, scores.arts, scores.vocational) || 1;
+  state.streamScores = {
+    science: Math.round((scores.science / streamMax) * 100),
+    commerce: Math.round((scores.commerce / streamMax) * 100),
+    arts: Math.round((scores.arts / streamMax) * 100),
+    vocational: Math.round((scores.vocational / streamMax) * 100)
+  };
+
+  saveResult();
+  showResults();
+}
+
+// ══════════════════════════════════════════
+//  RESULTS RENDERER
+// ══════════════════════════════════════════
+function showResults() {
+  showScreen('results');
+  document.getElementById('results-name-label').textContent =
+    `${state.userName}'s Personalised Report · ${state.userClass ? 'Class ' + state.userClass : ''}`;
+
+  const body = document.getElementById('results-body');
+
+  // Stream bars
+  const streamColors = {
+    science: '#00c9b1', commerce: '#d4a843',
+    arts: '#f06080', vocational: '#4fc3f7'
+  };
+  const streamIcons = { science: '🔬', commerce: '📊', arts: '🎨', vocational: '🛠️' };
+
+  let html = `<div class="stream-bars">
+    <div class="stream-bars-title">📊 Stream Aptitude Scores</div>`;
+
+  Object.entries(state.streamScores).forEach(([stream, pct]) => {
+    html += `<div class="stream-bar-item">
+      <div class="stream-bar-label">
+        <span>${streamIcons[stream]} ${stream.charAt(0).toUpperCase() + stream.slice(1)}</span>
+        <span>${pct}%</span>
+      </div>
+      <div class="stream-bar-track">
+        <div class="stream-bar-fill" id="bar-${stream}"
+          style="background: linear-gradient(90deg, ${streamColors[stream]}80, ${streamColors[stream]});"></div>
+      </div>
+    </div>`;
+  });
+  html += '</div>';
+
+  // Career cards
+  state.results.forEach((r, idx) => {
+    const c = r.career;
+    const delay = idx * 150;
+    const rankBg = idx === 0
+      ? 'linear-gradient(135deg, rgba(212,168,67,0.15), rgba(240,192,96,0.05))'
+      : 'transparent';
+
+    html += `<div class="career-card rank-${r.rank}" style="animation-delay:${delay}ms; background: ${rankBg}">
+      <div class="career-top">
+        <div class="career-rank">${idx === 0 ? '🥇' : idx === 1 ? '🥈' : '🥉'}</div>
+        <div class="career-info">
+          <div class="career-title">${c.icon} ${c.title}</div>
+          <div class="career-stream" style="color:${c.streamColor}">${c.stream}</div>
+        </div>
+        <div class="career-score-ring" style="background: ${c.streamColor}20; color: ${c.streamColor}; border: 2px solid ${c.streamColor}40">
+          ${r.pct}%
+        </div>
+      </div>
+      <div class="career-match-bar">
+        <div class="career-match-fill" id="match-${idx}"
+          style="background: linear-gradient(90deg, ${c.streamColor}60, ${c.streamColor});"></div>
+      </div>
+      <div class="career-tags">
+        ${c.skills.slice(0,4).map(s => `<span class="career-tag">${s}</span>`).join('')}
+      </div>
+      <button class="career-detail-toggle" onclick="toggleDetails(${idx})">
+        <span id="toggle-icon-${idx}">▼</span> View Roadmap & Subjects
+      </button>
+      <div class="career-details" id="career-details-${idx}">
+        <div class="detail-section">
+          <div class="detail-section-title">📚 Suggested Subjects</div>
+          <ul class="detail-list">${c.subjects.map(s => `<li>${s}</li>`).join('')}</ul>
+        </div>
+        <div class="detail-section">
+          <div class="detail-section-title">🛤️ Career Paths</div>
+          <ul class="detail-list">${c.paths.map(p => `<li>${p}</li>`).join('')}</ul>
+        </div>
+        <div class="detail-section">
+          <div class="detail-section-title">📝 Key Exams</div>
+          <ul class="detail-list">${c.exams.map(e => `<li>${e}</li>`).join('')}</ul>
+        </div>
+        <div class="detail-section">
+          <div class="detail-section-title">💡 Why This Fits You</div>
+          <p style="font-size:13px; color:var(--text-secondary); line-height:1.6">${c.description}</p>
+        </div>
+      </div>
+    </div>`;
+  });
+
+  // History
+  if (state.history.length > 1) {
+    html += `<div class="history-card">
+      <div class="history-title">🕐 Previous Results</div>`;
+    state.history.slice(-5).reverse().forEach((h, i) => {
+      if (i === 0) return; // skip current
+      html += `<div class="history-item">
+        <div>
+          <div class="history-item-name">${h.name}</div>
+          <div class="history-item-meta">${h.date} · ${h.top}</div>
+        </div>
+        <span class="history-item-arrow">›</span>
+      </div>`;
+    });
+    html += '</div>';
+  }
+
+  body.innerHTML = html;
+  body.scrollTop = 0;
+
+  // Animate bars after render
+  setTimeout(() => {
+    Object.entries(state.streamScores).forEach(([stream, pct]) => {
+      const el = document.getElementById('bar-' + stream);
+      if (el) el.style.width = pct + '%';
+    });
+    state.results.forEach((r, idx) => {
+      const el = document.getElementById('match-' + idx);
+      if (el) el.style.width = r.pct + '%';
+    });
+  }, 200);
+}
+
+function toggleDetails(idx) {
+  const det = document.getElementById('career-details-' + idx);
+  const icon = document.getElementById('toggle-icon-' + idx);
+  det.classList.toggle('open');
+  icon.textContent = det.classList.contains('open') ? '▲' : '▼';
+}
+
+// ══════════════════════════════════════════
+//  LOCAL STORAGE
+// ══════════════════════════════════════════
+function saveResult() {
+  if (!state.results || !state.results[0]) return;
+  const entry = {
+    name: state.userName,
+    class: state.userClass,
+    date: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }),
+    top: state.results[0].career.title,
+    scores: state.scores,
+    streamScores: state.streamScores,
+    results: state.results.map(r => ({ key: r.key, pct: r.pct }))
+  };
+  const history = JSON.parse(localStorage.getItem('cpie_history') || '[]');
+  history.push(entry);
+  if (history.length > 20) history.shift();
+  localStorage.setItem('cpie_history', JSON.stringify(history));
+  state.history = history;
+}
+
+function loadHistory() {
+  state.history = JSON.parse(localStorage.getItem('cpie_history') || '[]');
+}
+
+function retakeQuiz() {
+  state.answers = {};
+  state.scores = {};
+  state.currentQ = 0;
+  showScreen('name');
+}
+
+function shareResults() {
+  const top = state.results && state.results[0] ? state.results[0].career.title : 'Unknown';
+  const text = `🧠 Career Path Report\n👤 ${state.userName}\n🏆 Top Career: ${top}\n\nGenerated by Career Path Intelligence Engine`;
+  if (navigator.share) {
+    navigator.share({ title: 'My Career Report', text }).catch(() => {});
+  } else {
+    navigator.clipboard?.writeText(text).then(() => {
+      showToast('📋 Results copied to clipboard!');
+    }).catch(() => {
+      showToast('✅ Results saved locally!');
+    });
+  }
+}
+
+// ══════════════════════════════════════════
+//  TOAST
+// ══════════════════════════════════════════
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ══════════════════════════════════════════
+//  PWA / INSTALL
+// ══════════════════════════════════════════
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  document.getElementById('install-banner').classList.add('visible');
+});
+
+function installApp() {
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(() => {
+      deferredPrompt = null;
+      dismissInstall();
+    });
+  }
+}
+
+function dismissInstall() {
+  document.getElementById('install-banner').classList.remove('visible');
+}
+
+window.addEventListener('appinstalled', () => {
+  showToast('✅ App installed successfully!');
+  dismissInstall();
+});
+
+// Service Worker
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('service-worker.js')
+      .then(() => console.log('SW registered'))
+      .catch(err => console.log('SW error:', err));
+  });
+}
+
+// Prevent pull-to-refresh
+document.addEventListener('touchmove', (e) => {
+  if (e.touches.length > 1) e.preventDefault();
+}, { passive: false });
+</script>
+</body>
+</html>

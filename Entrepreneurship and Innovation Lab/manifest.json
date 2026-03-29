@@ -1,0 +1,44 @@
+{
+  "name": "Entrepreneurship & Innovation Lab",
+  "short_name": "E&I Lab",
+  "description": "Offline Experiential Learning Studio for Grades 9-12. Aligned with NEP 2020, NCF 2023. Developed by Mateen Yousuf, School Education Department Kashmir.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0a1628",
+  "theme_color": "#0a1628",
+  "orientation": "portrait-primary",
+  "scope": "./",
+  "lang": "en-IN",
+  "categories": ["education", "productivity"],
+  "icons": [
+    {
+      "src": "author.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "author.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Idea Lab",
+      "url": "./index.html#idea-lab",
+      "description": "Generate innovation ideas"
+    },
+    {
+      "name": "Business Plan Builder",
+      "url": "./index.html#business-plan",
+      "description": "Build a complete business plan"
+    },
+    {
+      "name": "Skill Tracker",
+      "url": "./index.html#skill-tracker",
+      "description": "Track entrepreneurial skills"
+    }
+  ]
+}
